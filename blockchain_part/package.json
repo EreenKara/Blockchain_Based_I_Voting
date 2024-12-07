@@ -1,9 +1,17 @@
 {
-  "name": "blockchain_part",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
-  "dependencies": {
-    "solc": "^0.8.28"
-  }
+   "name": "blockchain_part",
+   "version": "1.0.0",
+   "main": "index.js",
+   "license": "MIT",
+   "dependencies": {
+      "dotenv": "^16.4.7",
+      "ethers": "^6.13.4",
+      "prettier": "^3.4.2",
+      "prettier-plugin-solidity": "^1.4.1",
+      "solc": "^0.8.28"
+   },
+   "scripts": {
+      "doitall": "yarn compile && yarn compile && history -c",
+      "compile": "yarn solcjs --bin --abi --include-path node_modules/ --base-path ./contracts/ -o ./contracts/complied/SimpleStorage/ ./contracts/SimpleStorage.sol"
+   }
 }
