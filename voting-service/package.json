@@ -1,0 +1,14 @@
+{
+  "name": "voting-service",
+  "version": "1.0.0",
+  "description": "Voting type service for voting system",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.1",
+    "mongoose": "^6.8.2",
+    "dotenv": "^16.0.0"
+  }
+}
