@@ -6,5 +6,6 @@ const createOptionController=async(req,res)=>{
     }catch(err){
         res.status(500).json({message:"An error occurred while creating the opiton."})
     }
-}
+};
+
 module.exports={createOptionController}
