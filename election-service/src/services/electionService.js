@@ -64,5 +64,27 @@ const authenticateUser =    async (token) => {
         throw new Error('Error verifying token');
     }
 };
+const getElectionById = async (id, token) => {
+    try {
+        const election = await Election.findById(id);
+        if (!election) {
+            throw new Error("Election not found");
+        }
 
-module.exports = { createElection, authenticateUser };
+        // Option Service'e istek yaparak seçimle ilgili optionsları al
+        const response = await axios.get(
+            `${process.env.OPTION_SERVICE_URL}/api/options/election/${id}`,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        );
+
+        const options = response.data.options || [];
+        return { election, options };
+    } catch (error) {
+        console.error("Error fetching election with options:", error.message);
+        throw new Error("Unable to fetch election details");
+    }
+};
+
+module.exports = { createElection, authenticateUser,getElectionById};

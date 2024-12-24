@@ -1,6 +1,5 @@
-const { createElection} = require("../services/electionService");
+const { createElection,getElectionById} = require("../services/electionService");
 const Election = require("../models/Election");
-const axios = require("axios");
 
 const createElectionController = async (req, res) => {
     try {
@@ -13,7 +12,7 @@ const createElectionController = async (req, res) => {
     }
 };
 
-const getElectionById= async (req, res) => {
+const getElectionByIdOnly= async (req, res) => {
     const { id } = req.params;
   
     try {
@@ -21,7 +20,7 @@ const getElectionById= async (req, res) => {
       if (!election) {
         return res.status(404).json({ message: 'Election not found' });
       }
-      const options = await Option.find({ electionId: id });
+     
   
       res.status(200).json({ election });
     } catch (error) {
@@ -47,8 +46,23 @@ const getElectionById= async (req, res) => {
       res.status(500).json({ message: 'Error starting election', error: error.message });
     }
   };
+  const getElectionByIdController = async (req, res) => {
+    const { id } = req.params;
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+        return res.status(401).json({ message: "Authorization token is missing" });
+    }
+
+    try {
+        const { election, options } = await getElectionById(id, token);
+        res.status(200).json({ election, options });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching election", error: error.message });
+    }
+};
 
 
   
 
-module.exports = { createElectionController,getElectionById,getActiveElection};
+module.exports = { createElectionController,getElectionByIdOnly,getActiveElection,getElectionByIdController};

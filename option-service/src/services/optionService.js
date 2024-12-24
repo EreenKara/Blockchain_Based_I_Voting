@@ -27,6 +27,9 @@ const createOption = async (req, res) => {
       return res.status(404).json({ message: "Election not found or not valid." });
     }
 
+    if (election.createdBy !== user.email) {
+      throw new Error("You are not authorized to add options to this election");
+  }
     const option = new Option({
        optionId: new mongoose.Types.ObjectId().toString(),
       optionName,
@@ -74,10 +77,19 @@ const validateElection = async (electionId, token) => {
     return null; // Geçerli bir seçim bulunamadı
   }
 };
+const getOptionsByElectionId = async (electionId) => {
+  try {
+      const options = await Option.find({ electionId });
+      return options;
+  } catch (error) {
+      console.error("Error fetching options:", error.message);
+      throw new Error("Unable to fetch options");
+  }
+};
 
 
 
 
-module.exports = { createOption, authenticateUser,validateElection };
+module.exports = { createOption, authenticateUser,validateElection ,getOptionsByElectionId};
 
 

@@ -1,4 +1,4 @@
-const {createOption}=require("../services/optionService");
+const {createOption,getOptionsByElectionId}=require("../services/optionService");
 
 const createOptionController=async(req,res)=>{
     try{
@@ -7,5 +7,15 @@ const createOptionController=async(req,res)=>{
         res.status(500).json({message:"An error occurred while creating the opiton."})
     }
 };
+const getOptionsByElectionIdController = async (req, res) => {
+    const { electionId } = req.params;
 
-module.exports={createOptionController}
+    try {
+        const options = await getOptionsByElectionId(electionId);
+        res.status(200).json({ options });
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching options", error: error.message });
+    }
+};
+
+module.exports={createOptionController,getOptionsByElectionIdController}
