@@ -1,5 +1,6 @@
 const User = require("../models/User");
-const bcrypt = require("bcrypt");
+const bcryptjs = require('bcryptjs');
+
 const axios = require("axios");
 
 //const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
@@ -65,7 +66,7 @@ const registerUser = async (req, res) => {
     }
 
     // Şifreyi hashle
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcryptjs.hash(password, 10);
 
     // Yeni kullanıcı oluştur
     const user = new User({
@@ -107,7 +108,7 @@ if (!user) {
   return res.status(401).json({ message: "Geçersiz email/TCKN veya şifre." });
 }
 
-const isPasswordValid = await bcrypt.compare(password, user.password);
+const isPasswordValid = await bcryptjs.compare(password, user.password);
 if (!isPasswordValid) {
   return res.status(401).json({ message: "Şifre geçersiz." });
 }
