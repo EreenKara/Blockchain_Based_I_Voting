@@ -79,12 +79,16 @@ const castVote = async (req, res) => {
       `${process.env.OPTION_SERVICE_URL}/api/options/election/${electionId}`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
-    console.log(optionsResponse.data);
     const options = optionsResponse.data.options;
 
-    const optionExists = options.some(option => option.id === optionId);
-    if (!optionExists) {
-      return res.status(400).json({ message: "Invalid option for this election" });
+    if (!options || options.length === 0) {
+      return res.status(404).json({ message: "No options found for this election" });
+    }
+
+    // Seçilen optionId'nin geçerli bir seçenek olup olmadığını kontrol et
+    const selectedOption = options.find(option => option._id == optionId);
+    if (!selectedOption) {
+      return res.status(400).json({ message: `Option with ID ${optionId} is not valid for this election` });
     }
 
     // Kullanıcı daha önce oy vermiş mi kontrol et
@@ -102,6 +106,7 @@ const castVote = async (req, res) => {
     });
 
     await vote.save();
+  
 
     return res.status(201).json({ message: "Vote cast successfully", vote });
   } catch (err) {
@@ -111,6 +116,7 @@ const castVote = async (req, res) => {
     }
   }
 };
+
 
 const getResults = async (req, res) => {
   const { electionId } = req.params;
