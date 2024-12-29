@@ -1,8 +1,14 @@
-const express = require('express');
-const { castVote, getVotesByVoteType } = require('../controllers/voteController');
+const express = require("express");
+const { getElection, vote, results } = require("../controllers/voteController");
 const router = express.Router();
 
-router.post('/cast-vote', castVote);
-router.get('/:voteTypeId', getVotesByVoteType);
+// Seçimi ve seçenekleri getir
+router.get("/election/:electionId", getElection);
+
+// Oy verme işlemi
+router.post("/vote", vote);
+
+// Sonuçları getir
+router.get("/results/:electionId", results);
 
 module.exports = router;

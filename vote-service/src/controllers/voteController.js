@@ -1,29 +1,50 @@
-const Vote = require('../models/Vote');
-const { ObjectId } = require('mongoose').Types;
+const { getElectionWithOptions, castVote, getResults } = require("../services/voteService");
 
-exports.castVote = async (req, res) => {
-    try {
-        const { userId, voteTypeId, voteOption } = req.body;
-        
-        // Check if the voteType exists
-        if (!ObjectId.isValid(voteTypeId)) {
-            return res.status(400).json({ error: 'Invalid vote type ID' });
-        }
+const getElection = async (req, res) => {
+  const { electionId } = req.params; // URL'den seçim ID'si alınır
+  const token = req.headers.authorization?.split(" ")[1]; // Bearer token alınır
 
-        const vote = new Vote({ userId, voteTypeId, voteOption });
-        await vote.save();
-        res.status(201).json({ message: 'Vote casted successfully' });
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
+  if (!token) {
+    return res.status(401).json({ message: "Authorization token is missing" });
+  }
+
+  try {
+    // Seçim ve seçenekleri VoteService üzerinden al
+    const electionWithOptions = await getElectionWithOptions(electionId, token);
+    return res.status(200).json(electionWithOptions); // Cevap başarıyla döndürülür
+  } catch (error) {
+    console.error("Error fetching election details:", error.message);
+    return res.status(400).json({ error: "An error occurred while fetching election details." });
+  }
 };
 
-exports.getVotesByVoteType = async (req, res) => {
-    try {
-        const { voteTypeId } = req.params;
-        const votes = await Vote.find({ voteTypeId });
-        res.status(200).json(votes);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+const vote = async (req, res) => {
+  
+  try {
+    // Oy verme işlemi VoteService üzerinden gerçekleştirilir
+    await castVote(req, res); // Request ve response nesneleri doğrudan geçilir
+    // İşlem başarılı, cevabı burada dönmeye gerek yok çünkü castVote içinde yanıt dönülecek
+  } catch (error) {
+    console.error("Error casting vote:", error.message);
+    return res.status(500).json({ error: "An error occurred while casting the vote." });
+  }
 };
+
+const results = async (req, res) => {
+  const { electionId } = req.params; // URL'den seçim ID'si alınır
+
+  if (!electionId) {
+    return res.status(400).json({ message: "Election ID is required." });
+  }
+
+  try {
+    // Sonuçları VoteService üzerinden al
+    const electionResults = await getResults(electionId);
+    return res.status(200).json({ results: electionResults });
+  } catch (error) {
+    console.error("Error fetching election results:", error.message);
+    return res.status(500).json({ error: "An error occurred while fetching election results." });
+  }
+};
+
+module.exports = { getElection, vote, results };
