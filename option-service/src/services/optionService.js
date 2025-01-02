@@ -37,6 +37,7 @@ const createOption = async (req, res) => {
       optionDescription,
       electionId,
       createdBy: user.email,
+      voteCount:0,
     });
     await option.save();
     res.status(201).json({ message: "Option created successfully", option });
@@ -86,10 +87,35 @@ const getOptionsByElectionId = async (electionId) => {
       throw new Error("Unable to fetch options");
   }
 };
+const incrementVoteCount = async (req, res) => {
+  const { optionId } = req.params;
+
+  if (!optionId) {
+    return res.status(400).json({ message: "Option ID is required." });
+  }
+
+  try {
+    // Option'ı bul ve voteCount değerini artır
+    const option = await Option.findByIdAndUpdate(
+      optionId,
+      { $inc: { voteCount: 1 } },
+      { new: true }
+    );
+
+    if (!option) {
+      return res.status(404).json({ message: "Option not found." });
+    }
+
+    res.status(200).json({ message: "Vote count incremented successfully.", option });
+  } catch (error) {
+    console.error("Error incrementing vote count:", error.message);
+    res.status(500).json({ message: "An error occurred while incrementing vote count." });
+  }
+};
 
 
 
 
-module.exports = { createOption, authenticateUser,validateElection ,getOptionsByElectionId};
+module.exports = { createOption, authenticateUser,validateElection ,getOptionsByElectionId,incrementVoteCount};
 
 

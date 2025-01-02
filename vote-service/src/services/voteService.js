@@ -106,7 +106,12 @@ const castVote = async (req, res) => {
     });
 
     await vote.save();
-  
+    
+    await axios.put(
+      `${process.env.OPTION_SERVICE_URL}/api/options/${optionId}/increment-vote`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
     return res.status(201).json({ message: "Vote cast successfully", vote });
   } catch (err) {
