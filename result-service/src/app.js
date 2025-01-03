@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 app.use("/api/results", resultRoutes);
 
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT || 5003;
 
 mongoose
   .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })

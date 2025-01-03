@@ -12,5 +12,5 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
     .then(() => console.log('Database connected'))
     .catch(err => console.error(err));
 
-const PORT = process.env.PORT || 3007;
+const PORT = process.env.PORT || 5002;
 app.listen(PORT, () => console.log(`User and Options service running on port ${PORT}`));
