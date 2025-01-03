@@ -74,6 +74,16 @@ const castVote = async (req, res) => {
       return res.status(404).json({ message: "Election not found" });
     }
 
+    // Seçim süresi kontrolü
+    const activeResponse = await axios.get(
+      `${process.env.ELECTION_SERVICE_URL}/api/elections/${electionId}/active`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    if (activeResponse.status !== 200 || activeResponse.data.message !== "Election is active") {
+      return res.status(400).json({ message: activeResponse.data.message || "Election is not active" });
+    }
+
     // Seçeneklerin geçerli seçimle ilişkili olup olmadığını kontrol et
     const optionsResponse = await axios.get(
       `${process.env.OPTION_SERVICE_URL}/api/options/election/${electionId}`,
@@ -116,6 +126,9 @@ const castVote = async (req, res) => {
     return res.status(201).json({ message: "Vote cast successfully", vote });
   } catch (err) {
     console.error("Error casting vote:", err.message);
+    if (err.response && err.response.data && err.response.data.message) {
+      return res.status(err.response.status).json({ message: err.response.data.message });
+    }
     if (!res.headersSent) {
       return res.status(500).json({ message: "An error occurred while casting the vote" });
     }
