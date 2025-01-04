@@ -86,5 +86,28 @@ const getElectionById = async (id, token) => {
         throw new Error("Unable to fetch election details");
     }
 };
+const updateElectionStatus = async (req, res) => {
+    const { id } = req.params; // Seçim ID'si
+    const { isActive } = req.body; // Yeni aktiflik durumu
 
-module.exports = { createElection, authenticateUser,getElectionById};
+    try {
+        const election = await Election.findById(id);
+        if (!election) {
+            return res.status(404).json({ message: "Election not found" });
+        }
+
+        if (election.isActive === true) {
+            election.isActive = false; // Aktiflik durumunu false olarak güncelle
+            await election.save();
+
+            return res.status(200).json({ message: "Election status updated successfully", election });
+        } else {
+            return res.status(400).json({ message: "Election status update is invalid." });
+        }
+    } catch (error) {
+        res.status(500).json({ message: "An error occurred while updating the election status.", error: error.message });
+    }
+};
+
+
+module.exports = { createElection, authenticateUser,getElectionById,updateElectionStatus};

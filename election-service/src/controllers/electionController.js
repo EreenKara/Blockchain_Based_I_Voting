@@ -1,4 +1,4 @@
-const { createElection,getElectionById} = require("../services/electionService");
+const { createElection,getElectionById,updateElectionStatus} = require("../services/electionService");
 const Election = require("../models/Election");
 
 const createElectionController = async (req, res) => {
@@ -61,8 +61,17 @@ const getElectionByIdOnly= async (req, res) => {
         res.status(500).json({ message: "Error fetching election", error: error.message });
     }
 };
+const updateElectionStatusController = async (req, res) => {
+  try {
+      await updateElectionStatus(req, res);
+  } catch (error) {
+      console.error("Error updating election status:", error.message);
+      res.status(500).json({ message: "An error occurred while updating the election status." });
+  }
+};
+
 
 
   
 
-module.exports = { createElectionController,getElectionByIdOnly,getActiveElection,getElectionByIdController};
+module.exports = { createElectionController,getElectionByIdOnly,getActiveElection,getElectionByIdController,updateElectionStatusController};

@@ -34,8 +34,14 @@ const calculateElectionResult = async (electionId, token) => {
         voteCount: winner.voteCount,
       },
     });
+  
     await result.save();
 
+    await axios.patch(
+      `${process.env.ELECTION_SERVICE_URL}/api/elections/change/status/${electionId}`,
+      { isActive: false },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
     return result;
   } catch (error) {
     throw new Error(`Error calculating result: ${error.message}`);

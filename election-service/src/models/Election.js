@@ -6,7 +6,8 @@ const electionSchema = new mongoose.Schema({
   description: { type: String },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
-  createdBy: { type: String, required: true }, 
+  createdBy: { type: String, required: true },
+  isActive: { type: Boolean, default: true } 
 }, { timestamps: true });
 
 electionSchema.virtual('options', {
