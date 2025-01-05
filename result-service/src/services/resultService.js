@@ -50,10 +50,16 @@ const calculateElectionResult = async (electionId, token) => {
 
 const getResultByElectionId = async (electionId) => {
   const result = await Result.findOne({ electionId });
+  
   if (!result) {
     throw new Error("Result not found for the given election.");
   }
-  return result;
+  const kazanan = result.winnerOption?.optionName || "Unknown";
+
+  // Sonuç objesine kazanan adı ekleniyor
+  return { ...result.toObject(), kazanan };
+
+
 };
 
 module.exports = { calculateElectionResult, getResultByElectionId };
