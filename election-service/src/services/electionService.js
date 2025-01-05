@@ -96,8 +96,11 @@ const updateElectionStatus = async (req, res) => {
             return res.status(404).json({ message: "Election not found" });
         }
 
+        if(election.isActive===false){
+            return res.status(401).json({message:"Election is not active"})
+        }
         if (election.isActive === true) {
-            election.isActive = false; // Aktiflik durumunu false olarak güncelle
+            election.isActive = false;
             await election.save();
 
             return res.status(200).json({ message: "Election status updated successfully", election });
