@@ -15,4 +15,4 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
     .catch(err => console.error(err));
 
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => console.log(`eleciton service running on port ${PORT}`));
+app.listen(PORT, () => console.log(`election service running on port ${PORT}`));
