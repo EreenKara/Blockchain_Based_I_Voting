@@ -96,7 +96,7 @@ const castVote = async (req, res) => {
     const options = optionsResponse.data.options;
 
     if (!options || options.length === 0) {
-      return res.status(404).json({ message: "No options found for this election" });
+      return res.status(404).json({ message: "No options found for this electionnnn" });
     }
 
     // Seçilen optionId'nin geçerli bir seçenek olup olmadığını kontrol et
