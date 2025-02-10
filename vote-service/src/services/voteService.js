@@ -100,26 +100,26 @@ const castVote = async (req, res) => {
     }
 
     // Seçilen optionId'nin geçerli bir seçenek olup olmadığını kontrol et
-    const selectedOption = options.find(option => option._id == optionId);
+    const selectedOption = options.find(option => option.id == optionId);
     if (!selectedOption) {
       return res.status(400).json({ message: `Option with ID ${optionId} is not valid for this election` });
     }
 
     // Kullanıcı daha önce oy vermiş mi kontrol et
-    const existingVote = await Vote.findOne({ electionId, votedBy: user.email });
+    const existingVote = await Vote.findOne({ where: { electionId, votedBy: user.email}});
     if (existingVote) {
       return res.status(400).json({ message: "You have already voted in this election" });
     }
 
     // Yeni oy oluştur ve kaydet
-    const vote = new Vote({
+    const vote = await Vote.create({
       electionId,
       optionId,
       votedBy: user.email,
       votedAt: new Date(),
     });
 
-    await vote.save();
+  
     
     await axios.put(
       `${process.env.OPTION_SERVICE_URL}/api/options/${optionId}/increment-vote`,
@@ -141,15 +141,13 @@ const castVote = async (req, res) => {
 
 
 const getResults = async (req, res) => {
-  const { electionId } = req.params;
   try {
-    const votes = await Vote.aggregate([
-      { $match: { electionId } },
-      { $group: { _id: "$optionId", count: { $sum: 1 } } },
-    ]);
+    const votes = await Vote.findAll({
+      where: { electionId },
+    });
 
     if (votes.length === 0) {
-      return res.status(404).json({ message: "No votes found for this election." });
+      return { message: "No votes found for this election." };
     }
 
     const optionsResponse = await axios.get(
@@ -157,19 +155,22 @@ const getResults = async (req, res) => {
     );
     const options = optionsResponse.data.options;
 
-    const results = votes.map((vote) => {
-      const option = options.find((opt) => opt.id === vote._id);
-      return {
-        optionId: vote._id,
-        optionName: option ? option.name : "Unknown Option",
-        voteCount: vote.count,
-      };
-    });
+    const results = votes.reduce((acc, vote) => {
+      const option = options.find(opt => opt.id === vote.optionId);
+      const optionName = option ? option.name : "Unknown Option";
 
-    res.status(200).json({ electionId, results });
+      if (!acc[optionName]) {
+        acc[optionName] = 0;
+      }
+      acc[optionName] += 1;
+
+      return acc;
+    }, {});
+
+    return { electionId, results };
   } catch (error) {
     console.error("Error fetching election results:", error.message);
-    res.status(500).json({ message: "An error occurred while fetching election results." });
+    return { message: "An error occurred while fetching election results." };
   }
 };
 
