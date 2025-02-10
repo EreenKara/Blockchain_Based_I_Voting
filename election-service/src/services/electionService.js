@@ -1,6 +1,7 @@
-const Election = require("../models/Election");
+const  Election  = require("../models/Election");
 require('dotenv').config();
 const axios = require("axios");
+
 
 const createElection = async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1]; // Bearer Token
@@ -18,7 +19,6 @@ const createElection = async (req, res) => {
         console.log('Authenticated User:', user);
 
         if (!user || !user.email) {
-            
             return res.status(403).json({
                 message: 'Access denied: Only businesses can create elections',
             });
@@ -29,24 +29,23 @@ const createElection = async (req, res) => {
               message:
                 "Access denied: You must pay the required balance to create an election.",
             });
-          }
-        const election = new Election({
-            id: new Date().getTime(),
+        }
+
+        const election = await Election.create({
             title,
             description,
             startDate,
             endDate,
             createdBy: user.email,
         });
-        await election.save();
 
         res.status(201).json({ message: 'Election created successfully', election });
     } catch (err) {
         res.status(403).json({ message: err.message });
     }
 };
-const authenticateUser =    async (token) => {
-    
+
+const authenticateUser = async (token) => {
     if (!token) {
         throw new Error('Token is required');
     }
@@ -64,9 +63,10 @@ const authenticateUser =    async (token) => {
         throw new Error('Error verifying token');
     }
 };
+
 const getElectionById = async (id, token) => {
     try {
-        const election = await Election.findById(id);
+        const election = await Election.findByPk(id);  // Sequelize: findByPk (Primary Key)
         if (!election) {
             throw new Error("Election not found");
         }
@@ -86,22 +86,24 @@ const getElectionById = async (id, token) => {
         throw new Error("Unable to fetch election details");
     }
 };
+
 const updateElectionStatus = async (req, res) => {
     const { id } = req.params; // Seçim ID'si
     const { isActive } = req.body; // Yeni aktiflik durumu
 
     try {
-        const election = await Election.findById(id);
+        const election = await Election.findByPk(id); // Sequelize: findByPk (Primary Key)
         if (!election) {
             return res.status(404).json({ message: "Election not found" });
         }
 
-        if(election.isActive===false){
-            return res.status(401).json({message:"Election is not active"})
+        if (election.isActive === false) {
+            return res.status(401).json({ message: "Election is not active" });
         }
+
         if (election.isActive === true) {
             election.isActive = false;
-            await election.save();
+            await election.save();  // Sequelize: save method
 
             return res.status(200).json({ message: "Election status updated successfully", election });
         } else {
@@ -112,5 +114,4 @@ const updateElectionStatus = async (req, res) => {
     }
 };
 
-
-module.exports = { createElection, authenticateUser,getElectionById,updateElectionStatus};
+module.exports = { createElection, authenticateUser, getElectionById, updateElectionStatus };

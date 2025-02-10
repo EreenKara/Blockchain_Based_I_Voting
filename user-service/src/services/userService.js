@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const bcryptjs = require('bcryptjs');
 const axios = require("axios");
+const { Op } = require('sequelize');
 
 const registerUser = async (req, res) => {
   try {
