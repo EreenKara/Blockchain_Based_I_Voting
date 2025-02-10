@@ -1,13 +1,45 @@
-const mongoose = require("mongoose");
+const { Sequelize, DataTypes } = require('sequelize');
+require('dotenv').config();
 
-const ResultSchema = new mongoose.Schema({
-  electionId: { type: String, required: true, unique: true },
-  winnerOption: {
-    optionId: { type: String, required: true },
-    optionName: { type: String, required: true },
-    voteCount: { type: Number, required: true },
+const sequelize = new Sequelize(
+  process.env.DB_NAME,      // Veritabanı adı
+  process.env.DB_USER,      // Kullanıcı adı
+  process.env.DB_PASSWORD,  // Şifre
+  {
+    host: process.env.DB_HOST,  // PostgreSQL sunucusu
+    dialect: 'postgres',        // PostgreSQL kullanılacak
+    port: process.env.DB_PORT,  // Port (varsayılan 5432)
+  }
+); // Sequelize instance'ınız
+
+const Result = sequelize.define("Result", {
+  electionId: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
   },
-  createdAt: { type: Date, default: Date.now },
+  winnerOption: {
+    type: DataTypes.JSONB, 
+    allowNull: false,
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
+}, {
+  timestamps: false, // createdAt otomatik olarak oluşturulacak
+  tableName: "results",
 });
+sequelize.sync()
+  .then(() => console.log("Users tablosu oluşturuldu!"))
+  .catch(err => console.error('Tablo oluşturulurken bir hata oluştu:', err));
+// Veritabanı ile bağlantıyı test etme
+sequelize.authenticate()
+  .then(() => {
+    console.log('PostgreSQL bağlantısı başarılı.');
+  })
+  .catch((error) => {
+    console.error('PostgreSQL bağlantısı hatası:', error);
+  });
 
-module.exports = mongoose.model("Result", ResultSchema);
+module.exports = Result;

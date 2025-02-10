@@ -1,4 +1,4 @@
-const Result = require("../models/Result");
+const  Result = require("../models/Result");
 const axios = require("axios");
 
 const calculateElectionResult = async (electionId, token) => {
@@ -25,8 +25,8 @@ const calculateElectionResult = async (electionId, token) => {
       return option.voteCount > max.voteCount ? option : max;
     });
 
-    // Sonucu kaydet
-    const result = new Result({
+    // Sonucu kaydetmek için Sequelize kullanıyoruz
+    const result = await Result.create({
       electionId,
       winnerOption: {
         optionId: winner._id,
@@ -34,14 +34,14 @@ const calculateElectionResult = async (electionId, token) => {
         voteCount: winner.voteCount,
       },
     });
-  
-    await result.save();
 
+    // Seçim durumunu güncelle
     await axios.patch(
       `${process.env.ELECTION_SERVICE_URL}/api/elections/change/status/${electionId}`,
       { isActive: false },
       { headers: { Authorization: `Bearer ${token}` } }
     );
+
     return result;
   } catch (error) {
     throw new Error(`Error calculating result: ${error.message}`);
@@ -49,17 +49,22 @@ const calculateElectionResult = async (electionId, token) => {
 };
 
 const getResultByElectionId = async (electionId) => {
-  const result = await Result.findOne({ electionId });
-  
-  if (!result) {
-    throw new Error("Result not found for the given election.");
+  try {
+    // Sequelize ile sonuç sorgusu yapıyoruz
+    const result = await Result.findOne({ where: { electionId } });
+
+    if (!result) {
+      throw new Error("Result not found for the given election.");
+    }
+
+    // Sonuç objesine kazanan adı ekleniyor
+    const kazanan = result.winnerOption?.optionName || "Unknown";
+
+    return { ...result.toJSON(), kazanan };
+
+  } catch (error) {
+    throw new Error(`Error retrieving result: ${error.message}`);
   }
-  const kazanan = result.winnerOption?.optionName || "Unknown";
-
-  // Sonuç objesine kazanan adı ekleniyor
-  return { ...result.toObject(), kazanan };
-
-
 };
 
 module.exports = { calculateElectionResult, getResultByElectionId };
