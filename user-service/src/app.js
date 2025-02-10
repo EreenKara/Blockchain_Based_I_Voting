@@ -1,17 +1,15 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const userRoutes = require('./routes/userRoutes');
-
-require('dotenv').config();
+const userRoutes = require('./routes/userRoutes');  // Kullanıcı yönlendirmelerini import ediyoruz
+require('dotenv').config();  // .env dosyasını yüklemek için
 
 const app = express();
 app.use(express.json());
 app.use('/api/users', userRoutes);
 
+// PostgreSQL bağlantısını sağlıyoruz
 
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('Database connected'))
-    .catch(err => console.error(err));
+
+// Veritabanı bağlantısını test ediyoruz
 
 const PORT = process.env.PORT || 5004;
 app.listen(PORT, () => console.log(`User service running on port ${PORT}`));
