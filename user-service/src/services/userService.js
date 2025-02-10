@@ -57,13 +57,33 @@ const registerUser = async (req, res) => {
       hasPaidBalance: false,
     });
 
-    res.status(201).json({ message: "Kullanıcı başarıyla oluşturuldu." });
+    // Doğrulama kodunu oluştur (6 basamaklı rastgele bir sayı)
+    const verificationCode = Math.floor(100000 + Math.random() * 900000); 
+
+    // Kullanıcıya e-posta ile doğrulama kodu gönder
+    try {
+      await axios.post(`${process.env.EMAIL_SERVICE_URL}/email/send-verification`, {
+        email: user.email,
+        code: verificationCode
+      });
+
+      // Doğrulama kodunu veritabanına kaydet
+      user.verificationCode = verificationCode;
+      await user.save();
+
+      // Yanıt gönder
+      res.status(201).json({ message: "Kullanıcı başarıyla oluşturuldu ve e-posta ile doğrulama kodu gönderildi." });
+
+    } catch (error) {
+      console.error("E-posta gönderme hatası: ", error);
+      res.status(500).json({ message: "Kullanıcı oluşturuldu ancak e-posta gönderilemedi." });
+    }
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Kullanıcı oluşturulurken bir hata oluştu." });
   }
 };
-
 const authanticateUser = async (req, res) => {
   try {
     const { emailOrIdentity, password } = req.body;
@@ -86,6 +106,10 @@ const authanticateUser = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Şifre geçersiz." });
     }
+    if (user.verificationCode) {
+      return res.status(403).json({ message: "Hesabınızı aktifleştirmek için e-posta adresinize gönderilen doğrulama kodunu girmeniz gerekmektedir." });
+
+    }
 
     const response = await axios.post(`${process.env.AUTH_SERVICE_URL}/api/generate`, {
       email: user.email,
@@ -103,6 +127,34 @@ const authanticateUser = async (req, res) => {
     } else {
       return res.status(500).json({ message: "Giriş sırasında beklenmedik bir hata oluştu." });
     }
+  }
+};
+const verifyCodeAndActivate = async (emailOrIdentity, code) => {
+  try {
+    const user = await User.findOne({
+      where: { 
+        [Op.or]: [{ email: emailOrIdentity }, { identityNumber: emailOrIdentity }] 
+      },
+    });
+
+    if (!user) {
+      throw new Error("Kullanıcı bulunamadı");
+    }
+    if(user.verificationCode==null)
+    {
+      throw new Error("Hesabınız zaten aktifleştirilmiş.")
+    }
+    if (user.verificationCode !== code) {
+      throw new Error("Geçersiz doğrulama kodu.");
+    }
+
+    // Doğrulama kodu doğruysa, kullanıcıyı aktifleştir
+    user.verificationCode = null; // Kod null yapılır
+    await user.save();
+
+    return { message: "Hesabınız başarıyla aktifleştirildi." };
+  } catch (error) {
+    throw new Error(error.message || "Doğrulama işlemi sırasında hata oluştu.");
   }
 };
 
@@ -139,4 +191,4 @@ const getUserByIdentityNumber = async (identityNumber) => {
   }
 };
 
-module.exports = { registerUser, authanticateUser, getUsers, getUserById, getUserByIdentityNumber };
+module.exports = { registerUser, authanticateUser, getUsers, getUserById,verifyCodeAndActivate, getUserByIdentityNumber };

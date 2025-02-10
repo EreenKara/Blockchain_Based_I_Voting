@@ -1,4 +1,4 @@
-const { registerUser,authanticateUser,getUsers,getUserById,getUserByIdentityNumber } = require("../services/userService");
+const { registerUser,authanticateUser,verifyCodeAndActivate,getUsers,getUserById,getUserByIdentityNumber } = require("../services/userService");
 
 const createUser = async (req, res) => {
   try {
@@ -18,6 +18,21 @@ const login=async(req,res)=>{
   }catch(error){
     console.error("kullanıcı girişi başarısız",error);
     res.status(500).json({message:"bir hata oluştu lütfen tekrar deneyin."})
+  }
+};
+const verifyUserCodeController = async (req, res) => {
+  const { emailOrIdentity, code } = req.body;
+
+  if (!emailOrIdentity || !code) {
+    return res.status(400).json({ message: "Email/TCKN ve doğrulama kodu gereklidir." });
+  }
+
+  try {
+    const result = await verifyCodeAndActivate(emailOrIdentity, code);  // UserService'deki verifyCodeAndActivate metodunu çağırıyoruz
+    res.status(200).json(result); // Başarılı mesajı döndürüyoruz
+  } catch (error) {
+    console.error("Doğrulama kodu işlemi sırasında hata oluştu: ", error);
+    res.status(500).json({ message: error.message || "Doğrulama kodu işlemi sırasında hata oluştu." });
   }
 };
 const getAllUsers = async (req, res) => {
@@ -53,5 +68,5 @@ const getUserByIdentityNumberController = async (req, res) => {
 };
 
 module.exports = {
-  createUser,login,getAllUsers,getUserByIdController,getUserByIdentityNumberController
+  createUser,login,getAllUsers,verifyUserCodeController,getUserByIdController,getUserByIdentityNumberController
 };

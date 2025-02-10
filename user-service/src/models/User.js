@@ -37,7 +37,7 @@ const User = sequelize.define('User', {
     unique: true,
     trim: true,
     lowercase: true,
-    // match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
+    // match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/  // E-posta doğrulama regex
   },
   phoneNumber: {
     type: DataTypes.STRING,
@@ -53,19 +53,20 @@ const User = sequelize.define('User', {
     validate: {
       len: [6],  // Minimum 6 karakter
     },
-    // match: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/
+    // match: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/  // Şifre düzeni
   },
   hasPaidBalance: {
     type: DataTypes.BOOLEAN,
     defaultValue: false, // Varsayılan olarak bakiye ödenmemiş
   },
+  verificationCode: {
+    type: DataTypes.STRING, // Doğrulama kodu (6 basamaklı sayı olarak saklanacak)
+    allowNull: true,  // Zorunlu değil, ilk kayıttan sonra e-posta ile gönderilecektir
+  },
 }, {
   timestamps: true, // createdAt, updatedAt alanlarını otomatik oluşturur
 });
 
-sequelize.sync()
-  .then(() => console.log("Users tablosu oluşturuldu!"))
-  .catch(err => console.error('Tablo oluşturulurken bir hata oluştu:', err));
 // Veritabanı ile bağlantıyı test etme
 sequelize.authenticate()
   .then(() => {
@@ -74,6 +75,11 @@ sequelize.authenticate()
   .catch((error) => {
     console.error('PostgreSQL bağlantısı hatası:', error);
   });
+
+// Veritabanı senkronizasyonu
+sequelize.sync()
+  .then(() => console.log("Users tablosu oluşturuldu veya güncellendi!"))
+  .catch(err => console.error('Tablo oluşturulurken bir hata oluştu:', err));
 
 // Modeli dışa aktarıyoruz
 module.exports = User;
