@@ -1,27 +1,28 @@
-const Option = require("../models/Option");
+const  Option  = require("../models/Option"); // Sequelize modelini içe aktar
 const axios = require("axios");
-const mongoose = require('mongoose');
 
 const createOption = async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1]; // Bearer Token
   if (!token) {
     return res.status(401).json({ message: "Authorization token is missing" });
   }
+  
   const { optionName, optionImgUrl, optionDescription, electionId } = req.body;
 
   if (!optionName || !electionId) {
     return res.status(400).json({ message: "Option name and election ID are required." });
   }
+
   try {
     const user = await authenticateUser(token);
     console.log("Authenticated User:", user);
 
-
     if (!user || !user.email) {
       return res.status(403).json({
-        message: "Access denied: Only businesses can create elections",
+        message: "Access denied: Only businesses can create options",
       });
     }
+
     const election = await validateElection(electionId, token);
     if (!election) {
       return res.status(404).json({ message: "Election not found or not valid." });
@@ -29,28 +30,28 @@ const createOption = async (req, res) => {
 
     if (election.createdBy !== user.email) {
       throw new Error("You are not authorized to add options to this election");
-  }
-    const option = new Option({
-       optionId: new mongoose.Types.ObjectId().toString(),
+    }
+
+    const option = await Option.create({
       optionName,
       optionImgUrl,
       optionDescription,
       electionId,
       createdBy: user.email,
-      voteCount:0,
+      voteCount: 0,
     });
-    await option.save();
+
     res.status(201).json({ message: "Option created successfully", option });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
+
 const authenticateUser = async (token) => {
   if (!token) {
     throw new Error("Token is required");
   }
 
-  // Token doğrulamak için JWT Service'i çağır
   try {
     const response = await axios.post(
       `${process.env.AUTH_SERVICE_URL}/api/validate`,
@@ -66,27 +67,31 @@ const authenticateUser = async (token) => {
     throw new Error("Error verifying token");
   }
 };
+
 const validateElection = async (electionId, token) => {
   try {
-    const response = await axios.get(`${process.env.ELECTION_SERVICE_URL}/api/elections/${electionId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await axios.get(
+      `${process.env.ELECTION_SERVICE_URL}/api/elections/${electionId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-    return response.data.election; // Seçim bilgisini döndür
+    return response.data.election; // Seçim bilgisi döndürülüyor
   } catch (error) {
     console.error("Error validating election:", error);
     return null; // Geçerli bir seçim bulunamadı
   }
 };
+
 const getOptionsByElectionId = async (electionId) => {
   try {
-      const options = await Option.find({ electionId });
-      return options;
+    const options = await Option.findAll({ where: { electionId } });
+    return options;
   } catch (error) {
-      console.error("Error fetching options:", error.message);
-      throw new Error("Unable to fetch options");
+    console.error("Error fetching options:", error.message);
+    throw new Error("Unable to fetch options");
   }
 };
+
 const incrementVoteCount = async (req, res) => {
   const { optionId } = req.params;
 
@@ -95,16 +100,14 @@ const incrementVoteCount = async (req, res) => {
   }
 
   try {
-    // Option'ı bul ve voteCount değerini artır
-    const option = await Option.findByIdAndUpdate(
-      optionId,
-      { $inc: { voteCount: 1 } },
-      { new: true }
-    );
+    const option = await Option.findOne({ where: { id: optionId } });
 
     if (!option) {
       return res.status(404).json({ message: "Option not found." });
     }
+
+    option.voteCount += 1;
+    await option.save();
 
     res.status(200).json({ message: "Vote count incremented successfully.", option });
   } catch (error) {
@@ -113,9 +116,4 @@ const incrementVoteCount = async (req, res) => {
   }
 };
 
-
-
-
-module.exports = { createOption, authenticateUser,validateElection ,getOptionsByElectionId,incrementVoteCount};
-
-
+module.exports = { createOption, authenticateUser, validateElection, getOptionsByElectionId, incrementVoteCount };

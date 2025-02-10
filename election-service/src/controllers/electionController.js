@@ -12,55 +12,56 @@ const createElectionController = async (req, res) => {
     }
 };
 
-const getElectionByIdOnly= async (req, res) => {
-    const { id } = req.params;
-  
-    try {
-      const election = await Election.findById(id);
+const getElectionByIdOnly = async (req, res) => {
+  const { id } = req.params;
+  try {
+      const election = await Election.findByPk(id);
       if (!election) {
-        return res.status(404).json({ message: 'Election not found' });
+          return res.status(404).json({ message: "Election not found" });
       }
-     
-  
       res.status(200).json({ election });
-    } catch (error) {
-      res.status(500).json({ message: 'Error fetching election', error: error.message });
-    }
-  };
-  const getActiveElection= async (req, res) => {
-    const { id } = req.params;
-  
-    try {
-      const election = await Election.findById(id);
+  } catch (error) {
+      res.status(500).json({ message: "Error fetching election", error: error.message });
+  }
+};
+const getActiveElection = async (req, res) => {
+  const { id } = req.params;
+  try {
+      const election = await Election.findByPk(id);
       if (!election) {
-        return res.status(404).json({ message: 'Election not found' });
+          return res.status(404).json({ message: "Election not found" });
       }
-  
       const now = new Date();
       if (now >= election.startDate && now <= election.endDate) {
-        return res.status(200).json({ message: 'Election is active', election });
+          return res.status(200).json({ message: "Election is active", election });
       } else {
-        return res.status(400).json({ message: 'Election cannot be started outside of start and end dates' });
+          return res.status(400).json({ message: "Election cannot be started outside of start and end dates" });
       }
-    } catch (error) {
-      res.status(500).json({ message: 'Error starting election', error: error.message });
-    }
-  };
-  const getElectionByIdController = async (req, res) => {
-    const { id } = req.params;
-    const token = req.headers.authorization?.split(" ")[1];
-
-    if (!token) {
-        return res.status(401).json({ message: "Authorization token is missing" });
-    }
-
-    try {
-        const { election, options } = await getElectionById(id, token);
-        res.status(200).json({ election, options });
-    } catch (error) {
-        res.status(500).json({ message: "Error fetching election", error: error.message });
-    }
+  } catch (error) {
+      res.status(500).json({ message: "Error starting election", error: error.message });
+  }
 };
+// const getElectionByIdController = async (req, res) => {
+//   const { id } = req.params;
+//   const token = req.headers.authorization?.split(" ")[1];
+
+//   if (!token) {
+//       return res.status(401).json({ message: "Authorization token is missing" });
+//   }
+
+//   try {
+//       const election = await Election.findByPk(id, {
+//           include: [{ model: Option, as: "options" }],
+//       });
+//       if (!election) {
+//           return res.status(404).json({ message: "Election not found" });
+//       }
+//       res.status(200).json({ election, options: election.options });
+//   } catch (error) {
+//       res.status(500).json({ message: "Error fetching election", error: error.message });
+//   }
+// };
+
 const updateElectionStatusController = async (req, res) => {
   try {
       await updateElectionStatus(req, res);
@@ -74,4 +75,4 @@ const updateElectionStatusController = async (req, res) => {
 
   
 
-module.exports = { createElectionController,getElectionByIdOnly,getActiveElection,getElectionByIdController,updateElectionStatusController};
+module.exports = { createElectionController,getElectionByIdOnly,getActiveElection,updateElectionStatusController};
