@@ -32,7 +32,7 @@ const authenticateUser = async (token) => {
   }
 
   try {
-    const response = await axios.post(`${process.env.AUTH_SERVICE_URL}/api/validate`, { token });
+    const response = await axios.post(`${process.env.AUTH_SERVICE_URL}/api/auths/validate`, { token });
     if (response.data.valid) {
       return response.data.decoded; // Kullanıcı bilgilerini döndür
     } else {

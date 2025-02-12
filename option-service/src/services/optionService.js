@@ -54,7 +54,7 @@ const authenticateUser = async (token) => {
 
   try {
     const response = await axios.post(
-      `${process.env.AUTH_SERVICE_URL}/api/validate`,
+      `${process.env.AUTH_SERVICE_URL}/api/auths/validate`,
       { token }
     );
     console.log("Axios Response:", response.data);

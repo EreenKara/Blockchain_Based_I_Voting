@@ -52,7 +52,7 @@ const authenticateUser = async (token) => {
 
     // Token doğrulamak için JWT Service'i çağır
     try {
-        const response = await axios.post(`${process.env.AUTH_SERVICE_URL}/api/validate`, { token });
+        const response = await axios.post(`${process.env.AUTH_SERVICE_URL}/api/auths/validate`, { token });
         console.log('Axios Response:', response.data);
         if (response.data.valid) {
             return response.data.decoded; // Kullanıcıyı döndür
