@@ -43,7 +43,7 @@ const Election = sequelize.define('Election', {
   timestamps: true,
 });
 sequelize.sync()
-  .then(() => console.log("Users tablosu oluşturuldu!"))
+  .then(() => console.log("Election tablosu oluşturuldu!"))
   .catch(err => console.error('Tablo oluşturulurken bir hata oluştu:', err));
 // Veritabanı ile bağlantıyı test etme
 sequelize.authenticate()

@@ -31,7 +31,7 @@ const Result = sequelize.define("Result", {
   tableName: "results",
 });
 sequelize.sync()
-  .then(() => console.log("Users tablosu oluşturuldu!"))
+  .then(() => console.log("Result tablosu oluşturuldu!"))
   .catch(err => console.error('Tablo oluşturulurken bir hata oluştu:', err));
 // Veritabanı ile bağlantıyı test etme
 sequelize.authenticate()

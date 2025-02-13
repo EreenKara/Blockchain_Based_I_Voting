@@ -52,7 +52,7 @@ const Option = sequelize.define(
   }
 );
 sequelize.sync()
-  .then(() => console.log("Users tablosu oluşturuldu!"))
+  .then(() => console.log("Option tablosu oluşturuldu!"))
   .catch(err => console.error('Tablo oluşturulurken bir hata oluştu:', err));
 // Veritabanı ile bağlantıyı test etme
 sequelize.authenticate()

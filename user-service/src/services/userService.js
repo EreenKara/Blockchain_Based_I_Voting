@@ -1,46 +1,33 @@
-const User = require("../models/User");
+const {User} = require("../models/User");
 const bcryptjs = require('bcryptjs');
 const axios = require("axios");
 const { Op } = require('sequelize');
+const {userValidationSchema} = require('../models/User');
 
 const registerUser = async (req, res) => {
   try {
     const { name, surname, identityNumber, email, phoneNumber, password } = req.body;
-
-    // Boş alan kontrolü
-    if (!name || !surname || !identityNumber || !email || !phoneNumber || !password) {
-      return res.status(400).json({ message: "Tüm alanlar doldurulmalıdır." });
-    }
-
-    // İsim ve soyisim yalnızca harflerden oluşmalı
-    const nameRegex = /^[a-zA-ZğüşöçİĞÜŞÖÇ\s]+$/;
-    if (!nameRegex.test(name)) {
-      return res.status(400).json({ message: "İsim yalnızca harflerden oluşmalıdır." });
-    }
-
-    if (!nameRegex.test(surname)) {
-      return res.status(400).json({ message: "Soyisim yalnızca harflerden oluşmalıdır." });
-    }
-
-    // TC kimlik numarası uzunluk kontrolü
-    if (identityNumber.length !== 11) {
-      return res.status(400).json({ message: "TC kimlik numarası 11 haneli olmalıdır." });
-    }
+    await userValidationSchema.validate({
+      name, surname, identityNumber, email, phoneNumber, password
+    }, { abortEarly: false });
 
     // Unique alanların kontrolü
-    const existingIdentity = await User.findOne({ where: { identityNumber } });
-    if (existingIdentity) {
-      return res.status(409).json({ message: "Bu TC kimlik numarası zaten kayıtlı." });
-    }
+    const existingUser = await User.findOne({
+      where: {
+        [Op.or]: [
+          { identityNumber },
+          { email },
+          { phoneNumber }
+        ]
+      }
+    });
 
-    const existingEmail = await User.findOne({ where: { email } });
-    if (existingEmail) {
-      return res.status(409).json({ message: "Bu e-posta adresi zaten kayıtlı." });
-    }
-
-    const existingPhone = await User.findOne({ where: { phoneNumber } });
-    if (existingPhone) {
-      return res.status(409).json({ message: "Bu telefon numarası zaten kayıtlı." });
+    if (existingUser) {
+      let message = '';
+      if (existingUser.identityNumber === identityNumber) message = "Bu TC kimlik numarası zaten kayıtlı.";
+      if (existingUser.email === email) message = "Bu e-posta adresi zaten kayıtlı.";
+      if (existingUser.phoneNumber === phoneNumber) message = "Bu telefon numarası zaten kayıtlı.";
+      return res.status(409).json({ message });
     }
 
     // Şifreyi hashle
@@ -58,7 +45,7 @@ const registerUser = async (req, res) => {
     });
 
     // Doğrulama kodunu oluştur (6 basamaklı rastgele bir sayı)
-    const verificationCode = Math.floor(100000 + Math.random() * 900000); 
+    const verificationCode = Math.floor(100000 + Math.random() * 900000);
 
     // Kullanıcıya e-posta ile doğrulama kodu gönder
     try {
@@ -80,11 +67,22 @@ const registerUser = async (req, res) => {
     }
 
   } catch (error) {
+    if (error.name === 'ValidationError') {
+      // ValidationError durumunda, tüm hata mesajlarını `error.inner` üzerinden alabiliriz
+      const validationErrors = error.inner.map(err => err.message);
+      return res.status(400).json({
+        message: "Veri doğrulama hatası",
+        errors: validationErrors,  // Tüm hata mesajlarını buraya koyuyoruz
+      });
+    }
+
+    // Diğer hatalar için genel bir hata mesajı
     console.error(error);
     res.status(500).json({ message: "Kullanıcı oluşturulurken bir hata oluştu." });
   }
 };
-const authanticateUser = async (req, res) => {
+
+const authenticateUser = async (req, res) => {
   try {
     const { emailOrIdentity, password } = req.body;
 
@@ -106,9 +104,9 @@ const authanticateUser = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Şifre geçersiz." });
     }
+
     if (user.verificationCode) {
       return res.status(403).json({ message: "Hesabınızı aktifleştirmek için e-posta adresinize gönderilen doğrulama kodunu girmeniz gerekmektedir." });
-
     }
 
     const response = await axios.post(`${process.env.AUTH_SERVICE_URL}/api/auths/generate`, {
@@ -129,6 +127,7 @@ const authanticateUser = async (req, res) => {
     }
   }
 };
+
 const verifyCodeAndActivate = async (emailOrIdentity, code) => {
   try {
     const user = await User.findOne({
@@ -140,10 +139,11 @@ const verifyCodeAndActivate = async (emailOrIdentity, code) => {
     if (!user) {
       throw new Error("Kullanıcı bulunamadı");
     }
-    if(user.verificationCode==null)
-    {
-      throw new Error("Hesabınız zaten aktifleştirilmiş.")
+
+    if (!user.verificationCode) {
+      throw new Error("Hesabınız zaten aktifleştirilmiş.");
     }
+
     if (user.verificationCode !== code) {
       throw new Error("Geçersiz doğrulama kodu.");
     }
@@ -191,4 +191,4 @@ const getUserByIdentityNumber = async (identityNumber) => {
   }
 };
 
-module.exports = { registerUser, authanticateUser, getUsers, getUserById,verifyCodeAndActivate, getUserByIdentityNumber };
+module.exports = { registerUser, authenticateUser, getUsers, getUserById, verifyCodeAndActivate, getUserByIdentityNumber };

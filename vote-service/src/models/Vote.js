@@ -60,7 +60,7 @@ Vote.prototype.fetchOption = async function() {
   }
 };
 sequelize.sync()
-  .then(() => console.log("Users tablosu oluşturuldu!"))
+  .then(() => console.log("Vote tablosu oluşturuldu!"))
   .catch(err => console.error('Tablo oluşturulurken bir hata oluştu:', err));
 // Veritabanı ile bağlantıyı test etme
 sequelize.authenticate()

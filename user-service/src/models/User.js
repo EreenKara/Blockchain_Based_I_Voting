@@ -1,17 +1,87 @@
 const { Sequelize, DataTypes } = require('sequelize');
+const yup = require('yup');  // Yup kütüphanesini dahil ediyoruz
 require('dotenv').config();
+
 const sequelize = new Sequelize(
-  process.env.DB_NAME,      // Veritabanı adı
-  process.env.DB_USER,      // Kullanıcı adı
-  process.env.DB_PASSWORD,  // Şifre
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
   {
-    host: process.env.DB_HOST,  // PostgreSQL sunucusu
-    dialect: 'postgres',        // PostgreSQL kullanılacak
-    port: process.env.DB_PORT,  // Port (varsayılan 5432)
+    host: process.env.DB_HOST,
+    dialect: 'postgres',
+    port: process.env.DB_PORT,
   }
 );
 
-// User modelini Sequelize ile oluşturuyoruz
+// Yup şeması tanımlıyoruz
+const userValidationSchema = yup.object().shape({
+  name: yup.string()
+    .required('İsim gereklidir')
+    .matches(/^[a-zA-ZıİçÇğĞöÖşŞüÜ\s]+$/, 'İsim sadece harflerden oluşabilir')
+    .trim(),
+    
+  surname: yup.string()
+    .required('Soyisim gereklidir')
+    .matches(/^[a-zA-ZıİçÇğĞöÖşŞüÜ\s]+$/, 'Soyisim sadece harflerden oluşabilir')
+    .trim(),
+    
+    identityNumber: yup.string()
+    .length(11, 'TC Kimlik numarası 11 haneli olmalıdır')
+    .required('TC Kimlik numarası gereklidir')
+    .matches(
+      /^[1-9][0-9]{10}$/, 
+      'TC Kimlik Numarası 11 haneli ve geçerli olmalıdır'
+    )
+    .test('isValidTC', 'Geçersiz TC Kimlik Numarası', (value) => {
+      const digits = value.split('').map(Number);
+
+      // 1. kural: İlk 10 haneye göre 11. haneyi doğrula
+      const oddSum = digits[0] + digits[2] + digits[4] + digits[6] + digits[8];
+      const evenSum = digits[1] + digits[3] + digits[5] + digits[7];
+      const checkDigit10 = (oddSum * 7 - evenSum) % 10;
+
+      if (checkDigit10 !== digits[9]) return false;
+
+      // 2. kural: İlk 10 hanenin toplamına göre 11. haneyi doğrula
+      const totalSum = digits.slice(0, 10).reduce((sum, digit) => sum + digit, 0);
+      const checkDigit11 = totalSum % 10;
+
+      if (checkDigit11 !== digits[10]) return false;
+
+      return true;
+    }),
+    
+  email: yup.string()
+    .email('Geçersiz e-posta formatı')
+    .required('E-posta gereklidir')
+    .lowercase(),
+    
+  phoneNumber: yup.string()
+    .matches(/^[0-9]{10}$/, 'Telefon numarası 10 haneli olmalıdır')
+    .required('Telefon numarası gereklidir')
+    .matches(/^[0-9]+$/, 'Telefon numarası sadece rakamlardan oluşmalıdır'),
+    
+  password: yup.string()
+  .required("Şifre zorunludur") // Şifrenin boş olmaması gerekir
+  .min(8, "Şifre en az 8 karakter uzunluğunda olmalıdır") // Minimum 8 karakter uzunluğu
+  .matches(/[A-Z]/, "Şifre en az bir büyük harf içermelidir") // En az bir büyük harf
+  .matches(/[a-z]/, "Şifre en az bir küçük harf içermelidir") // En az bir küçük harf
+  .matches(/[0-9]/, "Şifre en az bir rakam içermelidir") // En az bir rakam
+  .matches(
+     /[\!@#\$%\^&\*\(\)\_\+\-=\[\]\{\};:\'",<>\./?\\|`~]/,
+     "Şifre en az bir özel karakter içermelidir"
+  ),
+    
+  hasPaidBalance: yup.boolean().default(false),
+  
+  verificationCode: yup.string()
+    .length(6, 'Doğrulama kodu 6 haneli olmalıdır')
+    .notRequired(),
+});
+
+
+
+// User modelini oluşturuyoruz
 const User = sequelize.define('User', {
   name: {
     type: DataTypes.STRING,
@@ -27,9 +97,6 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
-    validate: {
-      len: [11, 11],  // 11 karakterli olmalı
-    },
   },
   email: {
     type: DataTypes.STRING,
@@ -37,37 +104,39 @@ const User = sequelize.define('User', {
     unique: true,
     trim: true,
     lowercase: true,
-    // match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/  // E-posta doğrulama regex
   },
   phoneNumber: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
-    validate: {
-      is: /^[0-9]{10}$/,  // Telefon numarasını 10 haneli kontrol eder
-    },
   },
   password: {
     type: DataTypes.STRING,
     allowNull: false,
-    validate: {
-      len: [6],  // Minimum 6 karakter
-    },
-    // match: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/  // Şifre düzeni
   },
   hasPaidBalance: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false, // Varsayılan olarak bakiye ödenmemiş
+    defaultValue: false,
   },
   verificationCode: {
-    type: DataTypes.STRING, // Doğrulama kodu (6 basamaklı sayı olarak saklanacak)
-    allowNull: true,  // Zorunlu değil, ilk kayıttan sonra e-posta ile gönderilecektir
+    type: DataTypes.STRING,
+    allowNull: true,
   },
 }, {
-  timestamps: true, // createdAt, updatedAt alanlarını otomatik oluşturur
+  timestamps: true,
 });
 
-// Veritabanı ile bağlantıyı test etme
+// Veri doğrulama işlemi
+// async function validateUserData(userData) {
+//   try {
+//     await userValidationSchema.validate(userData, { abortEarly: false });
+//     console.log('User data is valid!');
+//   } catch (error) {
+//     console.error('Validation errors:', error.errors);
+//   }
+// }
+
+// Veritabanı bağlantısını test etme
 sequelize.authenticate()
   .then(() => {
     console.log('PostgreSQL bağlantısı başarılı.');
@@ -82,4 +151,4 @@ sequelize.sync()
   .catch(err => console.error('Tablo oluşturulurken bir hata oluştu:', err));
 
 // Modeli dışa aktarıyoruz
-module.exports = User;
+module.exports = { User, userValidationSchema };
