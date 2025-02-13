@@ -1,70 +1,128 @@
 version: "3.8"
 
+networks:
+  ivote-network:
 services:
-  gateway:
-    build: ./gateway
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_DB: ivote
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
     ports:
-      - "3000:3000"
-    depends_on:
-      - user-service
-      - auth-service
-      - election-service
-      - option-service
-      - vote-service
-      - result-service
-      - email-service
+      - "5432:5432"
     networks:
-      - app-network
+      - ivote-network
 
   user-service:
     build: ./user-service
+    container_name: user-service
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ivote
+      DB_USER: postgres
+      DB_PASSWORD: 123456
     ports:
       - "5004:5004"
+    depends_on:
+      - postgres
     networks:
-      - app-network
+      - ivote-network
 
   auth-service:
     build: ./auth-service
+    container_name: auth-service
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ivote
+      DB_USER: postgres
+      DB_PASSWORD: 123456
     ports:
       - "5000:5000"
+    depends_on:
+      - postgres
     networks:
-      - app-network
+      - ivote-network
 
   election-service:
     build: ./election-service
+    container_name: election-service
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ivote
+      DB_USER: postgres
+      DB_PASSWORD: 123456
     ports:
       - "5001:5001"
+    depends_on:
+      - postgres
     networks:
-      - app-network
+      - ivote-network
 
   option-service:
     build: ./option-service
+    container_name: option-service
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ivote
+      DB_USER: postgres
+      DB_PASSWORD: 123456
     ports:
       - "5002:5002"
+    depends_on:
+      - postgres
     networks:
-      - app-network
+      - ivote-network
 
   vote-service:
     build: ./vote-service
+    container_name: vote-service
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ivote
+      DB_USER: postgres
+      DB_PASSWORD: 123456
     ports:
       - "5005:5005"
+    depends_on:
+      - postgres
     networks:
-      - app-network
+      - ivote-network
 
   result-service:
     build: ./result-service
+    container_name: result-service
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ivote
+      DB_USER: postgres
+      DB_PASSWORD: 123456
     ports:
       - "5003:5003"
+    depends_on:
+      - postgres
     networks:
-      - app-network
+      - ivote-network
 
   email-service:
     build: ./email-service
+    container_name: email-service
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ivote
+      DB_USER: postgres
+      DB_PASSWORD: 123456
     ports:
       - "5006:5006"
+    depends_on:
+      - postgres
     networks:
-      - app-network
-
-networks:
-  app-network:
-    driver: bridge
+      - ivote-network

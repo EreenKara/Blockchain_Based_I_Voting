@@ -62,7 +62,7 @@ const registerUser = async (req, res) => {
 
     // Kullanıcıya e-posta ile doğrulama kodu gönder
     try {
-      await axios.post(`${process.env.EMAIL_SERVICE_URL}/email/send-verification`, {
+      await axios.post(`${process.env.EMAIL_SERVICE_URL}/api/emails/send-verification`, {
         email: user.email,
         code: verificationCode
       });
