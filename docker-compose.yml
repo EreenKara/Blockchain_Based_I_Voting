@@ -28,6 +28,9 @@ services:
       - "5004:5004"
     depends_on:
       - postgres
+    volumes:
+      - ./user-service:/user-service
+      - /user-service/node_modules
     networks:
       - ivote-network
 
@@ -44,6 +47,9 @@ services:
       - "5000:5000"
     depends_on:
       - postgres
+    volumes:
+      - ./auth-service:/auth-service
+      - /auth-service/node_modules
     networks:
       - ivote-network
 
@@ -60,6 +66,9 @@ services:
       - "5001:5001"
     depends_on:
       - postgres
+    volumes:
+      - ./election-service:/election-service
+      - /election-service/node_modules
     networks:
       - ivote-network
 
@@ -76,6 +85,9 @@ services:
       - "5002:5002"
     depends_on:
       - postgres
+    volumes:
+      - ./option-service:/option-service
+      - /option-service/node_modules
     networks:
       - ivote-network
 
@@ -92,6 +104,9 @@ services:
       - "5005:5005"
     depends_on:
       - postgres
+    volumes:
+      - ./vote-service:/vote-service
+      - /vote-service/node_modules
     networks:
       - ivote-network
 
@@ -108,6 +123,9 @@ services:
       - "5003:5003"
     depends_on:
       - postgres
+    volumes:
+      - ./result-service:/result-service
+      - /result-service/node_modules
     networks:
       - ivote-network
 
@@ -124,5 +142,8 @@ services:
       - "5006:5006"
     depends_on:
       - postgres
+    volumes:
+      - ./email-service:/email-service
+      - /email-service/node_modules
     networks:
       - ivote-network
