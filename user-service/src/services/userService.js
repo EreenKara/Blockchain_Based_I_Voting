@@ -82,28 +82,31 @@ const registerUser = async (req, res) => {
   }
 };
 
-const authenticateUser = async (req, res) => {
+const authanticateUser = async (req, res) => {
   try {
     const { emailOrIdentity, password } = req.body;
 
     if (!emailOrIdentity || !password) {
-      return res.status(400).json({ message: "Email/TCKN ve şifre gereklidir." });
+      return res.status(400).json({ message: "Email/TCKN ve şifre alanları zorunludur." });
     }
-
     const user = await User.findOne({
       where: { 
         [Op.or]: [{ email: emailOrIdentity }, { identityNumber: emailOrIdentity }] 
       },
     });
-
+    
     if (!user) {
       return res.status(401).json({ message: "Geçersiz email/TCKN veya şifre." });
     }
 
     const isPasswordValid = await bcryptjs.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: "Şifre geçersiz." });
+    if (!emailOrIdentity || !isPasswordValid) {
+      return res.status(400).json({ message: "Geçersiz email/TCKN veya şifre." });
     }
+
+   
+
+  
 
     if (user.verificationCode) {
       return res.status(403).json({ message: "Hesabınızı aktifleştirmek için e-posta adresinize gönderilen doğrulama kodunu girmeniz gerekmektedir." });
@@ -191,4 +194,4 @@ const getUserByIdentityNumber = async (identityNumber) => {
   }
 };
 
-module.exports = { registerUser, authenticateUser, getUsers, getUserById, verifyCodeAndActivate, getUserByIdentityNumber };
+module.exports = { registerUser, authanticateUser, getUsers, getUserById, verifyCodeAndActivate, getUserByIdentityNumber };
