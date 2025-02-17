@@ -6,7 +6,7 @@ import LogService from '@services/log/log.service';
 export abstract class GenericBackendService<T>
   implements IGenericBackendService<T>
 {
-  protected readonly LogService: LogService;
+  protected static readonly LogService: LogService;
   protected readonly api: AxiosInstance;
   protected readonly endpoint: string;
 

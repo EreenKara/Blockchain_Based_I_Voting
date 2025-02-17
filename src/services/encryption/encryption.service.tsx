@@ -1,50 +1,48 @@
 import CryptoJS from 'crypto-js';
 import {SECRET_KEY} from '@env';
 
-class Encrytion {
-  constructor() {}
-  encryptData(data) {
-    const algorithm = 'AES';
-    switch (algorithm) {
-      case 'AES': // simetrik şifreleme
-        return CryptoJS.AES.encrypt(data, SECRET_KEY).toString();
-        break;
+export class EncryptionService {
+  private static readonly secretKey = SECRET_KEY;
 
-      default:
-        break;
+  // Veriyi şifrele
+  static encrypt(data: string): string {
+    try {
+      return CryptoJS.AES.encrypt(data, this.secretKey).toString();
+    } catch (error) {
+      console.error('Şifreleme hatası:', error);
+      throw new Error('Veri şifrelenemedi');
     }
   }
-  decryptData(encryptedData) {
-    const algorithm = 'AES';
 
-    switch (algorithm) {
-      case 'AES':
-        const bytes = CryptoJS.AES.decrypt(encryptedData, SECRET_KEY);
-        return bytes.toString(CryptoJS.enc.Utf8); // Şifre çözülmüş metni döndürür
-        break;
-
-      default:
-        break;
+  // Şifrelenmiş veriyi çöz
+  static decrypt(encryptedData: string): string {
+    try {
+      const bytes = CryptoJS.AES.decrypt(encryptedData, this.secretKey);
+      return bytes.toString(CryptoJS.enc.Utf8);
+    } catch (error) {
+      console.error('Şifre çözme hatası:', error);
+      throw new Error('Şifre çözülemedi');
     }
   }
-  // HMAC, mesaj doğrulama ve bütünlük kontrolü için kullanılır.
-  // key herhangi bri şey olabilri fşire gibi düşnü ben belirliyorum
-  signData(data, key) {
-    return CryptoJS.HmacSHA256(data, key).toString();
-  }
-  hashData(data) {
-    const algorithm = 'SHA256';
 
-    switch (algorithm) {
-      case 'SHA256':
-        return CryptoJS.SHA256(data).toString();
-        break;
-      case 'MD5':
-        return CryptoJS.MD5(data).toString();
-      default:
-        break;
+  // Hash oluştur (örn: şifre hash'leme)
+  static hash(data: string): string {
+    try {
+      return CryptoJS.SHA256(data).toString();
+    } catch (error) {
+      console.error('Hash oluşturma hatası:', error);
+      throw new Error('Hash oluşturulamadı');
+    }
+  }
+
+  // İki hash'i karşılaştır
+  static compareHash(data: string, hash: string): boolean {
+    try {
+      const newHash = this.hash(data);
+      return newHash === hash;
+    } catch (error) {
+      console.error('Hash karşılaştırma hatası:', error);
+      return false;
     }
   }
 }
-
-export {Encrytion};
