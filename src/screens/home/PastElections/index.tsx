@@ -8,7 +8,6 @@ import {
   Button,
   ActivityIndicator,
 } from 'react-native-paper';
-import {logService} from '@services/log/LogService';
 import type {Election} from '@services/log/types';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
@@ -25,17 +24,7 @@ const PastElectionsScreen: React.FC<Props> = () => {
   const [showMap, setShowMap] = useState(false);
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
 
-  const loadElections = async () => {
-    try {
-      const pastElections = await logService.getPastElections();
-      setElections(pastElections);
-    } catch (error) {
-      console.error('Error loading elections:', error);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  };
+  const loadElections = async () => {};
 
   useEffect(() => {
     loadElections();

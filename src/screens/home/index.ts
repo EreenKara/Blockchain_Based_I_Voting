@@ -5,3 +5,4 @@ export {default as CurrentElectionsScreen} from '@screens/home/CurrentElections/
 export {default as PastElectionsScreen} from '@screens/home/PastElections/index.tsx';
 export {default as UpcomingElectionsScreen} from '@screens/home/UpComingElections/index';
 export {default as ElectionsScreen} from '@screens/home/Elections/index';
+export {default as SpecificElectionScreen} from '@screens/home/SpecificElection';

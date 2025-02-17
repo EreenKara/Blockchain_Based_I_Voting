@@ -7,7 +7,6 @@ import {
   Button,
   ActivityIndicator,
 } from 'react-native-paper';
-import {logService} from '@services/log/LogService';
 import type {Election} from '@services/log/types';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
@@ -27,19 +26,7 @@ export const CurrentElectionsScreen: React.FC<CurrentElectionsProps> = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadElections = useCallback(async () => {
-    try {
-      const currentElections = await logService.getCurrentElections();
-      setElections(currentElections);
-      setError(null);
-    } catch (err) {
-      setError('Seçimler yüklenirken bir hata oluştu');
-      console.error('Load elections error:', err);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, []);
+  const loadElections = useCallback(async () => {}, []);
 
   useEffect(() => {
     loadElections();

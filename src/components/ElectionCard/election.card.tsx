@@ -4,108 +4,59 @@ import ElectionCardItemComponent from '../ElectionCardItem/election.card.item';
 import {electionCardStyles as styles} from './election.card.style';
 import CommonStyles from '../../../styles/common/commonStyles';
 import VirtualizedListComponent from '../../../Components/List/virtualized.list';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {HomeStackParamList} from '@navigation/types';
+import {ElectionViewModel} from '@viewmodels/election.viewmodel';
+type ElectionNavigationProp = NativeStackNavigationProp<HomeStackParamList>;
 
-interface CartItem {
-  id: string;
-  title: string;
-  quantity: string;
-  price: number;
-  image: any;
-}
-
-const sampleItems: CartItem[] = [
+const sampleItems: ElectionViewModel[] = [
   {
     id: '1',
-    title: 'Lutfen items giriniz',
-    quantity: '1kg, Price',
-    price: 4.99,
-    image: require('../../../assets/icon.png'),
+    name: 'Seçim 1',
+    description: 'Seçim 1 açıklaması',
+    image: '',
+    startDate: '2021-01-01',
+    endDate: '2021-01-01',
   },
   {
     id: '2',
-
-    title: 'Lutfen items giriniz',
-    quantity: '4pcs, Price',
-    price: 1.99,
-    image: require('../../../assets/icon.png'),
-  },
-  {
-    id: '3',
-    title: 'Lutfen items giriniz',
-    quantity: '12kg, Price',
-    price: 3.0,
-    image: require('../../../assets/icon.png'),
-  },
-  {
-    id: '4',
-
-    title: 'Lutfen items giriniz',
-    quantity: '250gm, Price',
-    price: 2.99,
-    image: require('../../../assets/icon.png'),
-  },
-  {
-    id: '5',
-    title: 'Lutfen items giriniz',
-    quantity: '250gm, Price',
-    price: 2.99,
-    image: require('../../../assets/icon.png'),
-  },
-  {
-    id: '6',
-    title: 'Lutfen items giriniz',
-    quantity: '250gm, Price',
-    price: 2.99,
-    image: require('../../../assets/icon.png'),
-  },
-  {
-    id: '7',
-    title: 'Lutfen items giriniz',
-    quantity: '250gm, Price',
-    price: 2.99,
-    image: require('../../../assets/icon.png'),
-  },
-  {
-    id: '8',
-    title: 'Lutfen items giriniz',
-    quantity: '250gm, Price',
-    price: 2.99,
-    image: require('../../../assets/icon.png'),
+    name: 'Seçim 2',
+    description: 'Seçim 2 açıklaması',
+    image: '',
+    startDate: '2021-01-01',
+    endDate: '2021-01-01',
   },
 ];
 
 interface ElectionCardComponentProps {
   title: string;
-  items?: CartItem[];
-  onRemoveItem?: (id: string) => void;
-  onUpdateQuantity?: (id: string, newQuantity: number) => void;
+  items?: ElectionViewModel[];
 }
 
 const ElectionCardComponent: React.FC<ElectionCardComponentProps> = ({
   title = 'Title girin',
   items = sampleItems,
-  onRemoveItem,
-  onUpdateQuantity,
 }) => {
-  const renderItem = ({item}: {item: CartItem}) => (
+  const navigation = useNavigation<ElectionNavigationProp>();
+
+  const renderItem = ({item}: {item: ElectionViewModel}) => (
     <ElectionCardItemComponent
-      title={item.title}
-      quantity={item.quantity}
-      price={item.price}
+      id={item.id}
+      name={item.name}
+      description={item.description}
       image={item.image}
-      onRemove={() => onRemoveItem?.(item.id)}
-      onIncrement={() =>
-        onUpdateQuantity?.(item.id, parseInt(item.quantity) + 1)
-      }
-      onDecrement={() =>
-        onUpdateQuantity?.(item.id, parseInt(item.quantity) - 1)
+      startDate={item.startDate}
+      endDate={item.endDate}
+      navigatePress={() =>
+        navigation.navigate('SpecificElection', {election: item})
       }
     />
   );
 
   const renderEmptyList = () => (
     <View style={styles.emptyList}>
-      <Text style={styles.emptyText}>Sepetinizde ürün bulunmamaktadır.</Text>
+      <Text style={styles.emptyText}>Gösterilecek seçim bulunamadı.</Text>
     </View>
   );
 

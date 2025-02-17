@@ -1,3 +1,5 @@
+import {ElectionViewModel} from '@viewmodels/election.viewmodel';
+
 export type RootStackParamList = {
   Auth: undefined;
   Main: undefined;
@@ -18,9 +20,10 @@ export type MainTabParamList = {
 export type HomeStackParamList = {
   HomeMain: undefined;
   CreateElection: undefined;
-  PastElections: undefined;
-  CurrentElections: undefined;
-  UpcomingElections: undefined;
+  PastElections: {cityId: number; cityName: string};
+  CurrentElections: {cityId: number; cityName: string};
+  UpcomingElections: {cityId: number; cityName: string};
   BeCandidate: undefined;
   Elections: undefined;
+  SpecificElection: {election: ElectionViewModel};
 };

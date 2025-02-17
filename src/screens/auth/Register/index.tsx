@@ -5,7 +5,6 @@ import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Formik} from 'formik';
 import * as Yup from 'yup';
 import {AuthStackParamList} from '@navigation/types';
-import {logService} from '@services/log/LogService';
 import TextInputComponent from '@components/TextInput/text.input';
 import ButtonComponent from '@components/Button/Button';
 import styleNumbers from '@styles/common/style.numbers';
@@ -28,31 +27,8 @@ const RegisterScreen: React.FC<Props> = ({navigation}) => {
     email: string;
     password: string;
   }) => {
-    try {
-      const success = await logService.registerUser(
-        values.username,
-        values.password,
-        values.identityNumber,
-        values.phoneNumber,
-        values.email,
-      );
-
-      if (success) {
-        setErrorMsg('Kayıt başarılı');
-        setVisible(true);
-        setTimeout(() => {
-          navigation.navigate('Login');
-        }, 2000);
-      } else {
-        setErrorMsg(
-          'Kayıt başarısız. Kullanıcı adı, email veya kimlik numarası zaten kullanımda.',
-        );
-        setVisible(true);
-      }
-    } catch (error) {
-      setErrorMsg('Kayıt işlemi sırasında bir hata oluştu');
-      setVisible(true);
-    }
+    setVisible(true);
+    navigation.navigate('Login');
   };
 
   return (

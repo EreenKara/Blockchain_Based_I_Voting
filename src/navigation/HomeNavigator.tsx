@@ -8,7 +8,7 @@ import {CurrentElectionsScreen} from '@screens/home/index';
 import {UpcomingElectionsScreen} from '@screens/home/index';
 import {BeCandidateScreen} from '@screens/home/index';
 import {ElectionsScreen} from '@screens/home/index';
-
+import {SpecificElectionScreen} from '@screens/home/index';
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 
 const HomeNavigator: React.FC = () => {
@@ -28,6 +28,11 @@ const HomeNavigator: React.FC = () => {
         name="Elections"
         component={ElectionsScreen}
         options={{title: 'Seçimler'}}
+      />
+      <Stack.Screen
+        name="SpecificElection"
+        component={SpecificElectionScreen}
+        options={{title: 'Seçim'}}
       />
       <Stack.Screen
         name="UpcomingElections"

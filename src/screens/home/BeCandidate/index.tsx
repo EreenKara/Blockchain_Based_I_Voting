@@ -8,7 +8,6 @@ import {
   Card,
   Paragraph,
 } from 'react-native-paper';
-import {logService} from '@services/log/LogService';
 import {AuthContext} from '../../../../App';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
@@ -25,33 +24,7 @@ const BeCandidateScreen: React.FC<Props> = ({navigation}) => {
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState('');
 
-  const handleSubmit = async () => {
-    if (!biography || biography.length < 100) {
-      setMessage('Biyografi en az 100 karakter olmalıdır');
-      setVisible(true);
-      return;
-    }
-
-    try {
-      const success = await logService.becomeCandidate(username, biography);
-
-      if (success) {
-        setMessage('Adaylık başvurunuz alınmıştır');
-        setBiography('');
-        setTimeout(() => {
-          navigation.navigate('HomeMain');
-        }, 2000);
-      } else {
-        setMessage(
-          'Adaylık başvurusu yapılırken bir hata oluştu veya zaten adaysınız',
-        );
-      }
-      setVisible(true);
-    } catch (error) {
-      setMessage('Bir hata oluştu');
-      setVisible(true);
-    }
-  };
+  const handleSubmit = async () => {};
 
   return (
     <ScrollView style={styles.container}>

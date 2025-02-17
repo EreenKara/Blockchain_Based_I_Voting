@@ -9,7 +9,6 @@ import {
   ActivityIndicator,
   Text,
 } from 'react-native-paper';
-import {logService} from '@services/log/LogService';
 import type {Election} from '@services/log/types';
 import {useFocusEffect} from '@react-navigation/native';
 import Colors from '@styles/common/colors';
@@ -23,17 +22,7 @@ const CurrentElectionsScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  const loadElections = async () => {
-    try {
-      const currentElections = await logService.getCurrentElections();
-      setElections(currentElections);
-    } catch (error) {
-      console.error('Error loading elections:', error);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  };
+  const loadElections = async () => {};
 
   // Ekran her odaklandığında seçimleri yenile
   useFocusEffect(

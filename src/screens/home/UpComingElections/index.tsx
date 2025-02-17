@@ -2,7 +2,6 @@
 import React, {useState} from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
 import {Card, Title, Paragraph, Text} from 'react-native-paper';
-import {logService} from '@services/log/LogService';
 import type {Election} from '@services/log/types';
 import {useFocusEffect} from '@react-navigation/native';
 import Colors from '@styles/common/colors';
@@ -14,17 +13,7 @@ const UpcomingElectionsScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  const loadElections = async () => {
-    try {
-      const upcomingElections = await logService.getUpcomingElections();
-      setElections(upcomingElections);
-    } catch (error) {
-      console.error('Error loading elections:', error);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  };
+  const loadElections = async () => {};
 
   useFocusEffect(
     React.useCallback(() => {

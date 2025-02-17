@@ -2,7 +2,6 @@ import React, {useState, useContext} from 'react';
 import {View, StyleSheet, Platform} from 'react-native';
 import {TextInput, Button, Snackbar, Text} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {logService} from '@services/log/LogService';
 import {AuthContext} from '../../../../App';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
@@ -72,31 +71,7 @@ const CreateElectionScreen: React.FC<Props> = ({navigation}) => {
     }
   };
 
-  const handleCreate = async () => {
-    if (!title || !description) {
-      setMessage('Tüm alanları doldurunuz');
-      setVisible(true);
-      return;
-    }
-
-    const result = await logService.createElection(
-      title,
-      description,
-      startDate.toISOString(),
-      endDate.toISOString(),
-      username,
-    );
-
-    if (result.success) {
-      setMessage('Seçim başarıyla oluşturuldu');
-      setTimeout(() => {
-        navigation.navigate('UpcomingElections');
-      }, 2000);
-    } else {
-      setMessage(result.message || 'Bir hata oluştu');
-    }
-    setVisible(true);
-  };
+  const handleCreate = async () => {};
 
   return (
     <View style={styles.container}>

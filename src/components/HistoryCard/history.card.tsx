@@ -5,6 +5,9 @@ import CommonStyles from '@styles/common/commonStyles';
 import Colors from '@styles/common/colors';
 import ButtonComponent from '@components/Button/Button';
 import styleNumbers from '@styles/common/style.numbers';
+import {useNavigation} from '@react-navigation/native';
+import {HomeStackParamList} from '@navigation/types';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 const menuItems = [
   {
@@ -28,14 +31,18 @@ const menuItems = [
 ];
 
 interface HistoryCardComponentProps {
-  cityName: string | null;
+  cityId: number;
+  cityName: string;
   style?: ViewStyle;
 }
+type ElectionNavigationProp = NativeStackNavigationProp<HomeStackParamList>;
 
 const HistoryCardComponent: React.FC<HistoryCardComponentProps> = ({
+  cityId,
   cityName,
   style,
 }) => {
+  const navigation = useNavigation<ElectionNavigationProp>();
   return (
     <View style={[styles.container, style]}>
       <View>
@@ -54,7 +61,15 @@ const HistoryCardComponent: React.FC<HistoryCardComponentProps> = ({
             </Paragraph>
           </Card.Content>
           <Card.Actions>
-            <ButtonComponent title="İncele" onPress={() => {}} />
+            <ButtonComponent
+              title="İncele"
+              onPress={() => {
+                navigation.navigate(item.screen, {
+                  cityId: cityId,
+                  cityName: cityName,
+                });
+              }}
+            />
           </Card.Actions>
         </Card>
       ))}

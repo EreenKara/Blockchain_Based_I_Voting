@@ -1,26 +1,67 @@
-export enum ElectionStatus {
-  Upcoming = 'upcoming',
-  Active = 'active',
-  Completed = 'completed',
-}
-
-export enum ElectionAccessType {
-  Public = 'public',
-  Private = 'private',
-}
-
-export interface Election {
-  id: number;
-  createdBy: number; // FK, bir userId'i gösterir
+import {BaseEntity} from './base.entity';
+import {ElectionStatus} from '@enums/election.status';
+import {ElectionAccessType} from '@enums/election.access.type';
+import {ElectionAddress} from './election.address.entity';
+import {ElectionAccessUsers} from './election.access.users.entity';
+import {ElectionsAdmins} from './elections.admins.entity';
+import {ElectionsOptions} from './elections.options.entity';
+import {Vote} from './vote.entity';
+import {SocialMedia} from './social.media.entity';
+import {User} from './user.entity';
+export class Election extends BaseEntity {
   name: string;
+  user: User; // FK, bir userId'i gösterir
   description: string;
   image: string;
   startDate: string;
   endDate: string;
   status: ElectionStatus;
   accessType: ElectionAccessType;
-  createdAt: string;
-  updatedAt: string;
+  address?: ElectionAddress;
+  electionAccessUsers?: ElectionAccessUsers[];
+  electionsAdmins?: ElectionsAdmins[];
+  electionsOptions?: ElectionsOptions[];
+  vote?: Vote;
+  socialMedia?: SocialMedia;
+  constructor(
+    id: string,
+    user: User,
+    name: string,
+    description: string,
+    image: string,
+    startDate: string,
+    endDate: string,
+    status: ElectionStatus,
+    accessType: ElectionAccessType,
+    address?: ElectionAddress,
+    electionAccessUsers?: ElectionAccessUsers[],
+    electionsAdmins?: ElectionsAdmins[],
+    electionsOptions?: ElectionsOptions[],
+    vote?: Vote,
+    socialMedia?: SocialMedia,
+  ) {
+    super(id);
+    this.user = user;
+    this.name = name;
+    this.description = description;
+    this.image = image;
+    this.startDate = startDate;
+    this.endDate = endDate;
+    this.status = status;
+    this.accessType = accessType;
+    this.address = address ? ElectionAddress.fromJSON(address) : undefined;
+    this.electionAccessUsers = electionAccessUsers?.map(user =>
+      ElectionAccessUsers.fromJSON(user),
+    );
+    this.electionsAdmins = electionsAdmins?.map(admin =>
+      ElectionsAdmins.fromJSON(admin),
+    );
+    this.electionsOptions = electionsOptions?.map(option =>
+      ElectionsOptions.fromJSON(option),
+    );
+    this.vote = vote ? Vote.fromJSON(vote) : undefined;
+    this.socialMedia = socialMedia
+      ? SocialMedia.fromJSON(socialMedia)
+      : undefined;
+  }
 }
-
-// dbo'larda buralara gelsin

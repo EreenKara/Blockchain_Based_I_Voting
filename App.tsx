@@ -6,7 +6,6 @@ import {ActivityIndicator, View, Text} from 'react-native';
 import {RootStackParamList} from '@navigation/types';
 import AuthNavigator from '@navigation/AuthNavigator';
 import MainNavigator from '@navigation/MainNavigator';
-import {logService} from '@services/log/LogService';
 import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
 import Colors from '@styles/common/colors';
@@ -29,24 +28,8 @@ export const AuthContext = React.createContext<{
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const init = async () => {
-      try {
-        await logService.initService();
-        setIsLoading(false);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : 'Bilinmeyen bir hata oluştu',
-        );
-        setIsLoading(false);
-      }
-    };
-
-    init();
-  }, []);
 
   const authContext = React.useMemo(
     () => ({

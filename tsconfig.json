@@ -2,10 +2,11 @@
   "extends": "@react-native/typescript-config/tsconfig.json",
   "compilerOptions": {
     "types": ["node", "jest"],
-    "typeRoots": ["./node_modules/@types", "./types"],
+    "typeRoots": ["./node_modules/@types", "./types", "./env"],
     "baseUrl": ".",
     "paths": {
       "*": ["types/*"],
+      "@env": ["env/env.d.ts"],
       "@gorhom/bottom-sheet": ["types/bottom-sheet.d.ts"],
       "@react-navigation/native": [
         "node_modules/@react-navigation/native/lib/typescript/src"
@@ -22,8 +23,18 @@
       "@utility/*": ["src/utility/*"],
       "@shared/*": ["src/shared/*"],
       "@entities/*": ["entities/*"],
+      "@viewmodels/*": ["viewmodels/*"],
+      "@enums/*": ["enums/*"],
       "@icomponents/*": ["src/components/*"]
     }
   },
-  "include": ["src/**/*", "types/**/*", "**/*.ts", "**/*.tsx", "entities"]
+  "include": [
+    "src/**/*",
+    "types/**/*",
+    "**/*.ts",
+    "**/*.tsx",
+    "entities",
+    "env"
+  ],
+  "exclude": ["node_modules", "dist", "build"]
 }
