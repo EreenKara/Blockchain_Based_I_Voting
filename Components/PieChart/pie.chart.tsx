@@ -7,10 +7,12 @@ import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
 import {CandidateViewModel} from '@viewmodels/candidate.viewmodel';
 interface PieChartComponentProps {
+  chartSize?: number;
   data?: CandidateViewModel[];
 }
 
 const PieChartComponent: React.FC<PieChartComponentProps> = ({
+  chartSize = 350,
   data = [
     new CandidateViewModel('1', 'A', '#FF6B6B', 35),
     new CandidateViewModel('2', 'B', '#4ECDC4', 25),
@@ -20,18 +22,22 @@ const PieChartComponent: React.FC<PieChartComponentProps> = ({
   ],
 }) => {
   const screenWidth = Dimensions.get('window').width;
-  const chartSize = screenWidth * 0.8;
+  const chartHeight = chartSize;
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>
-      <View style={[styles.container, {height: chartSize}]}>
+      <View style={[styles.container, {height: chartHeight}]}>
         <PolarChart
           data={data}
           labelKey="name"
           valueKey="votes"
           colorKey="color">
           <Pie.Chart innerRadius="40%" circleSweepDegrees={360} startAngle={0}>
-            {({slice}: any) => <Pie.Slice />}
+            {({slice}: any) => (
+              <Pie.Slice>
+                <Pie.Label color={'white'} />
+              </Pie.Slice>
+            )}
           </Pie.Chart>
         </PolarChart>
       </View>
@@ -43,8 +49,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.getTheme().transition,
     padding: styleNumbers.space,
-    borderRadius: styleNumbers.borderRadius,
-    ...CommonStyles.shadowStyle,
   },
 });
 

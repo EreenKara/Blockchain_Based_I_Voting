@@ -62,6 +62,10 @@ declare module 'victory-native' {
     export const Chart: ComponentType<PieChartProps>;
     export const Slice: ComponentType<PieSliceProps>;
     export const SliceAngularInset: ComponentType<PieSliceAngularInsetProps>;
+    export const Label: ComponentType<PieLabelProps>;
+    export const SliceBackground: ComponentType<PieSliceBackgroundProps>;
+    export const SliceStroke: ComponentType<PieSliceStrokeProps>;
+    export const SliceText: ComponentType<PieSliceTextProps>;
   }
 
   export const PolarChart: ComponentType<ChartProps>;

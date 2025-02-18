@@ -34,7 +34,9 @@
     "**/*.ts",
     "**/*.tsx",
     "entities",
-    "env"
+    "env",
+    "types/fonts.d.ts",
+    "Components/ChartLegend"
   ],
   "exclude": ["node_modules", "dist", "build"]
 }
