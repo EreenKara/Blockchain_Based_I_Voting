@@ -93,7 +93,7 @@ const CurrentElectionsScreen: React.FC<ElectionsScreenProps> = ({
 
   if (loading) {
     return (
-      <View style={styles.centerContainer}>
+      <View style={CommonStyles.viewStyles.centerContainer}>
         <ActivityIndicatorComponent size="large" />
       </View>
     );
@@ -101,7 +101,7 @@ const CurrentElectionsScreen: React.FC<ElectionsScreenProps> = ({
 
   if (elections.length === 0) {
     return (
-      <View style={styles.centerContainer}>
+      <View style={CommonStyles.viewStyles.centerContainer}>
         <Text style={CommonStyles.textStyles.title}>
           Aktif seçim bulunmamaktadır
         </Text>
@@ -124,24 +124,6 @@ const styles = StyleSheet.create({
   container: {
     ...CommonStyles.viewStyles.container,
     backgroundColor: Colors.getTheme().background,
-  },
-  centerContainer: {
-    ...CommonStyles.viewStyles.centerContainer,
-  },
-  listContent: {
-    padding: styleNumbers.space,
-  },
-  card: {
-    marginBottom: styleNumbers.space,
-    ...CommonStyles.viewStyles.card,
-  },
-  dateContainer: {
-    marginTop: styleNumbers.spaceLittle,
-  },
-  remainingTime: {
-    marginTop: styleNumbers.spaceLittle,
-    color: Colors.getTheme().button,
-    ...CommonStyles.textStyles.subtitle,
   },
 });
 

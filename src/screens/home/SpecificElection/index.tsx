@@ -9,6 +9,9 @@ import ActivityIndicatorComponent from '@shared/activity.indicator';
 import {Dimensions} from 'react-native';
 import ChartLegendComponent from '@components/ChartLegend/chart.legend.style';
 import CandidateItemComponent from '@icomponents/CandidateItem/candidate.item';
+import ProgressBarComponent from '@components/ProgressBar/progress.bar';
+import {ProgressView} from '@react-native-community/progress-view';
+import Colors from '@styles/common/colors';
 const windowHeight = Dimensions.get('window').height;
 
 const SpecificElectionScreen: React.FC<SpecificElectionScreenProps> = ({
@@ -44,7 +47,23 @@ const SpecificElectionScreen: React.FC<SpecificElectionScreenProps> = ({
           <Text style={CommonStyles.textStyles.title}>{election.name}</Text>
           <Text style={CommonStyles.textStyles.subtitle}>{sehir.name}</Text>
         </View>
-        <View style={styles.progressView}></View>
+        <View style={styles.progressView}>
+          <Text
+            style={[CommonStyles.textStyles.subtitle, {textAlign: 'center'}]}>
+            Seçimin Bitmesine: Tarih - Tarih
+          </Text>
+          <Text
+            style={[CommonStyles.textStyles.subtitle, {textAlign: 'center'}]}>
+            Buraya progres soranı gelcek %
+          </Text>
+          <ProgressView
+            progressViewStyle="bar"
+            style={{height: 30}}
+            progressTintColor="red"
+            trackTintColor={Colors.getTheme().indicator}
+            progress={0.7}
+          />
+        </View>
         <View style={styles.pieChartContainer}>
           <View style={{height: windowHeight * 0.3}}>
             <PieChartComponent

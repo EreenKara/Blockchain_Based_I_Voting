@@ -23,7 +23,7 @@ export type HomeStackParamList = {
   CreateElection: undefined;
   PastElections: {sehir: SehirViewModel};
   CurrentElections: {sehir: SehirViewModel};
-  UpcomingElections: {sehir: SehirViewModel};
+  UpComingElections: {sehir: SehirViewModel};
   BeCandidate: undefined;
   Elections: undefined;
   SpecificElection: {sehir: SehirViewModel; election: ElectionViewModel};

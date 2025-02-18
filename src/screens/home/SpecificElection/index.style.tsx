@@ -35,8 +35,6 @@ const styles = StyleSheet.create({
   },
   progressView: {
     width: '100%',
-    backgroundColor: 'red',
-    height: 50,
   },
 });
 

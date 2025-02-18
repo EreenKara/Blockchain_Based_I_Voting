@@ -1,63 +1,99 @@
-// src/screens/home/UpcomingElectionsScreen.tsx
-import React, {useState} from 'react';
+// src/screens/home/CurrentElectionsScreen.tsx
+import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
-import {Card, Title, Paragraph, Text} from 'react-native-paper';
-import type {Election} from '@services/log/types';
+import {
+  Card,
+  Title,
+  Paragraph,
+  Button,
+  ActivityIndicator,
+  Text,
+} from 'react-native-paper';
+import {Election} from '@entities/election.entity';
 import {useFocusEffect} from '@react-navigation/native';
 import Colors from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
 import ActivityIndicatorComponent from '@shared/activity.indicator';
-const UpcomingElectionsScreen: React.FC = () => {
+import ButtonComponent from '@components/Button/Button';
+import {ElectionService} from '@services/backend/concrete/election.service';
+import {ElectionViewModel} from '@viewmodels/election.viewmodel';
+import ElectionCardComponent from '@icomponents/ElectionCard/election.card';
+import {SehirViewModel} from '@viewmodels/sehir.viewmodel';
+import {HomeStackParamList} from '@navigation/types';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {ElectionAccessType} from '@enums/election.access.type';
+import {ElectionStatus} from '@enums/election.status';
+import {User} from '@entities/user.entity';
+type ElectionsScreenProps = NativeStackScreenProps<
+  HomeStackParamList,
+  'UpComingElections'
+>;
+
+const UpComingElectionsScreen: React.FC<ElectionsScreenProps> = ({
+  route,
+  navigation,
+}) => {
+  const {sehir} = route.params;
   const [elections, setElections] = useState<Election[]>([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+  const electionService = new ElectionService();
+  const loadElections = async () => {
+    setLoading(true);
+    let elections;
+    try {
+      elections = await electionService.getElectionsByCity(sehir.id);
+      setElections(elections);
+      console.log(elections.length);
+    } catch (error) {
+      console.error('Seçimler yüklenirken hata oluştu:', error);
+    } finally {
+      elections = [
+        new Election(
+          '1',
+          'Seçim 1',
+          'Seçim 1 açıklaması',
+          '',
+          'new Date().toISOString()',
+          'new Date().toISOString()',
+          ElectionStatus.Active,
+          ElectionAccessType.Public,
+        ),
+        new Election(
+          '2',
+          'Seçim 2',
+          'Seçim 2 açıklaması',
+          '',
+          'new Date().toISOString()',
+          'new Date().toISOString()',
+          ElectionStatus.Active,
+          ElectionAccessType.Public,
+        ),
+      ];
+      setElections(elections);
+      setLoading(false);
+    }
+  };
 
-  const loadElections = async () => {};
-
+  // Ekran her odaklandığında seçimleri yenile
   useFocusEffect(
     React.useCallback(() => {
       loadElections();
     }, []),
   );
 
-  const calculateTimeToStart = (startDate: string) => {
-    const now = new Date();
-    const start = new Date(startDate);
-    const diff = start.getTime() - now.getTime();
+  // Her 30 saniyede bir seçimleri güncelle
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadElections();
+    }, 30000);
 
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-    return `${days} gün ${hours} saat ${minutes} dakika`;
-  };
-
-  const renderItem = ({item}: {item: Election}) => (
-    <Card style={styles.card}>
-      <Card.Content>
-        <Title style={CommonStyles.textStyles.title}>{item.title}</Title>
-        <Paragraph style={CommonStyles.textStyles.paragraph}>
-          {item.description}
-        </Paragraph>
-        <View style={styles.dateContainer}>
-          <Paragraph style={CommonStyles.textStyles.paragraph}>
-            Başlangıç: {new Date(item.startDate).toLocaleString('tr-TR')}
-          </Paragraph>
-          <Paragraph style={CommonStyles.textStyles.paragraph}>
-            Bitiş: {new Date(item.endDate).toLocaleString('tr-TR')}
-          </Paragraph>
-        </View>
-        <Text style={styles.timeToStart}>
-          Başlamasına: {calculateTimeToStart(item.startDate)}
-        </Text>
-      </Card.Content>
-    </Card>
-  );
+    return () => clearInterval(interval);
+  }, []);
 
   if (loading) {
     return (
-      <View style={styles.centerContainer}>
+      <View style={CommonStyles.viewStyles.centerContainer}>
         <ActivityIndicatorComponent size="large" />
       </View>
     );
@@ -65,24 +101,20 @@ const UpcomingElectionsScreen: React.FC = () => {
 
   if (elections.length === 0) {
     return (
-      <View style={styles.centerContainer}>
-        <Text>Gelecek seçim bulunmamaktadır</Text>
+      <View style={CommonStyles.viewStyles.centerContainer}>
+        <Text style={CommonStyles.textStyles.title}>
+          Gelecek seçim bulunmamaktadır
+        </Text>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={elections}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.listContent}
-        refreshing={refreshing}
-        onRefresh={() => {
-          setRefreshing(true);
-          loadElections();
-        }}
+      <ElectionCardComponent
+        title={`${sehir.name} Gelecek Seçimleri`}
+        items={elections.map(election => new ElectionViewModel(election))}
+        sehir={sehir}
       />
     </View>
   );
@@ -93,24 +125,6 @@ const styles = StyleSheet.create({
     ...CommonStyles.viewStyles.container,
     backgroundColor: Colors.getTheme().background,
   },
-  centerContainer: {
-    ...CommonStyles.viewStyles.centerContainer,
-  },
-  listContent: {
-    padding: styleNumbers.space,
-  },
-  card: {
-    marginBottom: styleNumbers.space,
-    ...CommonStyles.viewStyles.card,
-  },
-  dateContainer: {
-    marginTop: styleNumbers.spaceLittle,
-  },
-  timeToStart: {
-    marginTop: styleNumbers.spaceLittle,
-    color: Colors.getTheme().button,
-    ...CommonStyles.textStyles.subtitle,
-  },
 });
 
-export default UpcomingElectionsScreen;
+export default UpComingElectionsScreen;
