@@ -3,31 +3,36 @@ import {View, StyleSheet, FlatList} from 'react-native';
 import {Card, Text, Avatar, IconButton} from 'react-native-paper';
 import {Story} from '@entities/story.entity';
 import {Post} from '@entities/post.entity';
+import {Candidate} from '@entities/candidate.entity';
 
 //unsplash kullanılabilir
 
 const SocialMediaScreen: React.FC = () => {
+  const demoCandidate = new Candidate(
+    '1',
+    'John Doe',
+    'Bu bir açıklama',
+    'https://via.placeholder.com/60',
+    '#000000',
+    1,
+  );
+
   const [stories, setStories] = useState<Story[]>([
-    {
-      id: '1',
-      candidateId: 1,
-      image: 'https://via.placeholder.com/60',
-      content: 'Bu bir hikaye içeriğidir.',
-    },
-    // Daha fazla hikaye eklenebilir
+    new Story(
+      '1',
+      'https://via.placeholder.com/60',
+      'Bu bir hikaye içeriğidir.',
+      demoCandidate,
+    ),
   ]);
 
   const [posts, setPosts] = useState<Post[]>([
-    {
-      id: '1',
-      candidateId: 1,
-      socialMediaId: 1,
-      image: 'https://via.placeholder.com/400',
-      content: 'Bu bir örnek post içeriğidir.',
-      likes: 42,
-      dislikes: 5,
-    },
-    // Daha fazla post eklenebilir
+    new Post(
+      '1',
+      'https://via.placeholder.com/400',
+      'Bu bir örnek post içeriğidir.',
+      demoCandidate,
+    ),
   ]);
 
   const renderStory = ({item}: {item: Story}) => (
@@ -37,14 +42,16 @@ const SocialMediaScreen: React.FC = () => {
         source={{uri: item.image}}
         style={styles.storyAvatar}
       />
-      <Text style={styles.storyUsername}>{item.candidateId}</Text>
+      <Text style={styles.storyUsername}>
+        {item.candidate?.name || 'İsimsiz'}
+      </Text>
     </View>
   );
 
   const renderPost = ({item}: {item: Post}) => (
     <Card style={styles.postCard}>
       <Card.Title
-        title={item.candidateId}
+        title={item.candidate?.name || 'İsimsiz'}
         left={props => (
           <Avatar.Image {...props} size={40} source={{uri: item.image}} />
         )}
@@ -55,9 +62,9 @@ const SocialMediaScreen: React.FC = () => {
       <Card.Cover source={{uri: item.image}} />
       <Card.Actions>
         <IconButton icon="heart-outline" onPress={() => {}} />
-        <Text>{item.likes} beğeni</Text>
+        <Text>{item.likes?.length || 0} beğeni</Text>
         <IconButton icon="comment-outline" onPress={() => {}} />
-        <Text>{item.dislikes} yorum</Text>
+        <Text>{item.comments?.length || 0} yorum</Text>
       </Card.Actions>
     </Card>
   );

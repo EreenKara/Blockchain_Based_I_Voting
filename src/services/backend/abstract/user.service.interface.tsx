@@ -1,6 +1,6 @@
 import {User} from '@entities/user.entity';
-import {IGenericBackendService} from './generic.backend.service.interface';
+import {GenericBackendService} from '../concrete/generic.backend.sevice';
 
-export interface IUserService extends IGenericBackendService<User> {
+export interface IUserService extends GenericBackendService<User> {
   getUsersByEmail(email: string): Promise<User[]>;
 }

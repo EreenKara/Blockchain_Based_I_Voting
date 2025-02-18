@@ -2,12 +2,12 @@ import React, {useState} from 'react';
 import {View, Text, VirtualizedList, SafeAreaView} from 'react-native';
 import ElectionCardItemComponent from '../ElectionCardItem/election.card.item';
 import {electionCardStyles as styles} from './election.card.style';
-import CommonStyles from '../../../styles/common/commonStyles';
-import VirtualizedListComponent from '../../../Components/List/virtualized.list';
+import VirtualizedListComponent from '@components/List/virtualized.list';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
 import {ElectionViewModel} from '@viewmodels/election.viewmodel';
+import {SehirViewModel} from '@viewmodels/sehir.viewmodel';
 type ElectionNavigationProp = NativeStackNavigationProp<HomeStackParamList>;
 
 const sampleItems: ElectionViewModel[] = [
@@ -32,24 +32,24 @@ const sampleItems: ElectionViewModel[] = [
 interface ElectionCardComponentProps {
   title: string;
   items?: ElectionViewModel[];
+  sehir: SehirViewModel;
 }
 
 const ElectionCardComponent: React.FC<ElectionCardComponentProps> = ({
   title = 'Title girin',
+  sehir,
   items = sampleItems,
 }) => {
   const navigation = useNavigation<ElectionNavigationProp>();
 
   const renderItem = ({item}: {item: ElectionViewModel}) => (
     <ElectionCardItemComponent
-      id={item.id}
-      name={item.name}
-      description={item.description}
-      image={item.image}
-      startDate={item.startDate}
-      endDate={item.endDate}
+      election={item}
       navigatePress={() =>
-        navigation.navigate('SpecificElection', {election: item})
+        navigation.navigate('SpecificElection', {
+          election: item,
+          sehir: sehir,
+        })
       }
     />
   );

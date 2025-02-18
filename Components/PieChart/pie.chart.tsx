@@ -5,21 +5,18 @@ import {Pie, PolarChart} from 'victory-native';
 import Colors from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
-
+import {CandidateViewModel} from '@viewmodels/candidate.viewmodel';
 interface PieChartComponentProps {
-  data?: Array<{
-    label: string;
-    value: number;
-    color: string;
-  }>;
+  data?: CandidateViewModel[];
 }
 
 const PieChartComponent: React.FC<PieChartComponentProps> = ({
   data = [
-    {label: 'A', value: 35, color: '#FF6B6B'},
-    {label: 'B', value: 25, color: '#4ECDC4'},
-    {label: 'C', value: 20, color: '#45B7D1'},
-    {label: 'D', value: 20, color: '#96CEB4'},
+    new CandidateViewModel('1', 'A', '#FF6B6B', 35),
+    new CandidateViewModel('2', 'B', '#4ECDC4', 25),
+    new CandidateViewModel('3', 'C', '#45B7D1', 20),
+    new CandidateViewModel('4', 'D', '#96CEB4', 10),
+    new CandidateViewModel('5', 'F', '#ffffff', 10),
   ],
 }) => {
   const screenWidth = Dimensions.get('window').width;
@@ -30,20 +27,11 @@ const PieChartComponent: React.FC<PieChartComponentProps> = ({
       <View style={[styles.container, {height: chartSize}]}>
         <PolarChart
           data={data}
-          labelKey="label"
-          valueKey="value"
+          labelKey="name"
+          valueKey="votes"
           colorKey="color">
           <Pie.Chart innerRadius="40%" circleSweepDegrees={360} startAngle={0}>
-            {({slice}: any) => (
-              <Pie.Slice>
-                <Pie.SliceAngularInset
-                  angularInset={{
-                    angularStrokeWidth: 2,
-                    angularStrokeColor: Colors.getTheme().background,
-                  }}
-                />
-              </Pie.Slice>
-            )}
+            {({slice}: any) => <Pie.Slice />}
           </Pie.Chart>
         </PolarChart>
       </View>
@@ -53,8 +41,7 @@ const PieChartComponent: React.FC<PieChartComponentProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    ...CommonStyles.viewStyles.centerContainer,
-    backgroundColor: Colors.getTheme().cardBackground,
+    backgroundColor: Colors.getTheme().transition,
     padding: styleNumbers.space,
     borderRadius: styleNumbers.borderRadius,
     ...CommonStyles.shadowStyle,

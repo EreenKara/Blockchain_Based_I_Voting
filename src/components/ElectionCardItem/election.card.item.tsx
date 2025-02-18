@@ -5,36 +5,31 @@ import {electionCardItemStyles as styles} from './election.card.item.style';
 import styleNumbers from '@styles/common/style.numbers';
 import ButtonComponent from '@components/Button/Button';
 import ProgressBarComponent from '@components/ProgressBar/progress.bar';
+import {ElectionViewModel} from '@viewmodels/election.viewmodel';
 interface ElectionCardItemProps {
-  id: string;
-  name: string;
-  description: string;
-  image: string;
-  startDate: string;
-  endDate: string;
+  election: ElectionViewModel;
   navigatePress: () => void;
 }
 const ElectionCardItemComponent: React.FC<ElectionCardItemProps> = ({
-  id,
-  name,
-  description,
-  image,
-  startDate,
-  endDate,
+  election,
   navigatePress,
 }) => {
   return (
     <View style={styles.container}>
       {/* Sol taraf - Resim */}
-      <Image source={{uri: image}} style={styles.image} />
+      <Image source={{uri: election.image}} style={styles.image} />
 
       {/* Orta kısım - Başlık ve Detaylar */}
       <View style={styles.contentContainer}>
         <ProgressBarComponent />
-        <Text style={styles.title}>Name: {name}</Text>
-        <Text style={styles.quantity}>Description: {description}</Text>
-        <Text style={styles.quantity}>Start Date: {startDate}</Text>
-        <Text style={styles.quantity}>End Date: {endDate}</Text>
+        <Text style={styles.title}>{election.name}</Text>
+        <Text style={styles.quantity}>{election.description}</Text>
+        <Text style={styles.quantity}>
+          {new Date(election.startDate).toLocaleDateString('tr-TR')}
+        </Text>
+        <Text style={styles.quantity}>
+          {new Date(election.endDate).toLocaleDateString('tr-TR')}
+        </Text>
       </View>
 
       {/* Sağ taraf - Fiyat ve Kaldır */}

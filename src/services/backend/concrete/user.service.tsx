@@ -1,5 +1,5 @@
 import {User} from '@entities/user.entity';
-import {IUserService} from '../abstract/user.service.interface';
+import {IUserService} from '@services/backend/abstract/user.service.interface';
 import {GenericBackendService} from './generic.backend.sevice';
 
 export class UserService

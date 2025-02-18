@@ -13,27 +13,29 @@ import {Election} from '@entities/election.entity';
 import {ElectionsScreenProps} from '@screens/type';
 import {ElectionViewModel} from '@viewmodels/election.viewmodel';
 import {HomeStackParamList} from '@navigation/types';
-
+import {SehirViewModel} from '@viewmodels/sehir.viewmodel';
+import {ElectionService} from '@services/backend/concrete/election.service';
 type ScreenProps = NativeStackScreenProps<HomeStackParamList>;
 
 const ElectionsScreen: React.FC<ElectionsScreenProps> = () => {
-  const [selectedSehirID, setSelectedSehirID] = useState<number>(0);
-  const [selectedSehirName, setSelectedSehirName] = useState<string>('');
   const [index, setIndex] = useState<number>(-1);
   const [elections, setElections] = useState<ElectionViewModel[]>([]);
   const navigation = useNavigation<ScreenProps>();
+  const electionService = new ElectionService();
+
+  const [selectedSehir, setSelectedSehir] = useState<SehirViewModel>(
+    new SehirViewModel(0, ''),
+  );
 
   const onSehirPressed = (id: number, sehir: string) => {
-    setSelectedSehirID(id);
-    setSelectedSehirName(sehir);
+    setSelectedSehir(new SehirViewModel(id, sehir));
     setIndex(0);
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${API_URL}/sehirler`);
-        const data = await response.json();
+        const data = await electionService.getAll();
         const electionViewModels = data.map(
           (election: Election) => new ElectionViewModel(election),
         );
@@ -56,16 +58,17 @@ const ElectionsScreen: React.FC<ElectionsScreenProps> = () => {
         </View>
         <View style={styles.popularElectionsContainer}>
           <View style={{flex: 1}}>
-            <ElectionCardComponent title="Popüler Seçimler" items={elections} />
+            <ElectionCardComponent
+              title="Popüler Seçimler"
+              //items={elections}
+              sehir={selectedSehir}
+            />
           </View>
         </View>
         {index >= 0 && (
           <View style={styles.bottomContainer}>
             <BottomSheetComponent index={index} setIndex={setIndex}>
-              <HistoryCardComponent
-                cityId={selectedSehirID}
-                cityName={selectedSehirName}
-              />
+              <HistoryCardComponent sehir={selectedSehir} />
             </BottomSheetComponent>
           </View>
         )}

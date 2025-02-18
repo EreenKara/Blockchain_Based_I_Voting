@@ -1,5 +1,4 @@
 import {User} from '@entities/user.entity';
-import {Election} from './types';
 
 class SSSS {
   // Election Management - Basic Version

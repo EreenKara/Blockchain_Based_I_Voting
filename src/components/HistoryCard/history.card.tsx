@@ -8,6 +8,7 @@ import styleNumbers from '@styles/common/style.numbers';
 import {useNavigation} from '@react-navigation/native';
 import {HomeStackParamList} from '@navigation/types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {SehirViewModel} from '@viewmodels/sehir.viewmodel';
 
 const menuItems = [
   {
@@ -31,15 +32,13 @@ const menuItems = [
 ];
 
 interface HistoryCardComponentProps {
-  cityId: number;
-  cityName: string;
+  sehir: SehirViewModel;
   style?: ViewStyle;
 }
 type ElectionNavigationProp = NativeStackNavigationProp<HomeStackParamList>;
 
 const HistoryCardComponent: React.FC<HistoryCardComponentProps> = ({
-  cityId,
-  cityName,
+  sehir,
   style,
 }) => {
   const navigation = useNavigation<ElectionNavigationProp>();
@@ -47,7 +46,7 @@ const HistoryCardComponent: React.FC<HistoryCardComponentProps> = ({
     <View style={[styles.container, style]}>
       <View>
         <Text style={[CommonStyles.textStyles.title, {textAlign: 'center'}]}>
-          {cityName} Seçimleri
+          {sehir.name} Seçimleri
         </Text>
       </View>
       {menuItems.map((item, index) => (
@@ -65,8 +64,7 @@ const HistoryCardComponent: React.FC<HistoryCardComponentProps> = ({
               title="İncele"
               onPress={() => {
                 navigation.navigate(item.screen, {
-                  cityId: cityId,
-                  cityName: cityName,
+                  sehir: sehir,
                 });
               }}
             />

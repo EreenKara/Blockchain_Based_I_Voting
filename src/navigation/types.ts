@@ -1,4 +1,5 @@
 import {ElectionViewModel} from '@viewmodels/election.viewmodel';
+import {SehirViewModel} from '@viewmodels/sehir.viewmodel';
 
 export type RootStackParamList = {
   Auth: undefined;
@@ -20,10 +21,10 @@ export type MainTabParamList = {
 export type HomeStackParamList = {
   HomeMain: undefined;
   CreateElection: undefined;
-  PastElections: {cityId: number; cityName: string};
-  CurrentElections: {cityId: number; cityName: string};
-  UpcomingElections: {cityId: number; cityName: string};
+  PastElections: {sehir: SehirViewModel};
+  CurrentElections: {sehir: SehirViewModel};
+  UpcomingElections: {sehir: SehirViewModel};
   BeCandidate: undefined;
   Elections: undefined;
-  SpecificElection: {election: ElectionViewModel};
+  SpecificElection: {sehir: SehirViewModel; election: ElectionViewModel};
 };

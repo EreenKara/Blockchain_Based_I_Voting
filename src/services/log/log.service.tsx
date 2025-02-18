@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {UserLog, LoginLog, Election} from './types';
 
 export default class LogService {
   private static readonly file: string = 'log.txt';

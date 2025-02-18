@@ -8,7 +8,7 @@ import {
   Button,
   ActivityIndicator,
 } from 'react-native-paper';
-import type {Election} from '@services/log/types';
+import type {Election} from '@entities/election.entity';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
 import CommonStyles from '@styles/common/commonStyles';
@@ -44,7 +44,7 @@ const PastElectionsScreen: React.FC<Props> = () => {
   const renderItem = ({item}: {item: Election}) => (
     <Card style={styles.card}>
       <Card.Content>
-        <Title style={CommonStyles.textStyles.title}>{item.title}</Title>
+        <Title style={CommonStyles.textStyles.title}>{item.name}</Title>
         <Paragraph style={CommonStyles.textStyles.paragraph}>
           {item.description}
         </Paragraph>

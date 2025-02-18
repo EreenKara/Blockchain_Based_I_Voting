@@ -12,7 +12,6 @@ import ButtonComponent from '@components/Button/Button';
 type Props = NativeStackScreenProps<HomeStackParamList, 'CreateElection'>;
 
 const CreateElectionScreen: React.FC<Props> = ({navigation}) => {
-  const {username} = useContext(AuthContext);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [startDate, setStartDate] = useState(new Date());

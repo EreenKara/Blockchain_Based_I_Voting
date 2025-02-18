@@ -19,7 +19,7 @@ export abstract class BaseEntity {
     }, {} as Record<string, any>);
   }
 
-  private serializeValue(value: any): any {
+  protected serializeValue(value: any): any {
     if (value && typeof value === 'object') {
       if (value instanceof BaseEntity || typeof value.toJSON === 'function') {
         return value.toJSON();

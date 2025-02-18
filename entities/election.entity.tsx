@@ -10,13 +10,13 @@ import {SocialMedia} from './social.media.entity';
 import {User} from './user.entity';
 export class Election extends BaseEntity {
   name: string;
-  user: User; // FK, bir userId'i gösterir
   description: string;
   image: string;
   startDate: string;
   endDate: string;
   status: ElectionStatus;
   accessType: ElectionAccessType;
+  user?: User; // FK, bir userId'i gösterir
   address?: ElectionAddress;
   electionAccessUsers?: ElectionAccessUsers[];
   electionsAdmins?: ElectionsAdmins[];
@@ -25,7 +25,6 @@ export class Election extends BaseEntity {
   socialMedia?: SocialMedia;
   constructor(
     id: string,
-    user: User,
     name: string,
     description: string,
     image: string,
@@ -33,6 +32,7 @@ export class Election extends BaseEntity {
     endDate: string,
     status: ElectionStatus,
     accessType: ElectionAccessType,
+    user?: User,
     address?: ElectionAddress,
     electionAccessUsers?: ElectionAccessUsers[],
     electionsAdmins?: ElectionsAdmins[],
@@ -41,7 +41,6 @@ export class Election extends BaseEntity {
     socialMedia?: SocialMedia,
   ) {
     super(id);
-    this.user = user;
     this.name = name;
     this.description = description;
     this.image = image;
@@ -50,6 +49,7 @@ export class Election extends BaseEntity {
     this.status = status;
     this.accessType = accessType;
     this.address = address ? ElectionAddress.fromJSON(address) : undefined;
+    this.user = user ? User.fromJSON(user) : undefined;
     this.electionAccessUsers = electionAccessUsers?.map(user =>
       ElectionAccessUsers.fromJSON(user),
     );

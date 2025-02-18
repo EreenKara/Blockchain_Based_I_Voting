@@ -9,20 +9,71 @@ import {
   ActivityIndicator,
   Text,
 } from 'react-native-paper';
-import type {Election} from '@services/log/types';
+import {Election} from '@entities/election.entity';
 import {useFocusEffect} from '@react-navigation/native';
 import Colors from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
 import ActivityIndicatorComponent from '@shared/activity.indicator';
 import ButtonComponent from '@components/Button/Button';
+import {ElectionService} from '@services/backend/concrete/election.service';
+import {ElectionViewModel} from '@viewmodels/election.viewmodel';
+import ElectionCardComponent from '@icomponents/ElectionCard/election.card';
+import {SehirViewModel} from '@viewmodels/sehir.viewmodel';
+import {HomeStackParamList} from '@navigation/types';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {ElectionAccessType} from '@enums/election.access.type';
+import {ElectionStatus} from '@enums/election.status';
+import {User} from '@entities/user.entity';
+type ElectionsScreenProps = NativeStackScreenProps<
+  HomeStackParamList,
+  'CurrentElections'
+>;
 
-const CurrentElectionsScreen: React.FC = () => {
+const CurrentElectionsScreen: React.FC<ElectionsScreenProps> = ({
+  route,
+  navigation,
+}) => {
+  const {sehir} = route.params;
   const [elections, setElections] = useState<Election[]>([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-
-  const loadElections = async () => {};
+  const electionService = new ElectionService();
+  const loadElections = async () => {
+    setLoading(true);
+    let elections;
+    try {
+      elections = await electionService.getElectionsByCity(sehir.id);
+      setElections(elections);
+      console.log(elections.length);
+    } catch (error) {
+      console.error('Seçimler yüklenirken hata oluştu:', error);
+    } finally {
+      elections = [
+        new Election(
+          '1',
+          'Seçim 1',
+          'Seçim 1 açıklaması',
+          '',
+          'new Date().toISOString()',
+          'new Date().toISOString()',
+          ElectionStatus.Active,
+          ElectionAccessType.Public,
+        ),
+        new Election(
+          '2',
+          'Seçim 2',
+          'Seçim 2 açıklaması',
+          '',
+          'new Date().toISOString()',
+          'new Date().toISOString()',
+          ElectionStatus.Active,
+          ElectionAccessType.Public,
+        ),
+      ];
+      setElections(elections);
+      setLoading(false);
+    }
+  };
 
   // Ekran her odaklandığında seçimleri yenile
   useFocusEffect(
@@ -39,56 +90,6 @@ const CurrentElectionsScreen: React.FC = () => {
 
     return () => clearInterval(interval);
   }, []);
-
-  const calculateTimeRemaining = (endDate: string) => {
-    const now = new Date();
-    const end = new Date(endDate);
-    const diff = end.getTime() - now.getTime();
-
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-    return `${days} gün ${hours} saat ${minutes} dakika`;
-  };
-
-  const handleRefresh = () => {
-    setRefreshing(true);
-    loadElections();
-  };
-
-  const renderItem = ({item}: {item: Election}) => (
-    <Card style={styles.card}>
-      <Card.Content>
-        <Title style={CommonStyles.textStyles.title}>{item.title}</Title>
-        <Paragraph style={CommonStyles.textStyles.paragraph}>
-          {item.description}
-        </Paragraph>
-        <View style={styles.dateContainer}>
-          <Paragraph style={CommonStyles.textStyles.paragraph}>
-            Başlangıç: {new Date(item.startDate).toLocaleDateString('tr-TR')}
-          </Paragraph>
-          <Paragraph style={CommonStyles.textStyles.paragraph}>
-            Bitiş: {new Date(item.endDate).toLocaleDateString('tr-TR')}
-          </Paragraph>
-        </View>
-        <Text style={styles.remainingTime}>
-          Kalan Süre: {calculateTimeRemaining(item.endDate)}
-        </Text>
-      </Card.Content>
-      <Card.Actions>
-        <ButtonComponent
-          title="Oy Ver"
-          onPress={() => console.log('Vote for:', item.id)}
-        />
-        <ButtonComponent
-          title="Detaylar"
-          variant="outline"
-          onPress={() => console.log('Details:', item.id)}
-        />
-      </Card.Actions>
-    </Card>
-  );
 
   if (loading) {
     return (
@@ -110,13 +111,10 @@ const CurrentElectionsScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={elections}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.listContent}
-        refreshing={refreshing}
-        onRefresh={handleRefresh}
+      <ElectionCardComponent
+        title={`${sehir.name} Aktif Seçimleri`}
+        items={elections.map(election => new ElectionViewModel(election))}
+        sehir={sehir}
       />
     </View>
   );
