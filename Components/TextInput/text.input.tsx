@@ -1,5 +1,12 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, TextInputProps} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TextInputProps,
+  ViewProps,
+  TextProps,
+} from 'react-native';
 import {textInputStyles as styles} from './text.input.style';
 import Colors from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
@@ -10,6 +17,8 @@ interface TextInputComponentProps extends Omit<TextInputProps, 'style'> {
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   style?: TextInputProps['style'];
+  viewStyle?: ViewProps['style'];
+  labelStyle?: TextProps['style'];
   multiline?: boolean;
 }
 
@@ -19,6 +28,8 @@ const TextInputComponent: React.FC<TextInputComponentProps> = ({
   leftIcon,
   rightIcon,
   style,
+  viewStyle,
+  labelStyle,
   onFocus,
   onBlur,
   placeholderTextColor = Colors.getTheme().text + '80',
@@ -32,7 +43,7 @@ const TextInputComponent: React.FC<TextInputComponentProps> = ({
       {/* Label */}
       {label && (
         <View style={styles.labelContainer}>
-          <Text style={styles.label}>{label}</Text>
+          <Text style={[styles.label, labelStyle]}>{label}</Text>
         </View>
       )}
 
@@ -42,6 +53,7 @@ const TextInputComponent: React.FC<TextInputComponentProps> = ({
           styles.inputContainer,
           isFocused && styles.focusedInput,
           error && styles.errorInput,
+          viewStyle,
         ]}>
         {leftIcon && <View style={styles.icon}>{leftIcon}</View>}
 

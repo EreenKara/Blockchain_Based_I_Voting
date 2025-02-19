@@ -32,11 +32,13 @@ export const electionCardItemStyles = StyleSheet.create({
   title: {
     ...CommonStyles.textStyles.subtitle,
     marginBottom: styleNumbers.spaceLittle,
+    color: Colors.getTheme().cardText,
   },
 
-  quantity: {
+  text: {
     ...CommonStyles.textStyles.paragraph,
     marginBottom: styleNumbers.spaceLittle,
+    color: Colors.getTheme().cardText,
   },
 
   quantityContainer: {

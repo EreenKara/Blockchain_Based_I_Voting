@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
     width: '65%',
     marginRight: styleNumbers.space * 2,
     backgroundColor: Colors.getTheme().transition,
+    ...CommonStyles.shadowStyle,
   },
   image: {
     height: 300,
@@ -56,5 +57,6 @@ const styles = StyleSheet.create({
     width: '30%',
     backgroundColor: Colors.getTheme().transition,
     gap: styleNumbers.space * 2,
+    ...CommonStyles.shadowStyle,
   },
 });

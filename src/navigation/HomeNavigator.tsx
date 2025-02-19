@@ -3,17 +3,28 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {HomeStackParamList} from './types';
 import {HomeScreen} from '@screens/home/index';
 import {CreateElectionScreen} from '@screens/home/index';
+import {ElectionInfoScreen} from '@screens/home/index';
 import {PastElectionsScreen} from '@screens/home/index';
 import {CurrentElectionsScreen} from '@screens/home/index';
-import {UpcomingElectionsScreen} from '@screens/home/index';
+import {UpComingElectionsScreen} from '@screens/home/index';
 import {BeCandidateScreen} from '@screens/home/index';
 import {ElectionsScreen} from '@screens/home/index';
 import {SpecificElectionScreen} from '@screens/home/index';
+import Colors from '@styles/common/colors';
+import NavBarTitle from '@shared/navbar_title';
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 
 const HomeNavigator: React.FC = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: true,
+        headerRight: () => <NavBarTitle />,
+        headerTitleAlign: 'center',
+        headerStyle: {
+          backgroundColor: Colors.getTheme().transition,
+        },
+      }}>
       <Stack.Screen
         name="HomeMain"
         component={HomeScreen}
@@ -23,6 +34,11 @@ const HomeNavigator: React.FC = () => {
         name="CreateElection"
         component={CreateElectionScreen}
         options={{title: 'Seçim Oluştur'}}
+      />
+      <Stack.Screen
+        name="ElectionInfo"
+        component={ElectionInfoScreen}
+        options={{title: 'Seçim Bilgileri'}}
       />
       <Stack.Screen
         name="Elections"
@@ -35,8 +51,8 @@ const HomeNavigator: React.FC = () => {
         options={{title: 'Seçim'}}
       />
       <Stack.Screen
-        name="UpcomingElections"
-        component={UpcomingElectionsScreen}
+        name="UpComingElections"
+        component={UpComingElectionsScreen}
         options={{title: 'Gelecek Seçimler'}}
       />
       <Stack.Screen

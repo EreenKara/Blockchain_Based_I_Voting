@@ -21,13 +21,12 @@ const ElectionCardItemComponent: React.FC<ElectionCardItemProps> = ({
 
       {/* Orta kısım - Başlık ve Detaylar */}
       <View style={styles.contentContainer}>
-        <ProgressBarComponent />
         <Text style={styles.title}>{election.name}</Text>
-        <Text style={styles.quantity}>{election.description}</Text>
-        <Text style={styles.quantity}>
+        <Text style={styles.text}>{election.description}</Text>
+        <Text style={styles.text}>
           {new Date(election.startDate).toLocaleDateString('tr-TR')}
         </Text>
-        <Text style={styles.quantity}>
+        <Text style={styles.text}>
           {new Date(election.endDate).toLocaleDateString('tr-TR')}
         </Text>
       </View>

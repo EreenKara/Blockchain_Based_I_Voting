@@ -40,10 +40,18 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
           style={[styles.card]}
           onPress={() => navigation.navigate(item.screen)}>
           <Card.Content>
-            <Title style={CommonStyles.textStyles.title}>
+            <Title
+              style={[
+                CommonStyles.textStyles.title,
+                {color: Colors.getTheme().cardText},
+              ]}>
               {item.icon} {item.title}
             </Title>
-            <Paragraph style={CommonStyles.textStyles.paragraph}>
+            <Paragraph
+              style={[
+                CommonStyles.textStyles.paragraph,
+                {color: Colors.getTheme().cardText},
+              ]}>
               {item.description}
             </Paragraph>
           </Card.Content>

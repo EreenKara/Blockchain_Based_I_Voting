@@ -14,7 +14,7 @@ const menuItems = [
   {
     title: 'Gelecek Seçimler',
     description: 'Yaklaşan seçimleri görüntüleyin',
-    screen: 'UpcomingElections' as const,
+    screen: 'UpComingElections' as const,
     icon: '📅',
   },
   {
@@ -35,7 +35,10 @@ interface HistoryCardComponentProps {
   sehir: SehirViewModel;
   style?: ViewStyle;
 }
-type ElectionNavigationProp = NativeStackNavigationProp<HomeStackParamList>;
+type ElectionNavigationProp = NativeStackNavigationProp<
+  HomeStackParamList,
+  'PastElections' | 'CurrentElections' | 'UpComingElections'
+>;
 
 const HistoryCardComponent: React.FC<HistoryCardComponentProps> = ({
   sehir,
@@ -52,10 +55,18 @@ const HistoryCardComponent: React.FC<HistoryCardComponentProps> = ({
       {menuItems.map((item, index) => (
         <Card key={index} style={[styles.card]}>
           <Card.Content>
-            <Title style={CommonStyles.textStyles.title}>
+            <Title
+              style={[
+                CommonStyles.textStyles.title,
+                {color: Colors.getTheme().cardText},
+              ]}>
               {item.icon} {item.title}
             </Title>
-            <Paragraph style={CommonStyles.textStyles.paragraph}>
+            <Paragraph
+              style={[
+                CommonStyles.textStyles.paragraph,
+                {color: Colors.getTheme().cardText},
+              ]}>
               {item.description}
             </Paragraph>
           </Card.Content>

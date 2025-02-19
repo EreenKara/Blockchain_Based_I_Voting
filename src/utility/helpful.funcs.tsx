@@ -20,12 +20,24 @@ const calculateTimeToStart = (startDate: string) => {
 
   return `${days} gün ${hours} saat ${minutes} dakika`;
 };
+const hexToRgb = (hex: string) => {
+  // Hex kodundan # işaretini kaldırıyoruz
+  hex = hex.replace(/^#/, '');
+  // Hex kodunu RGB'ye çeviriyoruz
+  const bigint = parseInt(hex, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return {r, g, b};
+};
 interface IHelpfulFuncs {
   calculateTimeRemaining: (endDate: string) => string;
   calculateTimeToStart: (startDate: string) => string;
+  hexToRgb: (hex: string) => {r: number; g: number; b: number};
 }
 
 export const HelpfulFuncs: IHelpfulFuncs = {
   calculateTimeRemaining,
   calculateTimeToStart,
+  hexToRgb,
 };

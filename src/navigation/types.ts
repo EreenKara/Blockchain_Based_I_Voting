@@ -21,6 +21,7 @@ export type MainTabParamList = {
 export type HomeStackParamList = {
   HomeMain: undefined;
   CreateElection: undefined;
+  ElectionInfo: undefined;
   PastElections: {sehir: SehirViewModel};
   CurrentElections: {sehir: SehirViewModel};
   UpComingElections: {sehir: SehirViewModel};

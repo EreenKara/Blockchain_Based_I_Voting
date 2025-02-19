@@ -12,6 +12,7 @@ import CandidateItemComponent from '@icomponents/CandidateItem/candidate.item';
 import ProgressBarComponent from '@components/ProgressBar/progress.bar';
 import {ProgressView} from '@react-native-community/progress-view';
 import Colors from '@styles/common/colors';
+import styleNumbers from '@styles/common/style.numbers';
 const windowHeight = Dimensions.get('window').height;
 
 const SpecificElectionScreen: React.FC<SpecificElectionScreenProps> = ({
@@ -52,17 +53,32 @@ const SpecificElectionScreen: React.FC<SpecificElectionScreenProps> = ({
             style={[CommonStyles.textStyles.subtitle, {textAlign: 'center'}]}>
             Seçimin Bitmesine: Tarih - Tarih
           </Text>
-          <Text
-            style={[CommonStyles.textStyles.subtitle, {textAlign: 'center'}]}>
-            Buraya progres soranı gelcek %
-          </Text>
-          <ProgressView
-            progressViewStyle="bar"
-            style={{height: 30}}
-            progressTintColor="red"
-            trackTintColor={Colors.getTheme().indicator}
-            progress={0.7}
-          />
+          <View
+            style={{
+              marginTop: styleNumbers.space * 2,
+              marginBottom: styleNumbers.space * 2,
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+            }}>
+            <ProgressView
+              progressViewStyle="bar"
+              style={{
+                height: 30,
+                width: '75%',
+                marginHorizontal: styleNumbers.space * 2,
+              }}
+              progressTintColor="red"
+              trackTintColor={Colors.getTheme().indicator}
+              progress={0.7}
+            />
+            <Text
+              style={[
+                CommonStyles.textStyles.subtitle,
+                {color: Colors.getTheme().text},
+              ]}>
+              ....%
+            </Text>
+          </View>
         </View>
         <View style={styles.pieChartContainer}>
           <View style={{height: windowHeight * 0.3}}>
