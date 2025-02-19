@@ -2,6 +2,7 @@ version: "3.8"
 
 networks:
   ivote-network:
+
 services:
   postgres:
     image: postgres:latest
@@ -145,5 +146,26 @@ services:
     volumes:
       - ./email-service:/email-service
       - /email-service/node_modules
+    networks:
+      - ivote-network
+
+  gateway:
+    build: ./gateway
+    container_name: gateway
+    environment:
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - user-service
+      - auth-service
+      - election-service
+      - option-service
+      - vote-service
+      - result-service
+      - email-service
+    volumes:
+      - ./gateway:/gateway
+      - /gateway/node_modules
     networks:
       - ivote-network
