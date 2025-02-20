@@ -115,6 +115,7 @@ const authanticateUser = async (req, res) => {
     const response = await axios.post(`${process.env.AUTH_SERVICE_URL}/api/auths/generate`, {
       email: user.email,
       hasPaidBalance: user.hasPaidBalance,
+      userId:user.id
     });
 
     res.status(200).json({ token: response.data.token });
