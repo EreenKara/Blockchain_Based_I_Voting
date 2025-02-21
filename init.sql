@@ -17,6 +17,29 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+--
+-- Name: ivote; Type: DATABASE; Schema: -; Owner: postgres
+--
+
+CREATE DATABASE ivote WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'en_US.utf8';
+
+
+ALTER DATABASE ivote OWNER TO postgres;
+
+\connect ivote
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -433,6 +456,156 @@ ALTER TABLE ONLY public.results ALTER COLUMN id SET DEFAULT nextval('public.resu
 --
 
 ALTER TABLE ONLY public.votes ALTER COLUMN id SET DEFAULT nextval('public.votes_id_seq'::regclass);
+
+
+--
+-- Data for Name: Cities; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."Cities" (id, name, "countryId", "parentId", "createdAt", "updatedAt") FROM stdin;
+1	İzmir	90	\N	2025-02-20 11:25:43.727+00	2025-02-20 11:25:43.727+00
+\.
+
+
+--
+-- Data for Name: Districts; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."Districts" (id, name, "cityId", "createdAt", "updatedAt") FROM stdin;
+1	Bornova	1	2025-02-20 11:58:00.227+00	2025-02-20 11:58:00.227+00
+2	Bornova	1	2025-02-20 11:58:27.464+00	2025-02-20 11:58:27.464+00
+6	Bornova	1	2025-02-20 11:58:41.927+00	2025-02-20 11:58:41.927+00
+7	Bornova	1	2025-02-20 11:58:56.31+00	2025-02-20 11:58:56.31+00
+\.
+
+
+--
+-- Data for Name: Elections; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."Elections" (id, title, description, "startDate", "endDate", "createdBy", "isActive", "createdAt", "updatedAt") FROM stdin;
+1	2025 Başkanlık Seçimi	2025 seçimleri için oy kullanımı.	2025-01-02 00:00:00+00	2025-12-25 00:00:00+00	sad549373@gmail.com	t	2025-02-19 19:51:28.926+00	2025-02-19 19:51:28.926+00
+2	2025 Başkanlık Seçimi	2025 seçimleri için oy kullanımı.	2025-01-02 00:00:00+00	2025-12-25 00:00:00+00	sad549373@gmail.com	t	2025-02-20 17:34:20.627+00	2025-02-20 17:34:20.627+00
+\.
+
+
+--
+-- Data for Name: Neighbourhoods; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."Neighbourhoods" (id, name, "districtId", "createdAt", "updatedAt") FROM stdin;
+1	cumhuriyet mahallesi	1	2025-02-20 14:15:00.479+00	2025-02-20 14:15:00.479+00
+\.
+
+
+--
+-- Data for Name: Options; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."Options" (id, "optionName", "optionImgUrl", "optionDescription", "createdBy", "voteCount", "electionId", "createdAt", "updatedAt") FROM stdin;
+1	2025 seçimleri	\N	bu bir belki seçimdir	sad549373@gmail.com	0	1	2025-02-20 11:18:08.597+00	2025-02-20 11:18:08.597+00
+\.
+
+
+--
+-- Data for Name: UserAdresses; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."UserAdresses" (id, "userId", "cityId", "districtId", "neighbourhoodId", "buildingNumber", "createdAt", "updatedAt") FROM stdin;
+5	1	1	1	1	1	2025-02-20 17:33:53.777+00	2025-02-20 17:33:53.777+00
+6	1	1	1	1	1	2025-02-20 17:33:58.472+00	2025-02-20 17:33:58.472+00
+7	1	1	1	1	1	2025-02-20 17:34:00.289+00	2025-02-20 17:34:00.289+00
+9	1	1	1	1	1	2025-02-20 17:35:02.007+00	2025-02-20 17:35:02.007+00
+13	1	1	1	1	6	2025-02-20 17:35:20.188+00	2025-02-20 17:35:20.188+00
+\.
+
+
+--
+-- Data for Name: Users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."Users" (id, name, surname, "identityNumber", email, "phoneNumber", password, "hasPaidBalance", "verificationCode", "createdAt", "updatedAt") FROM stdin;
+1	alieren	asdasd	21353087098	sad549373@gmail.com	5309214678	$2a$10$X7QfQXUGJx2fFvep3EUe/.ghazMKy/uAPSBVpUgm3nUntjKw8eEoy	t	\N	2025-02-18 18:34:36.777+00	2025-02-18 18:34:54.638+00
+\.
+
+
+--
+-- Data for Name: results; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.results (id, "electionId", "winnerOption", "createdAt") FROM stdin;
+\.
+
+
+--
+-- Data for Name: votes; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.votes (id, "electionId", "optionId", "votedBy", "createdAt", "updatedAt") FROM stdin;
+\.
+
+
+--
+-- Name: Cities_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."Cities_id_seq"', 1, true);
+
+
+--
+-- Name: Districts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."Districts_id_seq"', 7, true);
+
+
+--
+-- Name: Elections_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."Elections_id_seq"', 2, true);
+
+
+--
+-- Name: Neighbourhoods_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."Neighbourhoods_id_seq"', 1, true);
+
+
+--
+-- Name: Options_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."Options_id_seq"', 1, true);
+
+
+--
+-- Name: UserAdresses_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."UserAdresses_id_seq"', 13, true);
+
+
+--
+-- Name: Users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."Users_id_seq"', 1, true);
+
+
+--
+-- Name: results_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.results_id_seq', 1, false);
+
+
+--
+-- Name: votes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.votes_id_seq', 1, false);
 
 
 --
