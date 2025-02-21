@@ -3,23 +3,26 @@ import {LikeType} from '../enums/like.type';
 import {Post} from './post.entity';
 import {Comment} from './comment.entity';
 import {User} from './user.entity';
+
+export interface LikeOptions {
+  id: string;
+  type: LikeType;
+  post?: Post | null;
+  comment?: Comment | null;
+  user?: User | null;
+}
+
 export class Like extends BaseEntity {
-  post?: Post; // FK
-  comment?: Comment; // FK
-  user?: User; // FK
+  post: Post | null; // FK
+  comment: Comment | null; // FK
+  user: User | null; // FK
   type: LikeType;
 
-  constructor(
-    id: string,
-    type: LikeType,
-    post?: Post,
-    comment?: Comment,
-    user?: User,
-  ) {
-    super(id);
-    this.post = post ? Post.fromJSON(post) : undefined;
-    this.comment = comment ? Comment.fromJSON(comment) : undefined;
-    this.user = user ? User.fromJSON(user) : undefined;
-    this.type = type;
+  constructor(options: LikeOptions) {
+    super(options.id);
+    this.post = options.post ? Post.fromJSON(options.post) : null;
+    this.comment = options.comment ? Comment.fromJSON(options.comment) : null;
+    this.user = options.user ? User.fromJSON(options.user) : null;
+    this.type = options.type;
   }
 }

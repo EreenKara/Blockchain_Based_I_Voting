@@ -8,6 +8,25 @@ import {ElectionsOptions} from './elections.options.entity';
 import {Vote} from './vote.entity';
 import {SocialMedia} from './social.media.entity';
 import {User} from './user.entity';
+
+export interface ElectionOptions {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+  startDate: string;
+  endDate: string;
+  status: ElectionStatus;
+  accessType: ElectionAccessType;
+  user?: User | null;
+  address?: ElectionAddress | null;
+  electionAccessUsers?: ElectionAccessUsers[] | null;
+  electionsAdmins?: ElectionsAdmins[] | null;
+  electionsOptions?: ElectionsOptions[] | null;
+  vote?: Vote | null;
+  socialMedia?: SocialMedia | null;
+}
+
 export class Election extends BaseEntity {
   name: string;
   description: string;
@@ -16,52 +35,41 @@ export class Election extends BaseEntity {
   endDate: string;
   status: ElectionStatus;
   accessType: ElectionAccessType;
-  user?: User; // FK, bir userId'i gösterir
-  address?: ElectionAddress;
-  electionAccessUsers?: ElectionAccessUsers[];
-  electionsAdmins?: ElectionsAdmins[];
-  electionsOptions?: ElectionsOptions[];
-  vote?: Vote;
-  socialMedia?: SocialMedia;
-  constructor(
-    id: string,
-    name: string,
-    description: string,
-    image: string,
-    startDate: string,
-    endDate: string,
-    status: ElectionStatus,
-    accessType: ElectionAccessType,
-    user?: User,
-    address?: ElectionAddress,
-    electionAccessUsers?: ElectionAccessUsers[],
-    electionsAdmins?: ElectionsAdmins[],
-    electionsOptions?: ElectionsOptions[],
-    vote?: Vote,
-    socialMedia?: SocialMedia,
-  ) {
-    super(id);
-    this.name = name;
-    this.description = description;
-    this.image = image;
-    this.startDate = startDate;
-    this.endDate = endDate;
-    this.status = status;
-    this.accessType = accessType;
-    this.address = address ? ElectionAddress.fromJSON(address) : undefined;
-    this.user = user ? User.fromJSON(user) : undefined;
-    this.electionAccessUsers = electionAccessUsers?.map(user =>
-      ElectionAccessUsers.fromJSON(user),
-    );
-    this.electionsAdmins = electionsAdmins?.map(admin =>
-      ElectionsAdmins.fromJSON(admin),
-    );
-    this.electionsOptions = electionsOptions?.map(option =>
-      ElectionsOptions.fromJSON(option),
-    );
-    this.vote = vote ? Vote.fromJSON(vote) : undefined;
-    this.socialMedia = socialMedia
-      ? SocialMedia.fromJSON(socialMedia)
-      : undefined;
+  user: User | null;
+  address: ElectionAddress | null;
+  electionAccessUsers: ElectionAccessUsers[] | null;
+  electionsAdmins: ElectionsAdmins[] | null;
+  electionsOptions: ElectionsOptions[] | null;
+  vote: Vote | null;
+  socialMedia: SocialMedia | null;
+
+  constructor(options: ElectionOptions) {
+    super(options.id);
+    this.name = options.name;
+    this.description = options.description;
+    this.image = options.image;
+    this.startDate = options.startDate;
+    this.endDate = options.endDate;
+    this.status = options.status;
+    this.accessType = options.accessType;
+    this.address = options.address
+      ? ElectionAddress.fromJSON(options.address)
+      : null;
+    this.user = options.user ? User.fromJSON(options.user) : null;
+    this.electionAccessUsers =
+      options.electionAccessUsers?.map(user =>
+        ElectionAccessUsers.fromJSON(user),
+      ) || null;
+    this.electionsAdmins =
+      options.electionsAdmins?.map(admin => ElectionsAdmins.fromJSON(admin)) ||
+      null;
+    this.electionsOptions =
+      options.electionsOptions?.map(option =>
+        ElectionsOptions.fromJSON(option),
+      ) || null;
+    this.vote = options.vote ? Vote.fromJSON(options.vote) : null;
+    this.socialMedia = options.socialMedia
+      ? SocialMedia.fromJSON(options.socialMedia)
+      : null;
   }
 }

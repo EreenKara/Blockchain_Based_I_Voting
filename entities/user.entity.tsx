@@ -5,70 +5,64 @@ import {ElectionAccessUsers} from './election.access.users.entity';
 import {Vote} from './vote.entity';
 import {Comment} from './comment.entity';
 import {Like} from './like.entity';
+
+export interface UserOptions {
+  id: string;
+  username: string;
+  name: string;
+  surname: string;
+  identityNumber: string;
+  email: string;
+  phoneNumber: string;
+  password: string;
+  balance?: number;
+  image?: string | null;
+  address?: UserAddress | null;
+  electionsAdmins?: ElectionsAdmins[] | null;
+  electionAccessUsers?: ElectionAccessUsers[] | null;
+  votes?: Vote[] | null;
+  comments?: Comment[] | null;
+  likes?: Like[] | null;
+}
+
 export class User extends BaseEntity {
   username: string;
   name: string;
   surname: string;
   identityNumber: string;
-  image: string;
   email: string;
   phoneNumber: string;
   password: string;
-  balance: number;
-  verificationCode: string;
-  createdAt: string;
-  updatedAt: string;
-  address?: UserAddress;
-  electionsAdmins?: ElectionsAdmins[];
-  electionAccessUsers?: ElectionAccessUsers[];
-  votes?: Vote[];
-  comments?: Comment[];
-  likes?: Like[];
+  balance?: number;
+  image?: string;
+  address?: UserAddress | null;
+  electionsAdmins?: ElectionsAdmins[] | null;
+  electionAccessUsers?: ElectionAccessUsers[] | null;
+  votes?: Vote[] | null;
+  comments?: Comment[] | null;
+  likes?: Like[] | null;
 
-  constructor(
-    id: string,
-    username: string,
-    name: string,
-    surname: string,
-    identityNumber: string,
-    image: string,
-    email: string,
-    phoneNumber: string,
-    password: string,
-    balance: number,
-    verificationCode: string,
-    createdAt: string = new Date().toISOString(),
-    updatedAt: string = new Date().toISOString(),
-    address?: UserAddress,
-    electionsAdmins?: ElectionsAdmins[],
-    electionAccessUsers?: ElectionAccessUsers[],
-    votes?: Vote[],
-    comments?: Comment[],
-    likes?: Like[],
-  ) {
-    super(id);
-    this.username = username;
-    this.name = name;
-    this.surname = surname;
-    this.identityNumber = identityNumber;
-    this.image = image;
-    this.email = email;
-    this.phoneNumber = phoneNumber;
-    this.password = password;
-    this.balance = balance;
-    this.address = address;
-    this.verificationCode = verificationCode;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
-    this.electionsAdmins = electionsAdmins?.map(admin =>
+  constructor(options: UserOptions) {
+    super(options.id);
+    this.username = options.username;
+    this.name = options.name;
+    this.surname = options.surname;
+    this.identityNumber = options.identityNumber;
+    this.phoneNumber = options.phoneNumber;
+    this.password = options.password;
+    this.balance = options.balance;
+    this.address = options.address;
+    this.image = options.image ? options.image : '';
+    this.email = options.email ? options.email : '';
+    this.electionsAdmins = options.electionsAdmins?.map(admin =>
       ElectionsAdmins.fromJSON(admin),
     );
-    this.electionAccessUsers = electionAccessUsers?.map(user =>
+    this.electionAccessUsers = options.electionAccessUsers?.map(user =>
       ElectionAccessUsers.fromJSON(user),
     );
-    this.votes = votes?.map(vote => Vote.fromJSON(vote));
-    this.comments = comments?.map(comment => Comment.fromJSON(comment));
-    this.likes = likes?.map(like => Like.fromJSON(like));
+    this.votes = options.votes?.map(vote => Vote.fromJSON(vote));
+    this.comments = options.comments?.map(comment => Comment.fromJSON(comment));
+    this.likes = options.likes?.map(like => Like.fromJSON(like));
   }
 }
 

@@ -1,22 +1,26 @@
 import {BaseEntity} from './base.entity';
 import {City} from './city.entity';
 import {Neighborhood} from './neighbourdhood.entity';
+
+export interface DistrictOptions {
+  id: string;
+  name: string;
+  city?: City | null;
+  neighborhoods?: Neighborhood[] | null;
+}
+
 export class District extends BaseEntity {
-  city?: City;
-  neighborhoods?: Neighborhood[]; // FK
+  city: City | null;
+  neighborhoods: Neighborhood[] | null;
   name: string;
 
-  constructor(
-    id: string,
-    name: string,
-    city?: City,
-    neighborhoods?: Neighborhood[],
-  ) {
-    super(id);
-    this.name = name;
-    this.city = city ? City.fromJSON(city) : undefined;
-    this.neighborhoods = neighborhoods?.map(neighborhood =>
-      Neighborhood.fromJSON(neighborhood),
-    );
+  constructor(options: DistrictOptions) {
+    super(options.id);
+    this.name = options.name;
+    this.city = options.city ? City.fromJSON(options.city) : null;
+    this.neighborhoods =
+      options.neighborhoods?.map(neighborhood =>
+        Neighborhood.fromJSON(neighborhood),
+      ) || null;
   }
 }

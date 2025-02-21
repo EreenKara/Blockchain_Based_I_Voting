@@ -3,20 +3,26 @@ import {Candidate} from './candidate.entity';
 import {Election} from './election.entity';
 import {User} from './user.entity';
 
-export class ElectionsAdmins extends BaseEntity {
-  election?: Election; // FK
-  user?: User; // FK
-  candidate?: Candidate; // FK
+export interface ElectionsAdminsOptions {
+  id: string;
+  election?: Election | null;
+  user?: User | null;
+  candidate?: Candidate | null;
+}
 
-  constructor(
-    id: string,
-    election?: Election,
-    user?: User,
-    candidate?: Candidate,
-  ) {
-    super(id);
-    this.election = election ? Election.fromJSON(election) : undefined;
-    this.user = user ? User.fromJSON(user) : undefined;
-    this.candidate = candidate ? Candidate.fromJSON(candidate) : undefined;
+export class ElectionsAdmins extends BaseEntity {
+  election: Election | null;
+  user: User | null;
+  candidate: Candidate | null;
+
+  constructor(options: ElectionsAdminsOptions) {
+    super(options.id);
+    this.election = options.election
+      ? Election.fromJSON(options.election)
+      : null;
+    this.user = options.user ? User.fromJSON(options.user) : null;
+    this.candidate = options.candidate
+      ? Candidate.fromJSON(options.candidate)
+      : null;
   }
 }

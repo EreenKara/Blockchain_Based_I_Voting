@@ -2,23 +2,26 @@ import {BaseEntity} from './base.entity';
 import {Like} from './like.entity';
 import {Post} from './post.entity';
 import {User} from './user.entity';
-export class Comment extends BaseEntity {
-  post?: Post; // FK
-  user?: User; // FK
-  content: string;
-  likes?: Like[];
 
-  constructor(
-    id: string,
-    content: string,
-    post?: Post,
-    user?: User,
-    likes?: Like[],
-  ) {
-    super(id);
-    this.content = content;
-    this.post = post ? Post.fromJSON(post) : undefined;
-    this.user = user ? User.fromJSON(user) : undefined;
-    this.likes = likes?.map(like => Like.fromJSON(like));
+export interface CommentOptions {
+  id: string;
+  content: string;
+  post?: Post | null;
+  user?: User | null;
+  likes?: Like[] | null;
+}
+
+export class Comment extends BaseEntity {
+  post: Post | null;
+  user: User | null;
+  content: string;
+  likes: Like[] | null;
+
+  constructor(options: CommentOptions) {
+    super(options.id);
+    this.content = options.content;
+    this.post = options.post ? Post.fromJSON(options.post) : null;
+    this.user = options.user ? User.fromJSON(options.user) : null;
+    this.likes = options.likes?.map(like => Like.fromJSON(like)) || null;
   }
 }

@@ -36,6 +36,8 @@ const RegisterScreen: React.FC<Props> = ({navigation}) => {
       <Formik
         initialValues={{
           username: '',
+          name: '',
+          surname: '',
           identityNumber: '',
           phoneNumber: '',
           email: '',

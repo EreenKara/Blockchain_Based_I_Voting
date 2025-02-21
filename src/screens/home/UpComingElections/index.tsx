@@ -49,26 +49,26 @@ const UpComingElectionsScreen: React.FC<ElectionsScreenProps> = ({
       console.error('Seçimler yüklenirken hata oluştu:', error);
     } finally {
       elections = [
-        new Election(
-          '1',
-          'Seçim 1',
-          'Seçim 1 açıklaması',
-          '',
-          'new Date().toISOString()',
-          'new Date().toISOString()',
-          ElectionStatus.Active,
-          ElectionAccessType.Public,
-        ),
-        new Election(
-          '2',
-          'Seçim 2',
-          'Seçim 2 açıklaması',
-          '',
-          'new Date().toISOString()',
-          'new Date().toISOString()',
-          ElectionStatus.Active,
-          ElectionAccessType.Public,
-        ),
+        new Election({
+          id: '1',
+          name: 'Seçim 1',
+          description: 'Seçim 1 açıklaması',
+          image: '',
+          startDate: 'new Date().toISOString()',
+          endDate: 'new Date().toISOString()',
+          status: ElectionStatus.Active,
+          accessType: ElectionAccessType.Public,
+        }),
+        new Election({
+          id: '2',
+          name: 'Seçim 2',
+          description: 'Seçim 2 açıklaması',
+          image: '',
+          startDate: 'new Date().toISOString()',
+          endDate: 'new Date().toISOString()',
+          status: ElectionStatus.Active,
+          accessType: ElectionAccessType.Public,
+        }),
       ];
       setElections(elections);
       setLoading(false);

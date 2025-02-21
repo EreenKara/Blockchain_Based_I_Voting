@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
-import { Text, Button, Card, Avatar } from 'react-native-paper';
+import Colors from '@styles/common/colors';
+import CommonStyles from '@styles/common/commonStyles';
+import styleNumbers from '@styles/common/style.numbers';
+import React, {useState, useEffect} from 'react';
+import {View, ScrollView, StyleSheet} from 'react-native';
+import {Text, Button, Card, Avatar} from 'react-native-paper';
 
 interface ProfileData {
   isCandidate: boolean;
@@ -16,7 +19,7 @@ const ProfileScreen: React.FC = () => {
     biography: '',
     posts: 0,
     followers: 0,
-    following: 0
+    following: 0,
   });
 
   const handleEditBiography = () => {
@@ -36,7 +39,7 @@ const ProfileScreen: React.FC = () => {
       <View style={styles.header}>
         <Avatar.Image
           size={80}
-          source={{ uri: 'https://via.placeholder.com/80' }}
+          source={{uri: 'https://via.placeholder.com/80'}}
         />
         <View style={styles.stats}>
           <View style={styles.statItem}>
@@ -85,10 +88,10 @@ const ProfileScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.getTheme().background,
   },
   header: {
-    padding: 16,
+    padding: styleNumbers.space,
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -96,21 +99,22 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginLeft: 16,
+    marginLeft: styleNumbers.space,
   },
   statItem: {
     alignItems: 'center',
   },
   statNumber: {
-    fontSize: 18,
+    ...CommonStyles.textStyles.subtitle,
     fontWeight: 'bold',
   },
   biographyCard: {
-    margin: 16,
+    margin: styleNumbers.space,
+    ...CommonStyles.viewStyles.card,
   },
   buttonContainer: {
-    padding: 16,
-    gap: 8,
+    padding: styleNumbers.space,
+    gap: styleNumbers.space / 2,
   },
 });
 

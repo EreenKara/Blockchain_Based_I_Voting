@@ -1,12 +1,20 @@
 import {BaseEntity} from './base.entity';
+import {Election} from './election.entity';
+import {Option} from './option.entity';
+
+export interface ElectionOptionOptions {
+  id: string;
+  election: Election;
+  option: Option;
+}
 
 export class ElectionOption extends BaseEntity {
-  electionId: number; // FK
-  optionId: number; // FK
+  election: Election;
+  option: Option;
 
-  constructor(id: string, electionId: number, optionId: number) {
-    super(id);
-    this.electionId = electionId;
-    this.optionId = optionId;
+  constructor(options: ElectionOptionOptions) {
+    super(options.id);
+    this.election = Election.fromJSON(options.election);
+    this.option = Option.fromJSON(options.option);
   }
 }

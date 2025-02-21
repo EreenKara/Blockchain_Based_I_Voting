@@ -2,14 +2,22 @@ import {BaseEntity} from './base.entity';
 import {Election} from './election.entity';
 import {User} from './user.entity';
 
+export interface ElectionAccessUsersOptions {
+  id: string;
+  user?: User | null;
+  election?: Election | null;
+}
+
 // belki ileride bu tablo farklı veriler tutar diye bu tablo var.
 export class ElectionAccessUsers extends BaseEntity {
-  user?: User; // FK
-  election?: Election; // FK
+  user: User | null;
+  election: Election | null;
 
-  constructor(id: string, user?: User, election?: Election) {
-    super(id);
-    this.user = user ? User.fromJSON(user) : undefined;
-    this.election = election ? Election.fromJSON(election) : undefined;
+  constructor(options: ElectionAccessUsersOptions) {
+    super(options.id);
+    this.user = options.user ? User.fromJSON(options.user) : null;
+    this.election = options.election
+      ? Election.fromJSON(options.election)
+      : null;
   }
 }

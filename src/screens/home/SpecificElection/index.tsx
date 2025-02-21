@@ -94,7 +94,7 @@ const SpecificElectionScreen: React.FC<SpecificElectionScreenProps> = ({
 
         <View style={styles.candidateContainer}>
           {candidates.map((candidate, index) => (
-            <View style={styles.candidateItem}>
+            <View key={index} style={styles.candidateItem}>
               <CandidateItemComponent candidate={candidate} />
             </View>
           ))}
