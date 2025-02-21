@@ -1,8 +1,8 @@
-import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet, Text, SafeAreaView} from 'react-native';
 import {Button, Snackbar} from 'react-native-paper';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {Formik} from 'formik';
+import {Formik, FormikHelpers} from 'formik';
 import * as Yup from 'yup';
 import {AuthStackParamList} from '@navigation/types';
 import TextInputComponent from '@components/TextInput/text.input';
@@ -10,29 +10,57 @@ import ButtonComponent from '@components/Button/Button';
 import styleNumbers from '@styles/common/style.numbers';
 import CommonStyles from '@styles/common/commonStyles';
 import Colors from '@styles/common/colors';
-import {registerUserSchema} from '@utility/validations';
-
+import {bosSchema, registerUserSchema} from '@utility/validations';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {UserService} from '@services/backend/concrete/user.service';
+import {User} from '@entities/user.entity';
 type Props = NativeStackScreenProps<AuthStackParamList, 'Register'>;
 
 // Form doğrulama şeması
 
 const RegisterScreen: React.FC<Props> = ({navigation}) => {
-  const [visible, setVisible] = React.useState(false);
-  const [errorMsg, setErrorMsg] = React.useState('');
-
-  const handleRegister = async (values: {
+  interface RegisterFormValues {
     username: string;
+    name: string;
+    surname: string;
     identityNumber: string;
     phoneNumber: string;
     email: string;
     password: string;
-  }) => {
-    setVisible(true);
-    navigation.navigate('Login');
+    passwordConfirm: string;
+  }
+  const userService = new UserService();
+  const [visible, setVisible] = React.useState(false);
+  const [errorMsg, setErrorMsg] = React.useState('');
+  const [submitError, setSubmitError] = React.useState('');
+
+  const handleRegister = async (
+    values: RegisterFormValues,
+    formikHelpers: FormikHelpers<RegisterFormValues>,
+  ) => {
+    formikHelpers.setSubmitting(true);
+    const user: User = new User({
+      username: values.username,
+      name: values.name,
+      surname: values.surname,
+      identityNumber: values.identityNumber,
+      phoneNumber: values.phoneNumber,
+      email: values.email,
+      password: values.password,
+    });
+    try {
+      const message = await userService.register(user);
+      setErrorMsg(message);
+      setVisible(true);
+      navigation.navigate('EmailConfirm', {emailOrIdentity: user.email});
+    } catch (error: any) {
+      setSubmitError(`${error.message}`);
+      formikHelpers.setSubmitting(false);
+    }
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={{flex: 1}}>
       <Formik
         initialValues={{
           username: '',
@@ -42,11 +70,14 @@ const RegisterScreen: React.FC<Props> = ({navigation}) => {
           phoneNumber: '',
           email: '',
           password: '',
-          confirmPassword: '',
+          passwordConfirm: '',
         }}
-        validationSchema={registerUserSchema}
+        validationSchema={bosSchema}
         onSubmit={handleRegister}>
         {({
+          setErrors,
+          setFieldError,
+          setFieldValue,
           handleChange,
           handleBlur,
           handleSubmit,
@@ -54,7 +85,13 @@ const RegisterScreen: React.FC<Props> = ({navigation}) => {
           errors,
           touched,
         }) => (
-          <>
+          <KeyboardAwareScrollView style={styles.container}>
+            {submitError && (
+              <Text
+                style={[CommonStyles.textStyles.error, {textAlign: 'center'}]}>
+                {submitError}
+              </Text>
+            )}
             <View style={styles.viewTextInput}>
               <TextInputComponent
                 label="Kullanıcı Adı"
@@ -65,6 +102,28 @@ const RegisterScreen: React.FC<Props> = ({navigation}) => {
                   touched.username && errors.username
                     ? errors.username
                     : undefined
+                }
+                style={styles.input}
+              />
+            </View>
+            <View style={styles.viewTextInput}>
+              <TextInputComponent
+                label="Ad"
+                value={values.name}
+                onChangeText={handleChange('name')}
+                onBlur={handleBlur('name')}
+                error={touched.name && errors.name ? errors.name : undefined}
+                style={styles.input}
+              />
+            </View>
+            <View style={styles.viewTextInput}>
+              <TextInputComponent
+                label="Soyad"
+                value={values.surname}
+                onChangeText={handleChange('surname')}
+                onBlur={handleBlur('surname')}
+                error={
+                  touched.surname && errors.surname ? errors.surname : undefined
                 }
                 style={styles.input}
               />
@@ -89,7 +148,9 @@ const RegisterScreen: React.FC<Props> = ({navigation}) => {
               <TextInputComponent
                 label="Telefon Numarası"
                 value={values.phoneNumber}
-                onChangeText={handleChange('phoneNumber')}
+                onChangeText={value => {
+                  setFieldValue('phoneNumber', value);
+                }}
                 onBlur={handleBlur('phoneNumber')}
                 error={
                   touched.phoneNumber && errors.phoneNumber
@@ -130,12 +191,17 @@ const RegisterScreen: React.FC<Props> = ({navigation}) => {
             <View style={styles.viewTextInput}>
               <TextInputComponent
                 label="Şifre Tekrar"
-                value={values.confirmPassword}
-                onChangeText={handleChange('confirmPassword')}
-                onBlur={handleBlur('confirmPassword')}
+                value={values.passwordConfirm}
+                onChangeText={handleChange('passwordConfirm')}
+                onBlur={() => {
+                  handleBlur('passwordConfirm');
+                  //if (values.password !== values.passwordConfirm) {
+                  //  setFieldError('passwordConfirm', 'Şifreler eşleşmiyor');
+                  //}
+                }}
                 error={
-                  touched.confirmPassword && errors.confirmPassword
-                    ? errors.confirmPassword
+                  touched.passwordConfirm && errors.passwordConfirm
+                    ? errors.passwordConfirm
                     : undefined
                 }
                 secureTextEntry
@@ -153,7 +219,7 @@ const RegisterScreen: React.FC<Props> = ({navigation}) => {
               style={styles.button}>
               Zaten hesabın var mı? Giriş Yap
             </Button>
-          </>
+          </KeyboardAwareScrollView>
         )}
       </Formik>
       <Snackbar
@@ -163,13 +229,14 @@ const RegisterScreen: React.FC<Props> = ({navigation}) => {
         style={styles.snackbar}>
         {errorMsg}
       </Snackbar>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     ...CommonStyles.viewStyles.container,
+    flexGrow: 1,
   },
   input: {
     marginBottom: styleNumbers.space,

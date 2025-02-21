@@ -1,4 +1,4 @@
-import {BaseEntity} from './base.entity';
+import {BaseEntity, BaseEntityOptions} from './base.entity';
 import {UserAddress} from './user.adress.entity';
 import {ElectionsAdmins} from './elections.admins.entity';
 import {ElectionAccessUsers} from './election.access.users.entity';
@@ -6,8 +6,7 @@ import {Vote} from './vote.entity';
 import {Comment} from './comment.entity';
 import {Like} from './like.entity';
 
-export interface UserOptions {
-  id: string;
+export interface UserOptions extends BaseEntityOptions {
   username: string;
   name: string;
   surname: string;
@@ -43,7 +42,7 @@ export class User extends BaseEntity {
   likes?: Like[] | null;
 
   constructor(options: UserOptions) {
-    super(options.id);
+    super({id: options.id});
     this.username = options.username;
     this.name = options.name;
     this.surname = options.surname;

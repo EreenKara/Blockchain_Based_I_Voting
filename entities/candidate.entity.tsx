@@ -1,12 +1,11 @@
-import {BaseEntity} from './base.entity';
+import {BaseEntity, BaseEntityOptions} from './base.entity';
 import {ElectionsAdmins} from './elections.admins.entity';
 import {Vote} from './vote.entity';
 import {Election} from './election.entity';
 import {User} from './user.entity';
 import {Story} from './story.entity';
 
-export interface CandidateOptions {
-  id: string;
+export interface CandidateOptions extends BaseEntityOptions {
   name: string;
   description: string;
   image: string;
@@ -32,7 +31,7 @@ export class Candidate extends BaseEntity {
   stories: Story[] | null;
 
   constructor(options: CandidateOptions) {
-    super(options.id);
+    super({id: options.id});
     this.name = options.name;
     this.description = options.description;
     this.image = options.image;

@@ -1,3 +1,4 @@
+import {User} from '@entities/user.entity';
 import {ElectionViewModel} from '@viewmodels/election.viewmodel';
 import {SehirViewModel} from '@viewmodels/sehir.viewmodel';
 
@@ -10,6 +11,7 @@ export type AuthStackParamList = {
   Login: undefined;
   Register: undefined;
   ForgotPassword: undefined;
+  EmailConfirm: {emailOrIdentity: string};
 };
 
 export type MainTabParamList = {

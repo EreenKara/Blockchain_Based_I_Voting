@@ -1,8 +1,11 @@
+export interface BaseEntityOptions {
+  id?: string | null;
+}
 export abstract class BaseEntity {
-  id: string;
+  id: string | null;
 
-  constructor(id: string) {
-    this.id = id;
+  constructor(options: BaseEntityOptions) {
+    this.id = options.id ?? null;
   }
 
   toJSON(): Record<string, any> {

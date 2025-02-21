@@ -1,11 +1,10 @@
-import {BaseEntity} from './base.entity';
+import {BaseEntity, BaseEntityOptions} from './base.entity';
 import {LikeType} from '../enums/like.type';
 import {Post} from './post.entity';
 import {Comment} from './comment.entity';
 import {User} from './user.entity';
 
-export interface LikeOptions {
-  id: string;
+export interface LikeOptions extends BaseEntityOptions {
   type: LikeType;
   post?: Post | null;
   comment?: Comment | null;
@@ -19,7 +18,7 @@ export class Like extends BaseEntity {
   type: LikeType;
 
   constructor(options: LikeOptions) {
-    super(options.id);
+    super({id: options.id});
     this.post = options.post ? Post.fromJSON(options.post) : null;
     this.comment = options.comment ? Comment.fromJSON(options.comment) : null;
     this.user = options.user ? User.fromJSON(options.user) : null;

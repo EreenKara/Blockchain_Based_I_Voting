@@ -33,6 +33,7 @@ module.exports = {
           '@viewmodels': './viewmodels',
           '@enums': './enums',
           '@icomponents': './src/components',
+          '@contexts': './src/contexts',
         },
       },
     ],

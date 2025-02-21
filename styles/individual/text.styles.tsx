@@ -13,6 +13,7 @@ interface TextStylesSchema {
   paragraph: TextStyle;
   small: TextStyle;
   link: TextStyle;
+  error: TextStyle;
 }
 const textStyles: TextStylesSchema = {
   // Başlık stilleri
@@ -47,6 +48,11 @@ const textStyles: TextStylesSchema = {
     ...baseText,
     color: Colors.getTheme().button,
     textDecorationLine: 'underline',
+  },
+  error: {
+    ...baseText,
+    color: Colors.getTheme().error,
+    fontSize: styleNumbers.textSize,
   },
 };
 

@@ -25,7 +25,8 @@
       "@entities/*": ["entities/*"],
       "@viewmodels/*": ["viewmodels/*"],
       "@enums/*": ["enums/*"],
-      "@icomponents/*": ["src/components/*"]
+      "@icomponents/*": ["src/components/*"],
+      "@contexts/*": ["src/contexts/*"]
     }
   },
   "include": [

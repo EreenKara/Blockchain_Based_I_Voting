@@ -1,9 +1,16 @@
+import ButtonComponent from '@components/Button/Button';
 import Colors from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
 import React, {useState, useEffect} from 'react';
 import {View, ScrollView, StyleSheet} from 'react-native';
 import {Text, Button, Card, Avatar} from 'react-native-paper';
+import {useAuth} from '@contexts/index';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParamList} from '@navigation/types';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {MainTabParamList} from '@navigation/types';
+import {useNavigation} from '@react-navigation/native';
 
 interface ProfileData {
   isCandidate: boolean;
@@ -13,7 +20,10 @@ interface ProfileData {
   following: number;
 }
 
-const ProfileScreen: React.FC = () => {
+type ScreenProps = NativeStackScreenProps<MainTabParamList, 'Profile'>;
+type RootProps = NativeStackNavigationProp<RootStackParamList>;
+const ProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
+  const rootNavigation = useNavigation<RootProps>();
   const [profileData, setProfileData] = useState<ProfileData>({
     isCandidate: false,
     biography: '',
@@ -21,6 +31,11 @@ const ProfileScreen: React.FC = () => {
     followers: 0,
     following: 0,
   });
+  const {logout} = useAuth();
+  const handleLogout = () => {
+    logout();
+    rootNavigation.navigate('Auth');
+  };
 
   const handleEditBiography = () => {
     // Biyografi düzenleme modalını aç
@@ -80,6 +95,9 @@ const ProfileScreen: React.FC = () => {
         <Button mode="outlined" onPress={handleSettings}>
           Kullanıcı Ayarları
         </Button>
+      </View>
+      <View>
+        <ButtonComponent title="Çıkış Yap" onPress={handleLogout} />
       </View>
     </ScrollView>
   );

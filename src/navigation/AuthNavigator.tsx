@@ -5,6 +5,9 @@ import {AuthStackParamList} from './types';
 import {LoginScreen} from '@screens/auth/index';
 import {RegisterScreen} from '@screens/auth/index';
 import {ForgotPasswordScreen} from '@screens/auth/index';
+import Colors from '@styles/common/colors';
+import CommonStyles from '@styles/common/commonStyles';
+import EmailConfirmScreen from '@screens/auth/EmailConfirm/email.confirm';
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
@@ -14,13 +17,15 @@ const AuthNavigator: React.FC = () => {
       initialRouteName="Login"
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#fff',
+          backgroundColor: Colors.getTheme().transition,
         },
         headerTintColor: '#000',
         headerTitleStyle: {
-          fontWeight: 'bold',
+          ...CommonStyles.textStyles.title,
+          color: Colors.getTheme().text,
         },
         headerShadowVisible: false,
+        headerTitleAlign: 'center',
       }}>
       <Stack.Screen
         name="Login"
@@ -43,6 +48,16 @@ const AuthNavigator: React.FC = () => {
         component={ForgotPasswordScreen}
         options={{
           title: 'Şifremi Unuttum',
+          headerShown: true,
+
+          presentation: 'modal',
+        }}
+      />
+      <Stack.Screen
+        name="EmailConfirm"
+        component={EmailConfirmScreen}
+        options={{
+          title: 'Doğrulama',
           headerShown: true,
           presentation: 'modal',
         }}

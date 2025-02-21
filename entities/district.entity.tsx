@@ -1,9 +1,8 @@
-import {BaseEntity} from './base.entity';
+import {BaseEntity, BaseEntityOptions} from './base.entity';
 import {City} from './city.entity';
 import {Neighborhood} from './neighbourdhood.entity';
 
-export interface DistrictOptions {
-  id: string;
+export interface DistrictOptions extends BaseEntityOptions {
   name: string;
   city?: City | null;
   neighborhoods?: Neighborhood[] | null;
@@ -15,7 +14,7 @@ export class District extends BaseEntity {
   name: string;
 
   constructor(options: DistrictOptions) {
-    super(options.id);
+    super({id: options.id});
     this.name = options.name;
     this.city = options.city ? City.fromJSON(options.city) : null;
     this.neighborhoods =

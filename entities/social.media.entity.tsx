@@ -1,9 +1,8 @@
-import {BaseEntity} from './base.entity';
+import {BaseEntity, BaseEntityOptions} from './base.entity';
 import {Election} from './election.entity';
 import {Post} from './post.entity';
 
-export interface SocialMediaOptions {
-  id: string;
+export interface SocialMediaOptions extends BaseEntityOptions {
   election?: Election | null;
   posts?: Post[] | null;
 }
@@ -13,7 +12,7 @@ export class SocialMedia extends BaseEntity {
   posts?: Post[] | null;
 
   constructor(options: SocialMediaOptions) {
-    super(options.id);
+    super({id: options.id});
     this.election = options.election
       ? Election.fromJSON(options.election)
       : null;

@@ -1,10 +1,9 @@
-import {BaseEntity} from './base.entity';
+import {BaseEntity, BaseEntityOptions} from './base.entity';
 import {Candidate} from './candidate.entity';
 import {Election} from './election.entity';
 import {User} from './user.entity';
 
-export interface VoteOptions {
-  id: string;
+export interface VoteOptions extends BaseEntityOptions {
   createdAt?: string;
   updatedAt?: string;
   election?: Election | null;
@@ -18,7 +17,7 @@ export class Vote extends BaseEntity {
   user?: User | null; // FK
 
   constructor(options: VoteOptions) {
-    super(options.id);
+    super({id: options.id});
     this.election = options.election
       ? Election.fromJSON(options.election)
       : null;

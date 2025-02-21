@@ -1,8 +1,9 @@
+import {hasSubscribers} from 'diagnostics_channel';
 import Yup, {object, string, number, date, ref} from 'yup';
 
 const nameValidation = string().required();
 const surnameValidation = string().required();
-const TCValidation = string()
+const identityNumberValidation = string()
   .length(11)
   .required('TC girilmesi zorunlu bir alandır.')
   .matches(
@@ -34,7 +35,9 @@ const ageValidation = number()
   .required()
   .positive()
   .integer();
-const emailValidation = string().email();
+const emailValidation = string()
+  .required('E-mail gereklidir')
+  .email('Geçersiz e-mail adresi');
 const birthDateValidation = date()
   .required()
   .max(new Date(), 'Doğum tarihi gelecekte olamaz') // Gelecek tarih olamaz;
@@ -66,18 +69,20 @@ const passwordValidation = string()
 
 const passwordConfirmValidation = string()
   .required('Şifre zorunludur')
-  .oneOf([ref('password')]); // obje oluştururken password vereceğimizden burası passwordVAlidation değil password kalmalı
+  .oneOf([ref('password')], 'Şifreler eşleşmiyor'); // obje oluştururken password vereceğimizden burası passwordVAlidation değil password kalmalı
 
-const phoneValidation = string().required('Telefon numarası gereklidir');
+const phoneValidation = string()
+  .required('Telefon numarası gereklidir')
+  .matches(/^[0-9]{10}$/, 'Geçersiz telefon numarası');
 const userNameValidation = string().required('Kullanıcı adı gereklidir');
 
 const registerUserSchema = object({
+  username: userNameValidation,
   name: nameValidation,
   surname: surnameValidation,
-  TC: TCValidation,
-  age: ageValidation,
+  identityNumber: identityNumberValidation,
+  phoneNumber: phoneValidation,
   email: emailValidation,
-  birthDate: birthDateValidation,
   password: passwordValidation,
   passwordConfirm: passwordConfirmValidation,
 });

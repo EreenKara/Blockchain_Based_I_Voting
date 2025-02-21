@@ -1,10 +1,9 @@
-import {BaseEntity} from './base.entity';
+import {BaseEntity, BaseEntityOptions} from './base.entity';
 import {Like} from './like.entity';
 import {Post} from './post.entity';
 import {User} from './user.entity';
 
-export interface CommentOptions {
-  id: string;
+export interface CommentOptions extends BaseEntityOptions {
   content: string;
   post?: Post | null;
   user?: User | null;
@@ -18,7 +17,7 @@ export class Comment extends BaseEntity {
   likes: Like[] | null;
 
   constructor(options: CommentOptions) {
-    super(options.id);
+    super({id: options.id});
     this.content = options.content;
     this.post = options.post ? Post.fromJSON(options.post) : null;
     this.user = options.user ? User.fromJSON(options.user) : null;

@@ -1,9 +1,8 @@
-import {BaseEntity} from './base.entity';
+import {BaseEntity, BaseEntityOptions} from './base.entity';
 import {Election} from './election.entity';
 import {User} from './user.entity';
 
-export interface ElectionAccessUsersOptions {
-  id: string;
+export interface ElectionAccessUsersOptions extends BaseEntityOptions {
   user?: User | null;
   election?: Election | null;
 }
@@ -14,7 +13,7 @@ export class ElectionAccessUsers extends BaseEntity {
   election: Election | null;
 
   constructor(options: ElectionAccessUsersOptions) {
-    super(options.id);
+    super({id: options.id});
     this.user = options.user ? User.fromJSON(options.user) : null;
     this.election = options.election
       ? Election.fromJSON(options.election)

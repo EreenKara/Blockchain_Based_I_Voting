@@ -1,9 +1,8 @@
-import {BaseEntity} from './base.entity'; // BaseEntity'nin import edildiğini varsayıyorum
+import {BaseEntity, BaseEntityOptions} from './base.entity'; // BaseEntity'nin import edildiğini varsayıyorum
 import {Candidate} from './candidate.entity';
 import {SocialMedia} from './social.media.entity';
 
-export interface StoryOptions {
-  id: string;
+export interface StoryOptions extends BaseEntityOptions {
   image: string;
   content: string;
   candidate?: Candidate | null;
@@ -17,7 +16,7 @@ export class Story extends BaseEntity {
   socialMedia?: SocialMedia | null; // FK
 
   constructor(options: StoryOptions) {
-    super(options.id);
+    super({id: options.id});
     this.image = options.image;
     this.content = options.content;
     this.candidate = options.candidate

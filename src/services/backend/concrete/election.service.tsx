@@ -7,7 +7,7 @@ export class ElectionService
   implements IElectionService
 {
   constructor() {
-    super('elections');
+    super('/election/api/elections');
   }
   async getElectionsByCity(cityId: number): Promise<Election[]> {
     const response = await this.api.get(`/elections/city/${cityId}`);

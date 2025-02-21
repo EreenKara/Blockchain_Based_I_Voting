@@ -6,7 +6,6 @@ import {AuthStackParamList} from '@navigation/types';
 import styleNumbers from '@styles/common/style.numbers';
 import CommonStyles from '@styles/common/commonStyles';
 import Colors from '@styles/common/colors';
-import ButtonComponent from '@components/Button/Button';
 import TextInputComponent from '@components/TextInput/text.input';
 type Props = NativeStackScreenProps<AuthStackParamList, 'ForgotPassword'>;
 
@@ -53,16 +52,24 @@ const ForgotPasswordScreen: React.FC<Props> = ({navigation}) => {
           style={styles.input}
         />
       </View>
-      <ButtonComponent
-        title="Şifre Sıfırlama Bağlantısı Gönder"
+      <Button
+        labelStyle={[
+          CommonStyles.textStyles.paragraph,
+          {color: Colors.getTheme().button},
+        ]}
         onPress={handleResetPassword}
-        style={styles.button}
-      />
-      <ButtonComponent
-        title="Giriş Ekranına Dön"
+        style={styles.button}>
+        Şifre Sıfırlama Bağlantısı Gönder
+      </Button>
+      <Button
+        labelStyle={[
+          CommonStyles.textStyles.paragraph,
+          {color: Colors.getTheme().button},
+        ]}
         onPress={() => navigation.goBack()}
-        style={styles.button}
-      />
+        style={styles.button}>
+        Giriş Ekranına Dön
+      </Button>
       <Snackbar
         visible={visible}
         onDismiss={() => setVisible(false)}

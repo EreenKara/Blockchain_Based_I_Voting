@@ -1,11 +1,10 @@
-import {BaseEntity} from './base.entity'; // BaseEntity'nin import edildiğini varsayıyorum
+import {BaseEntity, BaseEntityOptions} from './base.entity';
 import {City} from './city.entity';
 import {District} from './district.entity';
 import {Neighborhood} from './neighbourdhood.entity';
 import {Election} from './election.entity';
 
-export interface ElectionAddressOptions {
-  id: string;
+export interface ElectionAddressOptions extends BaseEntityOptions {
   city: City;
   district: District;
   neighborhood: Neighborhood;
@@ -19,7 +18,7 @@ export class ElectionAddress extends BaseEntity {
   neighborhood: Neighborhood; // FK
 
   constructor(options: ElectionAddressOptions) {
-    super(options.id);
+    super({id: options.id});
     this.city = City.fromJSON(options.city);
     this.district = District.fromJSON(options.district);
     this.neighborhood = Neighborhood.fromJSON(options.neighborhood);

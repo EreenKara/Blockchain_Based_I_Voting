@@ -1,11 +1,10 @@
-import {BaseEntity} from './base.entity';
+import {BaseEntity, BaseEntityOptions} from './base.entity';
 import {City} from './city.entity';
 import {District} from './district.entity';
 import {Neighborhood} from './neighbourdhood.entity';
 import {User} from './user.entity';
 
-export interface UserAddressOptions {
-  id: string;
+export interface UserAddressOptions extends BaseEntityOptions {
   buildingNumber: string;
   city: City;
   district: District;
@@ -21,7 +20,7 @@ export class UserAddress extends BaseEntity {
   buildingNumber: string;
 
   constructor(options: UserAddressOptions) {
-    super(options.id);
+    super({id: options.id});
     this.buildingNumber = options.buildingNumber;
     this.city = City.fromJSON(options.city);
     this.district = District.fromJSON(options.district);
