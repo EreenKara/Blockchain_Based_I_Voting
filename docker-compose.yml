@@ -15,6 +15,8 @@ services:
       - "5432:5432"
     networks:
       - ivote-network
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sq
 
   user-service:
     build: ./user-service
@@ -167,5 +169,24 @@ services:
     volumes:
       - ./gateway:/gateway
       - /gateway/node_modules
+    networks:
+      - ivote-network
+
+  adress-service:
+    build: ./adress-service
+    container_name: adress-service
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ivote
+      DB_USER: postgres
+      DB_PASSWORD: 123456
+    ports:
+      - "5007:5007"
+    depends_on:
+      - postgres
+    volumes:
+      - ./adress-service:/adress-service
+      - /adress-service/node_modules
     networks:
       - ivote-network
