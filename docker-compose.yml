@@ -16,7 +16,7 @@ services:
     networks:
       - ivote-network
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sq
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   user-service:
     build: ./user-service
