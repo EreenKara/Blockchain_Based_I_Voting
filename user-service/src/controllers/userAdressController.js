@@ -1,4 +1,4 @@
-const {createUserAdress}=require("../services/userAdressService");
+const {createUserAdress,getAddressByUserId}=require("../services/userAdressService");
 
 const createUserAdressController=async(req,res)=>{
     try{
@@ -7,4 +7,11 @@ const createUserAdressController=async(req,res)=>{
         res.status(500).json({message:"an error occured while creating the user adress"});
     }
 };
-module.exports={createUserAdressController};
+const getAddressByUserIdController=async(req,res)=>{
+    try{
+        await getAddressByUserId(req,res);
+    }catch(error){
+        res.status(500).json({error:error.message})
+    }
+};
+module.exports={createUserAdressController,getAddressByUserIdController};

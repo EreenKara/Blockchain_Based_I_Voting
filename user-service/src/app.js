@@ -14,5 +14,5 @@ app.use('/api/userAdresses',userAdressRoute);
 
 sequelize.sync().then(() => {
     console.log("Database connected!");
-    app.listen(5004, () => console.log("Address Service running on port 5001"));
+    app.listen(5004, () => console.log("User Service running on port 5001"));
   });

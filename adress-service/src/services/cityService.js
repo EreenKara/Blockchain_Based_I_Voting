@@ -1,30 +1,48 @@
 const City = require("../models/City"); // City modelini içe aktar
 
-const CityService = {
-  async getAllCities() {
-    return await City.findAll();
-  },
+const createCity=async (req, res)=>{
+  const {name,countryId}=req.body;
 
-  async getCityById(id) {
-    return await City.findByPk(id);
-  },
+  if(!name||!countryId){
+    return res.status(400).json({message:"city or countryId is required"});
+  }
+  try{
+    const city=await City.create({
+      name,
+      countryId
+    });
+    res.status(201).json({message:"city created successfully",city});
+  }catch(error){
+    res.status(400).json({error:error.message})
+  }
+  
+};
+const getCityListAll=async()=>{
+ try{
+  const cities=await City.findAll();
+  return cities;
+}catch(error){
+  console.error("error:",error.message);
+  throw new Error("Unable to fetch districts")
+ }
+};
+const getCityById = async (id) => {
+  try {
+    console.log("Gelen ID:", id);  // Debug için ID'yi yazdır
 
-  async createCity(data) {
-    return await City.create(data); // Şehir oluşturma
-  },
+    if (!id) {
+      throw new Error("ID is required");
+    }
 
-  async updateCity(id, data) {
     const city = await City.findByPk(id);
-    if (!city) return null;
-    return await city.update(data);
-  },
+    if (!city) {
+      throw new Error("city is not found");
+    }
 
-  async deleteCity(id) {
-    const city = await City.findByPk(id);
-    if (!city) return null;
-    await city.destroy();
-    return true;
+    return city;
+  } catch (error) {
+    console.error("Error:", error.message);
+    throw new Error("Unable to fetch city");
   }
 };
-
-module.exports = CityService;
+module.exports = {createCity,getCityListAll,getCityById};

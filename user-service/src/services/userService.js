@@ -6,9 +6,9 @@ const {userValidationSchema} = require('../models/User');
 
 const registerUser = async (req, res) => {
   try {
-    const { name, surname, identityNumber, email, phoneNumber, password } = req.body;
+    const { name, surname, identityNumber, email, phoneNumber, password,imageUrl } = req.body;
     await userValidationSchema.validate({
-      name, surname, identityNumber, email, phoneNumber, password
+      name, surname, identityNumber, email, phoneNumber, password,imageUrl
     }, { abortEarly: false });
 
     // Unique alanların kontrolü
@@ -42,8 +42,24 @@ const registerUser = async (req, res) => {
       phoneNumber,
       password: hashedPassword,
       hasPaidBalance: false,
+      imageUrl:imageUrl||null,
     });
 
+    if (imageUrl) {
+      try {
+        // Image yükleme mikroservisi çağrısı
+        const imageResponse = await axios.post(`${process.env.IMAGE_SERVICE_URL}/api/images/upload`, {
+          imageUrl: imageUrl
+        });
+
+        // Yüklenen resmin path bilgisini kullanıcıya ekle
+        user.imageUrl = imageResponse.data.image.path;
+        await user.save();
+      } catch (error) {
+        console.error("Resim yüklenirken hata: ", error);
+        res.status(500).json({ message: "Resim yüklenirken bir hata oluştu." });
+      }
+    }
     // Doğrulama kodunu oluştur (6 basamaklı rastgele bir sayı)
     const verificationCode = Math.floor(100000 + Math.random() * 900000);
 
@@ -194,5 +210,26 @@ const getUserByIdentityNumber = async (identityNumber) => {
     throw new Error("Kullanıcı bilgileri getirilirken bir hata oluştu.");
   }
 };
+const getUserWithAdress=async(userId)=>{
+  try {
+    // Kullanıcıyı ID'ye göre getir
+    const user = await User.findByPk(userId); 
+    if (!user) {
+      throw new Error("Kullanıcı bulunamadı");
+    }
 
-module.exports = { registerUser, authanticateUser, getUsers, getUserById, verifyCodeAndActivate, getUserByIdentityNumber };
+    // Kullanıcı adresini almak için address-service'e istek gönder
+    const userAddressResponse = await axios.get(`${process.env.ADDRESS_SERVICE_URL}/api/userAdress/${userId}`);
+    const userAddress = userAddressResponse.data;
+
+    // Kullanıcı bilgileri ve adres bilgilerini birleştirerek döndür
+    return {
+      ...user.toJSON(), // Kullanıcı bilgileri
+      address: userAddress || null // Adres bilgisi
+    };
+  } catch (error) {
+    throw new Error("Kullanıcı bilgileri getirilirken bir hata oluştu.");
+  }
+};
+
+module.exports = { registerUser, authanticateUser, getUsers, getUserById, verifyCodeAndActivate, getUserByIdentityNumber,getUserWithAdress };

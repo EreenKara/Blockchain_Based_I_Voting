@@ -1,61 +1,34 @@
-const CityService = require("../services/cityService");
+const {
+  createCity,getCityListAll,getCityById
 
-const CityController = {
-  async getAllCities(req, res) {
-    try {
-      const cities = await CityService.getAllCities();
-      res.json(cities);
-    } catch (err) {
-      res.status(500).json({ message: "Error fetching cities" });
-    }
-  },
+} = require("../services/cityService");
 
-  async getCityById(req, res) {
-    try {
-      const city = await CityService.getCityById(req.params.id);
-      if (!city) {
-        return res.status(404).json({ message: "City not found" });
-      }
-      res.json(city);
-    } catch (err) {
-      res.status(500).json({ message: "Error fetching city" });
-    }
-  },
+const createCityController=async (req,res)=> {
+  try{
+    await createCity(req,res);
 
-  async createCity(req, res) {
-    try {
-      const { name, cityId } = req.body;
-      const district = await districtService.createDistrict(name, cityId);
-      return res.status(201).json(district);
-    } catch (error) {
-      console.error("Controller - Error creating district:", error);
-      return res.status(500).json({ message: "Error creating district", error: error.message });
-    }
-  },
+  }catch(err){
+    res.status(500).json({message:"an error occured while creating the district"});
 
-  async updateCity(req, res) {
-    try {
-      const updatedCity = await CityService.updateCity(req.params.id, req.body);
-      if (!updatedCity) {
-        return res.status(404).json({ message: "City not found" });
-      }
-      res.json(updatedCity);
-    } catch (err) {
-      res.status(500).json({ message: "Error updating city" });
-    }
-  },
-
-  async deleteCity(req, res) {
-    try {
-      const isDeleted = await CityService.deleteCity(req.params.id);
-      if (!isDeleted) {
-        return res.status(404).json({ message: "City not found" });
-      }
-      res.json({ message: "City deleted successfully" });
-    } catch (err) {
-      res.status(500).json({ message: "Error deleting city" });
-    }
   }
 };
+const getCityList=async(req,res)=>{
 
-module.exports = CityController;
+  try{
+    const cities =await getCityListAll();
+    res.status(200).json({cities})
+  }catch(error){
+    res.status(500).json({error:error.message});
+  }
+};
+const getCityByIdController=async(req,res)=>{
+  const {id}=req.params;
+  try {
+  
+    const city=await getCityById(id);
+    res.status(200).json({city})
+  }catch (error){
+    res.status(500).json({error:error.message});
+  }
+};
+module.exports={createCityController,getCityList,getCityByIdController};

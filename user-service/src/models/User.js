@@ -32,24 +32,25 @@ const userValidationSchema = yup.object().shape({
       /^[1-9][0-9]{10}$/, 
       'TC Kimlik Numarası 11 haneli ve geçerli olmalıdır'
     )
-    .test('isValidTC', 'Geçersiz TC Kimlik Numarası', (value) => {
-      const digits = value.split('').map(Number);
+    // .test('isValidTC', 'Geçersiz TC Kimlik Numarası', (value) => {
+    //   const digits = value.split('').map(Number);
 
-      // 1. kural: İlk 10 haneye göre 11. haneyi doğrula
-      const oddSum = digits[0] + digits[2] + digits[4] + digits[6] + digits[8];
-      const evenSum = digits[1] + digits[3] + digits[5] + digits[7];
-      const checkDigit10 = (oddSum * 7 - evenSum) % 10;
+    //   // 1. kural: İlk 10 haneye göre 11. haneyi doğrula
+    //   const oddSum = digits[0] + digits[2] + digits[4] + digits[6] + digits[8];
+    //   const evenSum = digits[1] + digits[3] + digits[5] + digits[7];
+    //   const checkDigit10 = (oddSum * 7 - evenSum) % 10;
 
-      if (checkDigit10 !== digits[9]) return false;
+    //   if (checkDigit10 !== digits[9]) return false;
 
-      // 2. kural: İlk 10 hanenin toplamına göre 11. haneyi doğrula
-      const totalSum = digits.slice(0, 10).reduce((sum, digit) => sum + digit, 0);
-      const checkDigit11 = totalSum % 10;
+    //   // 2. kural: İlk 10 hanenin toplamına göre 11. haneyi doğrula
+    //   const totalSum = digits.slice(0, 10).reduce((sum, digit) => sum + digit, 0);
+    //   const checkDigit11 = totalSum % 10;
 
-      if (checkDigit11 !== digits[10]) return false;
+    //   if (checkDigit11 !== digits[10]) return false;
 
-      return true;
-    }),
+    //   return true;
+    // })
+    ,
     
   email: yup.string()
     .email('Geçersiz e-posta formatı')
@@ -119,6 +120,10 @@ const User = sequelize.define('User', {
     defaultValue: false,
   },
   verificationCode: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  imageUrl: {
     type: DataTypes.STRING,
     allowNull: true,
   },

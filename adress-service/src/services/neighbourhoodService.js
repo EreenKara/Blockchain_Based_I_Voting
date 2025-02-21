@@ -26,16 +26,23 @@ return neighbourhood;
 }
 };
 
-const getNeighbourhoodById=async(req,res)=>{
-    const {id}=req.body;
-    try{
-        const neighbourhood=await Neighbourhood.findByPk(id);
-        if(!neighbourhoods){
-            throw new Error("Neighbourhood is not found ")
+const getNeighbourhoodById=async(id)=>{
+    try {
+        console.log("Gelen ID:", id);  // Debug için ID'yi yazdır
+    
+        if (!id) {
+          throw new Error("ID is required");
         }
-        return neighbourhood;
-    }catch(error){
-        res.status(400).json({error:error.message});
-    }
+    
+        const neighboorhood = await Neighbourhood.findByPk(id);
+        if (!neighboorhood) {
+          throw new Error("Neighboorhood is not found");
+        }
+    
+        return neighboorhood;
+      } catch (error) {
+        console.error("Error:", error.message);
+        throw new Error("Unable to fetch neighboorhood");
+      }
 }; 
 module.exports={createNeighbourhood,getNeighbourhoodList,getNeighbourhoodById};

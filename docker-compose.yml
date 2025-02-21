@@ -190,3 +190,21 @@ services:
       - /adress-service/node_modules
     networks:
       - ivote-network
+  image-service:
+    build: ./image-service
+    container_name: image-service
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ivote
+      DB_USER: postgres
+      DB_PASSWORD: 123456
+    ports:
+      - "5008:5008"
+    depends_on:
+      - postgres
+    volumes:
+      - ./image-service:/image-service
+      - /image-service/node_modules
+    networks:
+      - ivote-network
