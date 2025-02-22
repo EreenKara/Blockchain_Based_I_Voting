@@ -2,7 +2,6 @@ import React, {useState, useContext} from 'react';
 import {View, StyleSheet, Platform} from 'react-native';
 import {TextInput, Button, Snackbar, Text} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {AuthContext} from '../../../../App';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
 import styleNumbers from '@styles/common/style.numbers';

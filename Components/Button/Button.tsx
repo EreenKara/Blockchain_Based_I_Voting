@@ -6,6 +6,7 @@ import {
   TextStyle,
   TouchableOpacityProps,
   View,
+  StyleProp,
 } from 'react-native';
 import {buttonStyles as styles} from './Button.style';
 import Colors from '@styles/common/colors';
@@ -13,7 +14,7 @@ import Colors from '@styles/common/colors';
 interface ButtonProps extends TouchableOpacityProps {
   title: string;
   onPress: () => void;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   textStyle?: TextStyle;
   disabled?: boolean;
   variant?: 'primary' | 'outline';

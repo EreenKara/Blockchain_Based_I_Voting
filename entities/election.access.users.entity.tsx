@@ -1,3 +1,4 @@
+/*
 import {BaseEntity, BaseEntityOptions} from './base.entity';
 import {Election} from './election.entity';
 import {User} from './user.entity';
@@ -20,3 +21,4 @@ export class ElectionAccessUsers extends BaseEntity {
       : null;
   }
 }
+*/

@@ -11,6 +11,7 @@ interface ColorsSchema {
   disabled: string;
   transparentColor: string;
   error: string;
+  errorButton: string;
   borderColor: string;
   indicator: string;
   icon: string;
@@ -27,6 +28,7 @@ const light: ColorsSchema = {
   transparentColor: 'rgba(0,0,0,0.3)', // arka plan'ın blurlaşmasının rengi
 
   error: 'red', // hata renkleri
+  errorButton: '#891515', // hata renkleri
   borderColor: '#056161',
   indicator: '#0a7ea4', // herhangi tutmaç, garip button gibi etkileşime girilebilen öğenin içerisindeki kısım. Switch'in kafası örneğin.
   icon: '#687076',
@@ -44,6 +46,7 @@ const dark: ColorsSchema = {
   transparentColor: 'rgba(255,255,255,0.4)',
 
   error: 'red',
+  errorButton: '#891515',
   borderColor: '#fff',
   indicator: '#0a7ea4',
   icon: '#9BA1A6',

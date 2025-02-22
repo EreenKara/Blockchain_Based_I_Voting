@@ -31,3 +31,10 @@ export type HomeStackParamList = {
   Elections: undefined;
   SpecificElection: {sehir: SehirViewModel; election: ElectionViewModel};
 };
+
+export type ProfileStackParamList = {
+  ProfileMain: undefined;
+  Payment: undefined;
+  Settings: undefined;
+  AddCard: undefined;
+};

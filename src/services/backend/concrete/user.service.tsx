@@ -9,6 +9,10 @@ export class UserService
   constructor() {
     super('/user/api/users');
   }
+  async getCurrentUser(): Promise<User> {
+    const response = await this.api.get<User>(`${this.endpoint}/current`);
+    return response.data;
+  }
   async getUsersByEmail(email: string): Promise<User[]> {
     const response = await this.api.get<User[]>(
       `${this.endpoint}?email=${email}`,
@@ -23,7 +27,9 @@ export class UserService
       return response.data.message;
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
-        let message = error.response?.data.message;
+        let message =
+          error.response?.data.message ??
+          'Registration failed by some reasons.';
         error.response?.data.errors?.map((error: any) => {
           message += `\n ${error}`;
         });

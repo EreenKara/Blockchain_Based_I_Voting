@@ -1,5 +1,5 @@
 import React, {useContext, useEffect} from 'react';
-import {View, StyleSheet, Text, SafeAreaView} from 'react-native';
+import {View, StyleSheet, Text, SafeAreaView, Image} from 'react-native';
 import {Button, Snackbar, Checkbox} from 'react-native-paper';
 import type {
   NativeStackScreenProps,
@@ -16,7 +16,7 @@ import styleNumbers from '@styles/common/style.numbers';
 import Colors from '@styles/common/colors';
 import {bosSchema, loginUserSchema} from '@utility/validations';
 import {UserService} from '@services/backend/concrete/user.service';
-import {useAuth} from '@contexts/index';
+import {useAuthContext} from '@contexts/index';
 import ActivityIndicatorComponent from '@shared/activity.indicator';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
@@ -31,7 +31,7 @@ const LoginScreen: React.FC<Props> = ({navigation}) => {
   }
   const homeNavigation = useNavigation<RootProps>();
   const [loading, setLoading] = React.useState(false);
-  const {login, rememberUser, getUser} = useAuth();
+  const {login, rememberUser, getUser} = useAuthContext();
   const [visible, setVisible] = React.useState(false);
   const [message, setMessage] = React.useState('');
   const [submitError, setSubmitError] = React.useState('');
@@ -59,8 +59,8 @@ const LoginScreen: React.FC<Props> = ({navigation}) => {
         rememberUser(values.email);
       }
       login(token);
-      setVisible(true);
       setMessage('Giris basarili');
+      setVisible(true);
       homeNavigation.navigate('Main');
     } catch (error: any) {
       setSubmitError(error.message);
@@ -76,6 +76,12 @@ const LoginScreen: React.FC<Props> = ({navigation}) => {
         CommonStyles.viewStyles.container,
         CommonStyles.safearea,
       ]}>
+      <View style={styles.logoContainer}>
+        <Image
+          source={require('@assets/images/navlogo.png')}
+          style={styles.logo}
+        />
+      </View>
       <Formik
         initialValues={initialValues}
         validationSchema={bosSchema}
@@ -207,6 +213,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 10,
     backgroundColor: Colors.getTheme().button,
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: styleNumbers.spaceLarge,
+  },
+  logo: {
+    width: 200,
+    height: 200,
   },
 });
 

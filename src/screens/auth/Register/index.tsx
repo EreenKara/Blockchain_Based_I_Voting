@@ -72,7 +72,7 @@ const RegisterScreen: React.FC<Props> = ({navigation}) => {
           password: '',
           passwordConfirm: '',
         }}
-        validationSchema={bosSchema}
+        validationSchema={registerUserSchema}
         onSubmit={handleRegister}>
         {({
           setErrors,

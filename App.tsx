@@ -11,6 +11,7 @@ import styleNumbers from '@styles/common/style.numbers';
 import ActivityIndicatorComponent from './src/shared/activity.indicator';
 import ErrorScreenComponent from './src/shared/error.screen';
 import {AuthProvider} from '@contexts/index';
+import {UserProvider} from '@contexts/index';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -40,16 +41,18 @@ const App = () => {
 
   return (
     <AuthProvider>
-      <PaperProvider>
-        <NavigationContainer>
-          <Stack.Navigator
-            initialRouteName="Auth"
-            screenOptions={{headerShown: false}}>
-            <Stack.Screen name="Auth" component={AuthNavigator} />
-            <Stack.Screen name="Main" component={MainNavigator} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </PaperProvider>
+      <UserProvider>
+        <PaperProvider>
+          <NavigationContainer>
+            <Stack.Navigator
+              initialRouteName="Auth"
+              screenOptions={{headerShown: false}}>
+              <Stack.Screen name="Auth" component={AuthNavigator} />
+              <Stack.Screen name="Main" component={MainNavigator} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </PaperProvider>
+      </UserProvider>
     </AuthProvider>
   );
 };

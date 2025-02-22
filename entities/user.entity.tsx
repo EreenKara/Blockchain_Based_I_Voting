@@ -1,10 +1,10 @@
 import {BaseEntity, BaseEntityOptions} from './base.entity';
 import {UserAddress} from './user.adress.entity';
 import {ElectionsAdmins} from './elections.admins.entity';
-import {ElectionAccessUsers} from './election.access.users.entity';
 import {Vote} from './vote.entity';
 import {Comment} from './comment.entity';
 import {Like} from './like.entity';
+import {Election} from './election.entity';
 
 export interface UserOptions extends BaseEntityOptions {
   username: string;
@@ -18,7 +18,7 @@ export interface UserOptions extends BaseEntityOptions {
   image?: string | null;
   address?: UserAddress | null;
   electionsAdmins?: ElectionsAdmins[] | null;
-  electionAccessUsers?: ElectionAccessUsers[] | null;
+  electionsAccess?: Election[] | null;
   votes?: Vote[] | null;
   comments?: Comment[] | null;
   likes?: Like[] | null;
@@ -36,7 +36,7 @@ export class User extends BaseEntity {
   image?: string;
   address?: UserAddress | null;
   electionsAdmins?: ElectionsAdmins[] | null;
-  electionAccessUsers?: ElectionAccessUsers[] | null;
+  electionsAccess?: Election[] | null;
   votes?: Vote[] | null;
   comments?: Comment[] | null;
   likes?: Like[] | null;
@@ -56,8 +56,8 @@ export class User extends BaseEntity {
     this.electionsAdmins = options.electionsAdmins?.map(admin =>
       ElectionsAdmins.fromJSON(admin),
     );
-    this.electionAccessUsers = options.electionAccessUsers?.map(user =>
-      ElectionAccessUsers.fromJSON(user),
+    this.electionsAccess = options.electionsAccess?.map(election =>
+      Election.fromJSON(election),
     );
     this.votes = options.votes?.map(vote => Vote.fromJSON(vote));
     this.comments = options.comments?.map(comment => Comment.fromJSON(comment));

@@ -2,7 +2,7 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {MainTabParamList} from '@navigation/types';
 import HomeNavigator from '@navigation/HomeNavigator';
-import ProfileScreen from '@screens/profile/Profile';
+import ProfileNavigator from '@navigation/ProfileNavigator';
 import SocialMediaScreen from '@screens/social/SocialMedia';
 import {Image, StyleSheet} from 'react-native';
 
@@ -38,7 +38,7 @@ const MainNavigator: React.FC = () => {
         },
       })}>
       <Tab.Screen name="Home" component={HomeNavigator} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Profile" component={ProfileNavigator} />
       <Tab.Screen name="SocialMedia" component={SocialMediaScreen} />
     </Tab.Navigator>
   );
