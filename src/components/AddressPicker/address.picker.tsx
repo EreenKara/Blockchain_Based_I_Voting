@@ -8,7 +8,7 @@ import CommonStyles from '@styles/common/commonStyles';
 
 interface AddressPickerComponentProps {
   values: FormValues;
-  handleChange: (field: string, value: string) => void;
+  setFieldValue: (field: string, value: any) => void;
 }
 
 // Türkiye'nin illeri (örnek veri)
@@ -29,7 +29,7 @@ const districts: {[key: string]: string[]} = {
 
 const AddressPickerComponent = ({
   values,
-  handleChange,
+  setFieldValue,
 }: AddressPickerComponentProps) => {
   const [availableDistricts, setAvailableDistricts] = useState<string[]>([]);
 
@@ -38,24 +38,25 @@ const AddressPickerComponent = ({
       setAvailableDistricts(districts[values.city]);
       // Eğer seçili ilçe, yeni şehrin ilçeleri arasında yoksa ilçe seçimini sıfırla
       if (!districts[values.city].includes(values.district)) {
-        handleChange('district', '');
+        setFieldValue('district', '');
       }
     } else {
       setAvailableDistricts([]);
-      handleChange('district', '');
+      setFieldValue('district', '');
     }
   }, [values.city]);
 
   return (
     <View style={styles.addressContainer}>
       <View style={styles.pickerContainer}>
-        <Text style={[CommonStyles.textStyles.paragraph, styles.label]}>
+        <Text
+          style={[CommonStyles.textStyles.paragraph, styles.label, {left: 10}]}>
           Şehir
         </Text>
         <View style={styles.pickerWrapper}>
           <Picker
             selectedValue={values.city}
-            onValueChange={value => handleChange('city', value)}
+            onValueChange={value => setFieldValue('city', value)}
             style={styles.picker}
             dropdownIconColor={Colors.getTheme().text}>
             <Picker.Item
@@ -76,13 +77,14 @@ const AddressPickerComponent = ({
       </View>
 
       <View style={styles.pickerContainer}>
-        <Text style={[CommonStyles.textStyles.paragraph, styles.label]}>
+        <Text
+          style={[CommonStyles.textStyles.paragraph, styles.label, {left: 10}]}>
           İlçe
         </Text>
         <View style={styles.pickerWrapper}>
           <Picker
             selectedValue={values.district}
-            onValueChange={value => handleChange('district', value)}
+            onValueChange={value => setFieldValue('district', value)}
             enabled={!!values.city}
             style={styles.picker}
             dropdownIconColor={Colors.getTheme().text}>
@@ -112,6 +114,7 @@ const styles = StyleSheet.create({
   addressContainer: {
     flexDirection: 'column',
     gap: styleNumbers.space,
+    marginBottom: styleNumbers.space * 3,
   },
   pickerContainer: {
     marginTop: styleNumbers.space * 2,
@@ -119,12 +122,14 @@ const styles = StyleSheet.create({
   label: {
     marginBottom: styleNumbers.spaceLittle,
     color: Colors.getTheme().text,
+    fontSize: styleNumbers.textSize * 0.9,
   },
   pickerWrapper: {
-    borderWidth: 1,
+    borderWidth: styleNumbers.borderWidth,
     borderColor: Colors.getTheme().borderColor,
     borderRadius: styleNumbers.borderRadius,
     backgroundColor: Colors.getTheme().background,
+    ...CommonStyles.shadowStyle,
   },
   picker: {
     color: Colors.getTheme().text,

@@ -6,12 +6,12 @@ import Colors from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
 import {useCamera} from '@hooks/useCamera';
 
-interface ExtendedAsset extends Asset {
+export interface ExtendedAsset extends Asset {
   containerWidth?: number;
   containerHeight?: number;
 }
 
-interface ImagePickerComponentProps {
+export interface ImagePickerComponentProps {
   image: ExtendedAsset | null;
   fieldName: string;
   setFieldValue: (field: string, value: any) => void;

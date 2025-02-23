@@ -1,11 +1,10 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text} from 'react-native';
 import {Snackbar} from 'react-native-paper';
 import TextInputComponent from '@components/TextInput/text.input';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
 import {Formik} from 'formik';
-import {Asset} from 'react-native-image-picker';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Colors from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
@@ -14,16 +13,13 @@ import styles from './index.style';
 
 // Components
 import StartToEndDateComponent from '@icomponents/StartToEndDate/start.to.end.date';
-import ImagePickerComponent from '@icomponents/ImagePicker/image.picker';
+import ImagePickerComponent, {
+  ExtendedAsset,
+} from '@icomponents/ImagePicker/image.picker';
 import CommonStyles from '@styles/common/commonStyles';
 import AddressPickerComponent from '@icomponents/AddressPicker/address.picker';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'ElectionInfo'>;
-
-export interface ExtendedAsset extends Asset {
-  containerWidth?: number;
-  containerHeight?: number;
-}
 
 export interface FormValues {
   title: string;
@@ -37,10 +33,8 @@ export interface FormValues {
 }
 
 const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
-  const [imageAspectRatio, setImageAspectRatio] = useState(1);
   const [message, setMessage] = useState('');
   const [visible, setVisible] = useState(false);
-
   const showMessage = (message: string) => {
     setMessage(message);
     setVisible(true);
@@ -113,7 +107,7 @@ const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
 
               <AddressPickerComponent
                 values={values}
-                handleChange={handleChange}
+                setFieldValue={setFieldValue}
               />
 
               <StartToEndDateComponent

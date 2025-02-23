@@ -91,6 +91,11 @@ const ProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
           title="Oy Kullandığın Seçimler"
           onPress={() => {}}
         />
+        <MenuItemComponent
+          icon={require('@assets/images/candidate.png')}
+          title="Aday Olduğun Seçimler"
+          onPress={() => {}}
+        />
       </View>
       <View style={styles.menuGroup}>
         <MenuItemComponent
