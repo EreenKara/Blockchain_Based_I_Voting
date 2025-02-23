@@ -1,16 +1,22 @@
-import React from 'react';
-import {StyleSheet, View, Dimensions} from 'react-native';
+import React, {useEffect, useRef} from 'react';
+import {
+  StyleSheet,
+  View,
+  Dimensions,
+  Animated as RNAnimated,
+  Easing,
+} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Pie, PolarChart} from 'victory-native';
 import Colors from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
 import {CandidateViewModel} from '@viewmodels/candidate.viewmodel';
+
 interface PieChartComponentProps {
   chartSize?: number;
   data?: CandidateViewModel[];
 }
-
 const PieChartComponent: React.FC<PieChartComponentProps> = ({
   chartSize = 350,
   data = [
@@ -21,12 +27,44 @@ const PieChartComponent: React.FC<PieChartComponentProps> = ({
     new CandidateViewModel('5', 'F', '#ffffff', 10),
   ],
 }) => {
+  const scaleAnimation = useRef(new RNAnimated.Value(0.6)).current;
+  const fadeAnimation = useRef(new RNAnimated.Value(0)).current;
+  useEffect(() => {
+    RNAnimated.parallel([
+      RNAnimated.timing(fadeAnimation, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+      RNAnimated.sequence([
+        RNAnimated.timing(scaleAnimation, {
+          toValue: 1.1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        RNAnimated.spring(scaleAnimation, {
+          toValue: 1,
+          friction: 4,
+          useNativeDriver: true,
+        }),
+      ]),
+    ]).start();
+  }, []);
+
   const screenWidth = Dimensions.get('window').width;
   const chartHeight = chartSize;
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>
-      <View style={[styles.container, {height: chartHeight}]}>
+      <RNAnimated.View
+        style={[
+          styles.container,
+          {
+            height: chartHeight,
+            transform: [{scale: scaleAnimation}],
+            opacity: fadeAnimation,
+          },
+        ]}>
         <PolarChart
           data={data}
           labelKey="name"
@@ -40,7 +78,7 @@ const PieChartComponent: React.FC<PieChartComponentProps> = ({
             )}
           </Pie.Chart>
         </PolarChart>
-      </View>
+      </RNAnimated.View>
     </GestureHandlerRootView>
   );
 };

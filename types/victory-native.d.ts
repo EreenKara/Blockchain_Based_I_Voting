@@ -27,6 +27,12 @@ declare module 'victory-native' {
     };
     color?: string;
     children?: ReactNode;
+    animate?: {
+      type?: 'timing' | 'spring';
+      duration?: number;
+      delay?: number;
+      easing?: (t: number) => number;
+    };
   }
 
   interface PieSliceAngularInsetProps {

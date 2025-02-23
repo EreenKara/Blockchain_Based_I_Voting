@@ -34,6 +34,7 @@ module.exports = {
           '@enums': './enums',
           '@icomponents': './src/components',
           '@contexts': './src/contexts',
+          '@hooks': './src/hooks',
         },
       },
     ],

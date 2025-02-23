@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
     gap: styleNumbers.space,
   },
   candidateContainer: {
+    marginTop: styleNumbers.space * 2,
     width: '100%',
     alignItems: 'center',
   },

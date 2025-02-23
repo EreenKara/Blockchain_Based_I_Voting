@@ -1,5 +1,5 @@
-import {StyleSheet, Text, View, Image} from 'react-native';
-import React from 'react';
+import {StyleSheet, Text, View, Image, Animated, Easing} from 'react-native';
+import React, {useEffect, useRef} from 'react';
 import {CandidateViewModel} from '@viewmodels/candidate.viewmodel';
 import Colors from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
@@ -12,24 +12,51 @@ interface CandidateItemComponentProps {
 const CandidateItemComponent: React.FC<CandidateItemComponentProps> = ({
   candidate,
 }) => {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(-100)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 800,
+        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 800,
+        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <View style={styles.imageContainer}>
+    <Animated.View
+      style={[
+        styles.container,
+        {
+          opacity: fadeAnim,
+          transform: [{translateX: slideAnim}],
+        },
+      ]}>
+      <Animated.View style={styles.imageContainer}>
         <Image
           source={{uri: candidate.image}}
           style={styles.image}
           resizeMode="contain"
         />
-      </View>
-      <View style={styles.infoContainer}>
+      </Animated.View>
+      <Animated.View style={styles.infoContainer}>
         <Text style={CommonStyles.textStyles.title}>
           Aday ismi: {candidate.name}
         </Text>
         <Text style={CommonStyles.textStyles.subtitle}>
           Oy sayisi: {candidate.votes}
         </Text>
-      </View>
-    </View>
+      </Animated.View>
+    </Animated.View>
   );
 };
 
@@ -42,12 +69,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     ...CommonStyles.shadowStyle,
+    borderRadius: styleNumbers.borderRadius,
+    marginVertical: styleNumbers.space,
   },
   imageContainer: {
     width: '65%',
     marginRight: styleNumbers.space * 2,
     backgroundColor: Colors.getTheme().transition,
     ...CommonStyles.shadowStyle,
+    borderRadius: styleNumbers.borderRadius,
+    overflow: 'hidden',
   },
   image: {
     height: 300,
@@ -58,5 +89,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.getTheme().transition,
     gap: styleNumbers.space * 2,
     ...CommonStyles.shadowStyle,
+    borderRadius: styleNumbers.borderRadius,
   },
 });

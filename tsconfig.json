@@ -26,7 +26,8 @@
       "@viewmodels/*": ["viewmodels/*"],
       "@enums/*": ["enums/*"],
       "@icomponents/*": ["src/components/*"],
-      "@contexts/*": ["src/contexts/*"]
+      "@contexts/*": ["src/contexts/*"],
+      "@hooks/*": ["src/hooks/*"]
     }
   },
   "include": [

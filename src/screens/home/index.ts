@@ -1,6 +1,6 @@
 export {default as HomeScreen} from '@screens/home/Home/index';
 export {default as CreateElectionScreen} from '@screens/home/CreateElection/index';
-export {default as ElectionInfoScreen} from '@screens/home/ElectionInfo/election.info';
+export {default as ElectionInfoScreen} from '@screens/home/ElectionInfo/index';
 export {default as BeCandidateScreen} from '@screens/home/BeCandidate/index.tsx';
 export {default as CurrentElectionsScreen} from '@screens/home/CurrentElections/index';
 export {default as PastElectionsScreen} from '@screens/home/PastElections/index.tsx';

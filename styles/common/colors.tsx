@@ -15,6 +15,7 @@ interface ColorsSchema {
   borderColor: string;
   indicator: string;
   icon: string;
+  placeholder: string;
 }
 const light: ColorsSchema = {
   button: '#056161', // tiklanabilir ögeler ve focused olan ögelerin renkleri
@@ -32,6 +33,7 @@ const light: ColorsSchema = {
   borderColor: '#056161',
   indicator: '#0a7ea4', // herhangi tutmaç, garip button gibi etkileşime girilebilen öğenin içerisindeki kısım. Switch'in kafası örneğin.
   icon: '#687076',
+  placeholder: '#999999',
 };
 
 const dark: ColorsSchema = {
@@ -50,6 +52,7 @@ const dark: ColorsSchema = {
   borderColor: '#fff',
   indicator: '#0a7ea4',
   icon: '#9BA1A6',
+  placeholder: '#666666',
 };
 
 const Colors = {

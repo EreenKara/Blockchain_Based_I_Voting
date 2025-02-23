@@ -1,5 +1,5 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {StyleSheet, Text, View, Animated} from 'react-native';
+import React, {useEffect, useRef} from 'react';
 import CommonStyles from '@styles/common/commonStyles';
 import {CandidateViewModel} from '@viewmodels/candidate.viewmodel';
 import styleNumbers from '@styles/common/style.numbers';
@@ -12,18 +12,55 @@ interface ChartLegendComponentProps {
 const ChartLegendComponent: React.FC<ChartLegendComponentProps> = ({
   candidates,
 }) => {
+  const fadeAnims = useRef(candidates.map(() => new Animated.Value(0))).current;
+  const slideAnims = useRef(
+    candidates.map(() => new Animated.Value(-50)),
+  ).current;
+
+  useEffect(() => {
+    const animations = candidates.map((_, index) => {
+      const delay = index * 150; // Her öğe için 150ms gecikme
+      return Animated.parallel([
+        Animated.timing(fadeAnims[index], {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+          delay,
+        }),
+        Animated.timing(slideAnims[index], {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+          delay,
+        }),
+      ]);
+    });
+
+    Animated.stagger(100, animations).start();
+  }, [candidates]);
+
   return (
     <View style={[styles.pieChartLegend]}>
       {candidates.map((candidate, index) => (
-        <View style={[styles.legendItem]}>
+        <Animated.View
+          key={index}
+          style={[
+            styles.legendItem,
+            {
+              opacity: fadeAnims[index],
+              transform: [{translateX: slideAnims[index]}],
+            },
+          ]}>
           <View
-            style={{
-              backgroundColor: candidate.color,
-              height: 30,
-              width: 30,
-            }}></View>
+            style={[
+              styles.colorBox,
+              {
+                backgroundColor: candidate.color,
+              },
+            ]}
+          />
           <Text style={CommonStyles.textStyles.title}>{candidate.name}</Text>
-        </View>
+        </Animated.View>
       ))}
     </View>
   );
@@ -47,5 +84,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: styleNumbers.space,
+  },
+  colorBox: {
+    height: 30,
+    width: 30,
+    borderRadius: styleNumbers.borderRadius * 0.5,
   },
 });
