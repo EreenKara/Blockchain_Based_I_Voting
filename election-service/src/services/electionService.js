@@ -1,4 +1,5 @@
 const  Election  = require("../models/Election");
+const  Choice  = require("../models/Choice");
 require('dotenv').config();
 const axios = require("axios");
 
@@ -113,5 +114,29 @@ const updateElectionStatus = async (req, res) => {
         res.status(500).json({ message: "An error occurred while updating the election status.", error: error.message });
     }
 };
+const addChoiceToElection = async (req, res) => {
+    const { electionId, choiceId } = req.body;
+  
+    try {
+      const election = await Election.findByPk(electionId);
+  
+      if (!election) {
+        return res.status(404).json({ message: "Election not found" });
+      }
+  
+      const choices = await Choice.findAll({
+        where: {
+          id: choiceId,
+        },
+      });
+  
+      await election.addChoices(choices); // Add choices to election
+  
+      res.status(200).json({ message: "Choices added to election successfully" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error adding choices to election" });
+    }
+  };
 
-module.exports = { createElection, authenticateUser, getElectionById, updateElectionStatus };
+module.exports = { createElection, authenticateUser, getElectionById, updateElectionStatus,addChoiceToElection };

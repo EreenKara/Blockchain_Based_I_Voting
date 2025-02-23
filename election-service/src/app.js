@@ -1,6 +1,7 @@
 const express = require('express');
 const electionRoutes = require('./routes/electionRoutes');
 const sequelize=require("./config/database");
+const choiceRoute=require("./routes/choiceRoutes");
 const electionAdressRoute=require("./routes/electionAdressRoutes");
 
 require('dotenv').config();
@@ -9,6 +10,7 @@ const app = express();
 app.use(express.json());
 
 app.use('/api/elections', electionRoutes);
+app.use("/api/choices",choiceRoute);
 app.use("/api/electionAdresses",electionAdressRoute)
 
 // PostgreSQL için Sequelize bağlantısı

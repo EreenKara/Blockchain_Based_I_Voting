@@ -1,4 +1,4 @@
-const { createElection,getElectionById,updateElectionStatus} = require("../services/electionService");
+const { createElection,getElectionById,updateElectionStatus,addChoiceToElection} = require("../services/electionService");
 const Election = require("../models/Election");
 
 const createElectionController = async (req, res) => {
@@ -41,6 +41,16 @@ const getActiveElection = async (req, res) => {
       res.status(500).json({ message: "Error starting election", error: error.message });
   }
 };
+const addChoiceToElectionController = async (req, res) => {
+    try {
+      // console.log(req.headers.authorization)
+        // Service katmanındaki createElection fonksiyonunu çağır
+        await addChoiceToElection(req, res);
+    } catch (err) {
+        console.error("Error creating election:", err.message);
+        res.status(500).json({ message: "An error occurred while creating the election." });
+    }
+};
 // const getElectionByIdController = async (req, res) => {
 //   const { id } = req.params;
 //   const token = req.headers.authorization?.split(" ")[1];
@@ -75,4 +85,4 @@ const updateElectionStatusController = async (req, res) => {
 
   
 
-module.exports = { createElectionController,getElectionByIdOnly,getActiveElection,updateElectionStatusController};
+module.exports = { createElectionController,getElectionByIdOnly,getActiveElection,updateElectionStatusController,addChoiceToElectionController};

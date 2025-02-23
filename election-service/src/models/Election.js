@@ -42,6 +42,13 @@ const Election = sequelize.define('Election', {
 }, {
   timestamps: true,
 });
+Election.associate = (models) => {
+  Election.belongsToMany(models.Choice, {
+    through: 'ElectionChoice',
+    foreignKey: 'electionId',
+    otherKey: 'choiceId',
+  });
+};
 sequelize.sync()
   .then(() => console.log("Election tablosu oluşturuldu!"))
   .catch(err => console.error('Tablo oluşturulurken bir hata oluştu:', err));
