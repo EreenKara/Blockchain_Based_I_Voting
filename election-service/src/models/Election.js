@@ -1,82 +1,42 @@
-const { Sequelize, DataTypes } = require('sequelize');
-require('dotenv').config();
-
-const sequelize = new Sequelize(
-  process.env.DB_NAME,      // Veritabanı adı
-  process.env.DB_USER,      // Kullanıcı adı
-  process.env.DB_PASSWORD,  // Şifre
-  {
-    host: process.env.DB_HOST,  // PostgreSQL sunucusu
-    dialect: 'postgres',        // PostgreSQL kullanılacak
-    port: process.env.DB_PORT,  // Port (varsayılan 5432)
-  }
-);
-// Bağlantıyı test et
+const {Sequelize,DataTypes}=require("sequelize");
+const sequelize=require("../config/database");
+const ElectionChoice=require("./ElectionChoice")
 
 
-const Election = sequelize.define('Election', {
-  title: {
-    type: DataTypes.STRING,
-    allowNull: false,
+
+const Election = sequelize.define("Election", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  createdBy: { type: DataTypes.STRING,
+    allowNull: false, }, // Kullanıcı ID'si
+  name: { type: DataTypes.STRING, allowNull: false },
+  description: { type: DataTypes.STRING, allowNull: true },
+  image: { type: DataTypes.STRING, allowNull: true }, // URL veya Blob olabilir
+  startDate: { type: DataTypes.DATE, allowNull: false },
+  endDate: { type: DataTypes.DATE, allowNull: false },
+  status: { 
+      type: DataTypes.ENUM("active", "upcoming", "completed"), 
+      allowNull: false 
   },
-  description: {
-    type: DataTypes.STRING,
-    allowNull: true,
+  accessType: { 
+      type: DataTypes.ENUM("public", "private"), 
+      allowNull: false 
   },
-  startDate: {
-    type: DataTypes.DATE,
-    allowNull: false,
+  electionType: { 
+    type: DataTypes.ENUM("blockchain", "database","null"),  // Yeni eklenen alan
+    allowNull: false 
   },
-  endDate: {
-    type: DataTypes.DATE,
-    allowNull: false,
+  step:{
+    type:DataTypes.STRING,allowNull:false
   },
-  createdBy: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  isActive: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: true,
-  },
-}, {
-  timestamps: true,
+  
+  createdAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
+  updatedAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
 });
-Election.associate = (models) => {
-  Election.belongsToMany(models.Choice, {
-    through: 'ElectionChoice',
-    foreignKey: 'electionId',
-    otherKey: 'choiceId',
-  });
-};
-sequelize.sync()
-  .then(() => console.log("Election tablosu oluşturuldu!"))
-  .catch(err => console.error('Tablo oluşturulurken bir hata oluştu:', err));
-// Veritabanı ile bağlantıyı test etme
-sequelize.authenticate()
-  .then(() => {
-    console.log('PostgreSQL bağlantısı başarılı.');
-  })
-  .catch((error) => {
-    console.error('PostgreSQL bağlantısı hatası:', error);
-  });
-
+Election.hasMany(ElectionChoice, {
+  foreignKey: 'electionId', // Dış anahtar
+  as: 'choices', // İlişkili seçeneklerin adlandırılması
+});
 module.exports = Election;
 
 
-// electionSchema.virtual('options', {
-//   ref: 'Option',
-//   localField: '_id', // Election ID ile eşleştirme yapılabilir
-//   foreignField: 'electionId', // Option'daki foreign key
-//   justOne: false
-// });
-// electionSchema.methods.fetchOptions = async function() {
-//   try {
-//     const response = await axios.get(`http://option-service/api/options?electionId=${this._id}`);
-//     return response.data;
-//   } catch (error) {
-//     console.error('Error fetching options:', error.message);
-//     throw new Error('Unable to fetch options');
-//   }
-// };
-// module.exports = mongoose.model('Election', electionSchema);
+

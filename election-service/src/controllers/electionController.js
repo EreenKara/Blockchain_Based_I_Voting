@@ -1,16 +1,10 @@
-const { createElection,getElectionById,updateElectionStatus,addChoiceToElection} = require("../services/electionService");
+const { createElection,updateElectionStatus,addElectionType,addChoiceToElection,getElectionById} = require("../services/electionService");
 const Election = require("../models/Election");
 
-const createElectionController = async (req, res) => {
-    try {
-      // console.log(req.headers.authorization)
-        // Service katmanındaki createElection fonksiyonunu çağır
-        await createElection(req, res);
-    } catch (err) {
-        console.error("Error creating election:", err.message);
-        res.status(500).json({ message: "An error occurred while creating the election." });
-    }
-};
+const handleError = (res, error, message) => {
+    console.error(message, error.message);
+    res.status(500).json({ message });
+  };
 
 const getElectionByIdOnly = async (req, res) => {
   const { id } = req.params;
@@ -24,6 +18,44 @@ const getElectionByIdOnly = async (req, res) => {
       res.status(500).json({ message: "Error fetching election", error: error.message });
   }
 };
+
+const createElectionController = async (req, res) => {
+    try {
+        await createElection(req, res);
+    } catch (err) {
+        handleError(res, err, "Error creating election:");
+    }
+};
+
+const addElectionTypeController = async (req, res) => {
+    try {
+        await addElectionType(req, res);
+    } catch (error) {
+        handleError(res, error, "Error adding type to election:");
+    }
+};
+
+const addChoiceToElectionController = async (req, res) => {
+    try {
+        await addChoiceToElection(req, res);
+    } catch (error) {
+        handleError(res, error, "Error adding choices to election:");
+    }
+};
+
+const getElectionByIdController = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const election = await getElectionById(id);
+        if (!election) {
+            return res.status(404).json({ message: "Election not found" });
+        }
+        res.status(200).json({ election });
+    } catch (error) {
+        handleError(res, error, "Error fetching election:");
+    }
+};
+
 const getActiveElection = async (req, res) => {
   const { id } = req.params;
   try {
@@ -38,51 +70,18 @@ const getActiveElection = async (req, res) => {
           return res.status(400).json({ message: "Election cannot be started outside of start and end dates" });
       }
   } catch (error) {
-      res.status(500).json({ message: "Error starting election", error: error.message });
+      handleError(res, error, "Error checking election status:");
   }
 };
-const addChoiceToElectionController = async (req, res) => {
-    try {
-      // console.log(req.headers.authorization)
-        // Service katmanındaki createElection fonksiyonunu çağır
-        await addChoiceToElection(req, res);
-    } catch (err) {
-        console.error("Error creating election:", err.message);
-        res.status(500).json({ message: "An error occurred while creating the election." });
-    }
-};
-// const getElectionByIdController = async (req, res) => {
-//   const { id } = req.params;
-//   const token = req.headers.authorization?.split(" ")[1];
-
-//   if (!token) {
-//       return res.status(401).json({ message: "Authorization token is missing" });
-//   }
-
-//   try {
-//       const election = await Election.findByPk(id, {
-//           include: [{ model: Option, as: "options" }],
-//       });
-//       if (!election) {
-//           return res.status(404).json({ message: "Election not found" });
-//       }
-//       res.status(200).json({ election, options: election.options });
-//   } catch (error) {
-//       res.status(500).json({ message: "Error fetching election", error: error.message });
-//   }
-// };
 
 const updateElectionStatusController = async (req, res) => {
   try {
       await updateElectionStatus(req, res);
   } catch (error) {
-      console.error("Error updating election status:", error.message);
-      res.status(500).json({ message: "An error occurred while updating the election status." });
+      handleError(res, error, "Error updating election status:");
   }
 };
 
 
 
-  
-
-module.exports = { createElectionController,getElectionByIdOnly,getActiveElection,updateElectionStatusController,addChoiceToElectionController};
+module.exports = { createElectionController,getElectionByIdOnly,getActiveElection,getElectionByIdController,updateElectionStatusController,addChoiceToElectionController,addElectionTypeController};

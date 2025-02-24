@@ -1,60 +1,171 @@
 const  Election  = require("../models/Election");
 const  Choice  = require("../models/Choice");
+const ElectionChoice=require("../models/ElectionChoice");
+const {Sequelize} =require("sequelize");
 require('dotenv').config();
 const axios = require("axios");
 
-
 const createElection = async (req, res) => {
-    const token = req.headers.authorization?.split(' ')[1]; // Bearer Token
+    const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
         return res.status(401).json({ message: 'Authorization token is missing' });
     }
-
-    const { title, description, startDate, endDate } = req.body;
-    if (!title || !startDate || !endDate) {
+    
+    const { name, description, startDate, endDate,accessType,status } = req.body;
+    if (!name || !startDate || !endDate) {
         return res.status(400).json({ message: 'Başlık, başlangıç ve bitiş tarihleri zorunludur.' });
     }
-
+    
     try {
         const user = await authenticateUser(token);
-        console.log('Authenticated User:', user);
-
-        if (!user || !user.email) {
-            return res.status(403).json({
-                message: 'Access denied: Only businesses can create elections',
-            });
+        if (!user || !user.email || !user.hasPaidBalance) {
+            return res.status(403).json({ message: 'Yetkisiz erişim veya bakiye yetersiz.' });
         }
-
-        if (!user.hasPaidBalance) {
-            return res.status(403).json({
-              message:
-                "Access denied: You must pay the required balance to create an election.",
-            });
-        }
-
+        
         const election = await Election.create({
-            title,
+            name,
             description,
             startDate,
             endDate,
             createdBy: user.email,
+            accessType,
+            step: "step1", // İlk adım
+            status,
+            electionType:"null"
+            
         });
 
-        res.status(201).json({ message: 'Election created successfully', election });
-    } catch (err) {
-        res.status(403).json({ message: err.message });
+        res.status(201).json({ message: "Step 1: Election created successfully", election });
+    } catch (error) {
+        res.status(500).json({ message: "Error creating election", error: error.message });
     }
 };
 
+const addElectionType = async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ message: 'Authorization token is missing' });
+    }
+    const { electionId, electionType } = req.body;
+    try {
+        const user = await authenticateUser(token);
+        if (!user || !user.email || !user.hasPaidBalance) {
+            return res.status(403).json({ message: 'Yetkisiz erişim veya bakiye yetersiz.' });
+        }
+        const election = await Election.findByPk(electionId);
+        if (!election || election.step !== "step1") {
+            return res.status(400).json({ message: "Election not found or incorrect step" });
+        }
+        
+        election.electionType = electionType;
+        election.step = "step2";
+        await election.save();
+        
+        res.status(200).json({ message: "Step 2: Election type added successfully", election });
+    } catch (error) {
+        res.status(500).json({ message: "Error adding election type", error: error.message });
+    }
+};
+
+const addChoiceToElection = async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ message: 'Authorization token is missing' });
+    }
+    const { electionId, choiceIds } = req.body;
+    console.log("Received electionId:", electionId);
+    console.log("Received choiceIds:", choiceIds);
+
+    if (!choiceIds || !Array.isArray(choiceIds) || choiceIds.length === 0) {
+        return res.status(400).json({ message: "choiceIds array olarak gönderilmeli ve boş olmamalı." });
+    }
+    try {
+        const user = await authenticateUser(token);
+        if (!user || !user.email || !user.hasPaidBalance) {
+            return res.status(403).json({ message: 'Yetkisiz erişim veya bakiye yetersiz.' });
+        }
+        const election = await Election.findByPk(electionId);
+        if (!election || election.step !== "step2") {
+            return res.status(400).json({ message: "Election not found or incorrect step" });
+        }
+        
+        let choices;
+        if (election.electionType === "blockchain") {
+            choices = await getChoicesFromBlockchain(choiceIds);
+        } else if (election.electionType === "database") {
+            choices = await getChoicesFromDatabase(choiceIds);
+        } else {
+            return res.status(400).json({ message: "Invalid election type" });
+        }
+        
+        await Promise.all(
+            choices.map(choice => ElectionChoice.create({ electionId, choiceId: choice.id }))
+        );
+        election.step = "step3";
+        await election.save();
+        
+        res.status(201).json({ message: "Step 3: Choices added successfully", election });
+    } catch (error) {
+        res.status(500).json({ message: "Error adding choices", error: error.message });
+    }
+};
+//Blockchain'den seçenekleri almak için fonksiyon
+const getChoicesFromBlockchain = async (choiceIds) => {
+    try {
+        console.log("Received choiceIds:", choiceIds);
+
+        if (!choiceIds || !Array.isArray(choiceIds) || choiceIds.length === 0) {
+            throw new Error("choiceIds array olarak gönderilmeli ve boş olmamalı.");
+        }
+
+        const blockchainChoices = await Choice.findAll({
+            where: {
+                id: {
+                    [Sequelize.Op.in]: choiceIds // Dizi içindeki ID'leri filtrele
+                },
+                type: "blockchain"
+            }
+        });
+
+        return blockchainChoices;
+    } catch (error) {
+        console.error("Error fetching choices from Blockchain:", error.message);
+        throw new Error("Blockchain'den seçimler alınırken bir hata oluştu.");
+    }
+};
+// Veritabanından seçimleri almak için fonksiyon
+const getChoicesFromDatabase = async (choiceIds) => {
+    try {
+        console.log("Received choiceIds:", choiceIds);
+
+        if (!choiceIds || !Array.isArray(choiceIds) || choiceIds.length === 0) {
+            throw new Error("choiceIds array olarak gönderilmeli ve boş olmamalı.");
+        }
+
+        const databaseChoices = await Choice.findAll({
+            where: {
+                id: {
+                    [Sequelize.Op.in]: choiceIds // Dizi içindeki ID'leri filtrele
+                },
+                type: "database"
+            }
+        });
+
+        return databaseChoices;
+    } catch (error) {
+        console.error("Error fetching choices from database:", error.message);
+        throw new Error("database'den seçimler alınırken bir hata oluştu.");
+    }
+};
+
+// Kullanıcıyı doğrulamak için fonksiyon
 const authenticateUser = async (token) => {
     if (!token) {
         throw new Error('Token is required');
     }
 
-    // Token doğrulamak için JWT Service'i çağır
     try {
         const response = await axios.post(`${process.env.AUTH_SERVICE_URL}/api/auths/validate`, { token });
-        console.log('Axios Response:', response.data);
         if (response.data.valid) {
             return response.data.decoded; // Kullanıcıyı döndür
         } else {
@@ -114,29 +225,9 @@ const updateElectionStatus = async (req, res) => {
         res.status(500).json({ message: "An error occurred while updating the election status.", error: error.message });
     }
 };
-const addChoiceToElection = async (req, res) => {
-    const { electionId, choiceId } = req.body;
-  
-    try {
-      const election = await Election.findByPk(electionId);
-  
-      if (!election) {
-        return res.status(404).json({ message: "Election not found" });
-      }
-  
-      const choices = await Choice.findAll({
-        where: {
-          id: choiceId,
-        },
-      });
-  
-      await election.addChoices(choices); // Add choices to election
-  
-      res.status(200).json({ message: "Choices added to election successfully" });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Error adding choices to election" });
-    }
-  };
 
-module.exports = { createElection, authenticateUser, getElectionById, updateElectionStatus,addChoiceToElection };
+
+
+
+
+module.exports = { createElection, authenticateUser, getElectionById, updateElectionStatus,addChoiceToElection,addElectionType };
