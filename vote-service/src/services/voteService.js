@@ -75,9 +75,7 @@ const castVote = async (req, res) => {
     }
     
         // Seçimin aktif olup olmadığını kontrol et
-        if (!election.isActive) {
-          throw new Error("Election is not active. Results cannot be calculated.");
-        }
+        
     // Seçim süresi kontrolü
     const activeResponse = await axios.get(
       `${process.env.ELECTION_SERVICE_URL}/api/elections/${electionId}/active`,

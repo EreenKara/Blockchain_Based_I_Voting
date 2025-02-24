@@ -1,18 +1,7 @@
-const { Model, DataTypes,Sequelize} = require('sequelize');
+const { Model, DataTypes} = require('sequelize');
 const axios = require('axios');
+const sequelize = require("../config/database");
 
-require('dotenv').config();
-
-const sequelize = new Sequelize(
-  process.env.DB_NAME,      // Veritabanı adı
-  process.env.DB_USER,      // Kullanıcı adı
-  process.env.DB_PASSWORD,  // Şifre
-  {
-    host: process.env.DB_HOST,  // PostgreSQL sunucusu
-    dialect: 'postgres',        // PostgreSQL kullanılacak
-    port: process.env.DB_PORT,  // Port (varsayılan 5432)
-  }
-);// Sequelize instance'ınızı import edin
 
 class Vote extends Model {}
 
@@ -59,16 +48,6 @@ Vote.prototype.fetchOption = async function() {
     throw new Error('Unable to fetch option');
   }
 };
-sequelize.sync()
-  .then(() => console.log("Vote tablosu oluşturuldu!"))
-  .catch(err => console.error('Tablo oluşturulurken bir hata oluştu:', err));
-// Veritabanı ile bağlantıyı test etme
-sequelize.authenticate()
-  .then(() => {
-    console.log('PostgreSQL bağlantısı başarılı.');
-  })
-  .catch((error) => {
-    console.error('PostgreSQL bağlantısı hatası:', error);
-  });
+
 
 module.exports = Vote;
