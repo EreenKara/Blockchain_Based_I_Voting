@@ -8,48 +8,48 @@ import styleNumbers from '@styles/common/style.numbers';
 import {useNavigation} from '@react-navigation/native';
 import {HomeStackParamList} from '@navigation/types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {SehirViewModel} from '@viewmodels/sehir.viewmodel';
-
+import {useSearchContext} from '@contexts/search.context';
+import {ElectionScreenType} from '@enums/election.screen.type';
 const menuItems = [
   {
     title: 'Gelecek Seçimler',
     description: 'Yaklaşan seçimleri görüntüleyin',
-    screen: 'UpComingElections' as const,
+    screen: 'ListElections' as const,
+    routeParams: {screenType: ElectionScreenType.UpComingElections},
     icon: '📅',
   },
   {
     title: 'Güncel Seçimler',
     description: 'Devam eden seçimleri görüntüleyin',
-    screen: 'CurrentElections' as const,
+    screen: 'ListElections' as const,
+    routeParams: {screenType: ElectionScreenType.CurrentElections},
     icon: '📈',
   },
   {
     title: 'Geçmiş Seçimler',
     description: 'Tamamlanan seçimleri görüntüleyin',
-    screen: 'PastElections' as const,
+    screen: 'ListElections' as const,
+    routeParams: {screenType: ElectionScreenType.PastElections},
     icon: '📊',
   },
 ];
 
 interface HistoryCardComponentProps {
-  sehir: SehirViewModel;
   style?: ViewStyle;
 }
 type ElectionNavigationProp = NativeStackNavigationProp<
   HomeStackParamList,
-  'PastElections' | 'CurrentElections' | 'UpComingElections'
+  'ListElections'
 >;
 
-const HistoryCardComponent: React.FC<HistoryCardComponentProps> = ({
-  sehir,
-  style,
-}) => {
+const HistoryCardComponent: React.FC<HistoryCardComponentProps> = ({style}) => {
+  const {search} = useSearchContext();
   const navigation = useNavigation<ElectionNavigationProp>();
   return (
     <View style={[styles.container, style]}>
       <View>
         <Text style={[CommonStyles.textStyles.title, {textAlign: 'center'}]}>
-          {sehir.name} Seçimleri
+          {search.city} Seçimleri
         </Text>
       </View>
       {menuItems.map((item, index) => (
@@ -74,9 +74,7 @@ const HistoryCardComponent: React.FC<HistoryCardComponentProps> = ({
             <ButtonComponent
               title="İncele"
               onPress={() => {
-                navigation.navigate(item.screen, {
-                  sehir: sehir,
-                });
+                navigation.navigate(item.screen, item.routeParams);
               }}
             />
           </Card.Actions>

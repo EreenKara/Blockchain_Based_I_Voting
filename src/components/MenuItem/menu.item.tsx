@@ -8,6 +8,7 @@ import {
   ImageStyle,
   StyleProp,
   TextStyle,
+  View,
 } from 'react-native';
 import Colors from '@styles/common/colors';
 
@@ -18,6 +19,8 @@ interface MenuItemComponentProps {
   tintColor?: string;
   imageStyle?: StyleProp<ImageStyle>;
   textStyle?: StyleProp<TextStyle>;
+  description?: string;
+  rightIcon?: any;
 }
 
 export const MenuItemComponent: React.FC<MenuItemComponentProps> = ({
@@ -27,6 +30,8 @@ export const MenuItemComponent: React.FC<MenuItemComponentProps> = ({
   tintColor,
   imageStyle,
   textStyle,
+  description = '',
+  rightIcon,
 }) => (
   <TouchableOpacity style={styles.menuItem} onPress={onPress}>
     <Image
@@ -37,12 +42,35 @@ export const MenuItemComponent: React.FC<MenuItemComponentProps> = ({
         imageStyle,
       ]}
     />
-    <Text
-      style={[CommonStyles.textStyles.paragraph, styles.menuText, textStyle]}>
-      {title}
-    </Text>
+    {description && (
+      <View style={styles.menuTextContainer}>
+        <Text
+          style={[
+            CommonStyles.textStyles.subtitle,
+            styles.menuText,
+            textStyle,
+          ]}>
+          {title}
+        </Text>
+
+        <Text
+          style={[
+            CommonStyles.textStyles.paragraph,
+            styles.menuText,
+            textStyle,
+          ]}>
+          {description}
+        </Text>
+      </View>
+    )}
+    {!description && (
+      <Text
+        style={[CommonStyles.textStyles.subtitle, styles.menuText, textStyle]}>
+        {title}
+      </Text>
+    )}
     <Image
-      source={require('@assets/images/right-arrow.png')}
+      source={rightIcon}
       style={[
         styles.arrowIcon,
         {tintColor: tintColor || Colors.getTheme().text},
@@ -59,6 +87,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: styleNumbers.space * 1.5,
     padding: styleNumbers.space * 2,
+  },
+
+  menuTextContainer: {
+    flex: 1,
   },
   menuIcon: {
     width: 32,

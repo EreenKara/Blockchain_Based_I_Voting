@@ -25,26 +25,28 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ElectionAccessType} from '@enums/election.access.type';
 import {ElectionStatus} from '@enums/election.status';
 import {User} from '@entities/user.entity';
+import {useSearchContext} from '@contexts/search.context';
 type ElectionsScreenProps = NativeStackScreenProps<
   HomeStackParamList,
-  'CurrentElections'
+  'ListElections'
 >;
 
 const CurrentElectionsScreen: React.FC<ElectionsScreenProps> = ({
-  route,
   navigation,
 }) => {
-  const {sehir} = route.params;
   const [elections, setElections] = useState<Election[]>([]);
   const [loading, setLoading] = useState(true);
+  const {search} = useSearchContext();
   const electionService = new ElectionService();
   const loadElections = async () => {
     setLoading(true);
     let elections;
     try {
-      elections = await electionService.getElectionsByCity(sehir.id);
-      setElections(elections);
-      console.log(elections.length);
+      if (search.city) {
+        elections = await electionService.getElectionsByCity(search.city);
+        setElections(elections);
+        console.log(elections.length);
+      }
     } catch (error) {
       console.error('Seçimler yüklenirken hata oluştu:', error);
     } finally {
@@ -112,9 +114,8 @@ const CurrentElectionsScreen: React.FC<ElectionsScreenProps> = ({
   return (
     <View style={styles.container}>
       <ElectionCardComponent
-        title={`${sehir.name} Aktif Seçimleri`}
+        title={`${search.city} Aktif Seçimleri`}
         items={elections.map(election => new ElectionViewModel(election))}
-        sehir={sehir}
       />
     </View>
   );

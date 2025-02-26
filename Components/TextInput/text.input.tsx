@@ -6,6 +6,7 @@ import {
   TextInputProps,
   ViewProps,
   TextProps,
+  TouchableOpacity,
 } from 'react-native';
 import {textInputStyles as styles} from './text.input.style';
 import Colors from '@styles/common/colors';
@@ -16,6 +17,7 @@ interface TextInputComponentProps extends Omit<TextInputProps, 'style'> {
   error?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
+  onPress?: () => void;
   style?: TextInputProps['style'];
   viewStyle?: ViewProps['style'];
   labelStyle?: TextProps['style'];
@@ -23,7 +25,7 @@ interface TextInputComponentProps extends Omit<TextInputProps, 'style'> {
 }
 
 const TextInputComponent: React.FC<TextInputComponentProps> = ({
-  label = 'baslik',
+  label = '',
   error,
   leftIcon,
   rightIcon,
@@ -32,6 +34,7 @@ const TextInputComponent: React.FC<TextInputComponentProps> = ({
   labelStyle,
   onFocus,
   onBlur,
+  onPress,
   placeholderTextColor = Colors.getTheme().text + '80',
   multiline = false,
   ...restProps
@@ -55,7 +58,11 @@ const TextInputComponent: React.FC<TextInputComponentProps> = ({
           error && styles.errorInput,
           viewStyle,
         ]}>
-        {leftIcon && <View style={styles.icon}>{leftIcon}</View>}
+        {leftIcon && (
+          <TouchableOpacity onPress={onPress}>
+            <View style={styles.icon}>{leftIcon}</View>
+          </TouchableOpacity>
+        )}
 
         <TextInput
           {...restProps}
@@ -72,7 +79,11 @@ const TextInputComponent: React.FC<TextInputComponentProps> = ({
           multiline={multiline}
         />
 
-        {rightIcon && <View style={styles.icon}>{rightIcon}</View>}
+        {rightIcon && (
+          <TouchableOpacity onPress={onPress}>
+            <View style={styles.icon}>{rightIcon}</View>
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* Error Message */}

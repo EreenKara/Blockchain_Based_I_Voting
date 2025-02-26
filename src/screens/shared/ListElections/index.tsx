@@ -1,50 +1,46 @@
 // src/screens/home/CurrentElectionsScreen.tsx
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, FlatList} from 'react-native';
-import {
-  Card,
-  Title,
-  Paragraph,
-  Button,
-  ActivityIndicator,
-  Text,
-} from 'react-native-paper';
+import {View, StyleSheet} from 'react-native';
+import {Text} from 'react-native-paper';
 import {Election} from '@entities/election.entity';
 import {useFocusEffect} from '@react-navigation/native';
 import Colors from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
 import ActivityIndicatorComponent from '@shared/activity.indicator';
-import ButtonComponent from '@components/Button/Button';
-import {ElectionService} from '@services/backend/concrete/election.service';
 import {ElectionViewModel} from '@viewmodels/election.viewmodel';
 import ElectionCardComponent from '@icomponents/ElectionCard/election.card';
-import {SehirViewModel} from '@viewmodels/sehir.viewmodel';
 import {HomeStackParamList} from '@navigation/types';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ElectionAccessType} from '@enums/election.access.type';
 import {ElectionStatus} from '@enums/election.status';
-import {User} from '@entities/user.entity';
-type ElectionsScreenProps = NativeStackScreenProps<
+import {useSearchContext} from '@contexts/search.context';
+import getElectionTexts from './text.screen.type';
+import {useGetElectionsFunction} from './election.hook';
+type ListElectionsScreenProps = NativeStackScreenProps<
   HomeStackParamList,
-  'UpComingElections'
+  'ListElections'
 >;
 
-const UpComingElectionsScreen: React.FC<ElectionsScreenProps> = ({
+const ListElectionsScreen: React.FC<ListElectionsScreenProps> = ({
   route,
   navigation,
 }) => {
-  const {sehir} = route.params;
+  const {screenType} = route.params;
+  const {title, description, errorTitle} = getElectionTexts(screenType);
+  const getElectionsFunction = useGetElectionsFunction(screenType);
   const [elections, setElections] = useState<Election[]>([]);
   const [loading, setLoading] = useState(true);
-  const electionService = new ElectionService();
+  const {search} = useSearchContext();
   const loadElections = async () => {
     setLoading(true);
     let elections;
     try {
-      elections = await electionService.getElectionsByCity(sehir.id);
-      setElections(elections);
-      console.log(elections.length);
+      if (search.city) {
+        elections = await getElectionsFunction(search.city);
+        setElections(elections);
+        console.log(elections.length);
+      }
     } catch (error) {
       console.error('Seçimler yüklenirken hata oluştu:', error);
     } finally {
@@ -102,9 +98,7 @@ const UpComingElectionsScreen: React.FC<ElectionsScreenProps> = ({
   if (elections.length === 0) {
     return (
       <View style={CommonStyles.viewStyles.centerContainer}>
-        <Text style={CommonStyles.textStyles.title}>
-          Gelecek seçim bulunmamaktadır
-        </Text>
+        <Text style={CommonStyles.textStyles.title}>{errorTitle}</Text>
       </View>
     );
   }
@@ -112,9 +106,8 @@ const UpComingElectionsScreen: React.FC<ElectionsScreenProps> = ({
   return (
     <View style={styles.container}>
       <ElectionCardComponent
-        title={`${sehir.name} Gelecek Seçimleri`}
+        title={`${search.city} ${title}`}
         items={elections.map(election => new ElectionViewModel(election))}
-        sehir={sehir}
       />
     </View>
   );
@@ -127,4 +120,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UpComingElectionsScreen;
+export default ListElectionsScreen;

@@ -16,6 +16,9 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import ActivityIndicatorComponent from '@shared/activity.indicator';
 import MenuItemComponent from '@icomponents/MenuItem/menu.item';
 import {useUserContext} from '@contexts/index';
+import AvatarHeaderComponent from '@icomponents/AvatarHeader/avatar.header';
+import UserViewModel from '@viewmodels/user.viewmodel';
+import {User} from '@entities/user.entity';
 type ScreenProps = NativeStackScreenProps<ProfileStackParamList, 'ProfileMain'>;
 type RootProps = NativeStackNavigationProp<RootStackParamList>;
 
@@ -49,34 +52,53 @@ const ProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
   return (
     <ScrollView style={styles.container}>
       {/* Profil Başlığı */}
-      <View style={styles.header}>
-        <Avatar.Image
-          size={80}
-          source={
-            user?.image
-              ? {uri: user.image}
-              : require('@assets/images/navlogo.png')
-          }
-        />
-        <View style={styles.headerText}>
-          <Text style={[CommonStyles.textStyles.title]}>
-            {user?.name} {user?.surname}
-          </Text>
-          <Text style={[CommonStyles.textStyles.paragraph]}>{user?.email}</Text>
-        </View>
-      </View>
-
+      <AvatarHeaderComponent
+        user={user ? user : undefined}
+        notifications={[
+          {
+            reasonTitle: 'Group Invitation',
+            sender: 'Eren Kara',
+            notificationCount: 1,
+            time: new Date(),
+            image: '',
+          },
+          {
+            reasonTitle: 'Group Invitation',
+            sender: 'Ali Eren',
+            notificationCount: 2,
+            time: new Date(new Date().getTime() - 1000 * 60 * 60 * 24),
+            image: '',
+          },
+        ]}
+      />
       {/* Menü Grupları */}
       <View style={styles.menuGroup}>
         <MenuItemComponent
           icon={require('@assets/images/person.png')}
           title="Kişisel Bilgiler"
-          onPress={() => {}}
+          tintColor={Colors.getTheme().icon}
+          onPress={() => {
+            navigation.navigate('PersonalInformation');
+          }}
+          rightIcon={require('@assets/images/right-arrow.png')}
         />
         <MenuItemComponent
           icon={require('@assets/images/address.png')}
           title="Adres"
-          onPress={() => {}}
+          tintColor={Colors.getTheme().icon}
+          onPress={() => {
+            navigation.navigate('AddressInformation');
+          }}
+          rightIcon={require('@assets/images/right-arrow.png')}
+        />
+        <MenuItemComponent
+          icon={require('@assets/images/group-people.png')}
+          title="Grup Oluştur"
+          tintColor={Colors.getTheme().icon}
+          onPress={() => {
+            navigation.navigate('Groups');
+          }}
+          rightIcon={require('@assets/images/right-arrow.png')}
         />
       </View>
 
@@ -84,33 +106,51 @@ const ProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
         <MenuItemComponent
           icon={require('@assets/images/elections.png')}
           title="Oluşturduğun Seçimler"
-          onPress={() => {}}
+          tintColor={Colors.getTheme().icon}
+          onPress={() => {
+            navigation.navigate('CreatedElections');
+          }}
+          rightIcon={require('@assets/images/right-arrow.png')}
         />
         <MenuItemComponent
           icon={require('@assets/images/b-box.png')}
           title="Oy Kullandığın Seçimler"
-          onPress={() => {}}
+          tintColor={Colors.getTheme().icon}
+          onPress={() => {
+            navigation.navigate('CastedVotes');
+          }}
+          rightIcon={require('@assets/images/right-arrow.png')}
         />
         <MenuItemComponent
           icon={require('@assets/images/candidate.png')}
           title="Aday Olduğun Seçimler"
-          onPress={() => {}}
+          tintColor={Colors.getTheme().icon}
+          onPress={() => {
+            navigation.navigate('CandidateElections');
+          }}
+          rightIcon={require('@assets/images/right-arrow.png')}
         />
       </View>
       <View style={styles.menuGroup}>
         <MenuItemComponent
           icon={require('@assets/images/payment.png')}
           title="Ödeme"
+          tintColor={Colors.getTheme().icon}
           onPress={() => {
             navigation.navigate('Payment');
           }}
+          rightIcon={require('@assets/images/right-arrow.png')}
         />
       </View>
       <View style={styles.menuGroup}>
         <MenuItemComponent
           icon={require('@assets/images/settings.png')}
           title="Ayarlar"
-          onPress={() => {}}
+          tintColor={Colors.getTheme().icon}
+          onPress={() => {
+            navigation.navigate('Settings');
+          }}
+          rightIcon={require('@assets/images/right-arrow.png')}
         />
       </View>
 
@@ -122,6 +162,7 @@ const ProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
           title="Çıkış Yap"
           onPress={handleLogout}
           tintColor={Colors.getTheme().error}
+          rightIcon={require('@assets/images/right-arrow.png')}
         />
       </View>
     </ScrollView>
@@ -137,16 +178,6 @@ const styles = StyleSheet.create({
   centerContent: {
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  header: {
-    padding: styleNumbers.space * 2,
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.getTheme().borderColor,
-  },
-  headerText: {
-    marginLeft: styleNumbers.space * 2,
   },
   menuGroup: {
     marginTop: styleNumbers.space,

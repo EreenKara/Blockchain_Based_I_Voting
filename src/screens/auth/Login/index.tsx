@@ -78,7 +78,7 @@ const LoginScreen: React.FC<Props> = ({navigation}) => {
       ]}>
       <View style={styles.logoContainer}>
         <Image
-          source={require('@assets/images/navlogo.png')}
+          source={require('@assets/images/nav_logo.png')}
           style={styles.logo}
         />
       </View>
@@ -171,6 +171,11 @@ const LoginScreen: React.FC<Props> = ({navigation}) => {
               style={styles.button}>
               Dogrulama sayfasina git
             </Button>
+            <ButtonComponent
+              title="Deneme sayfasina git"
+              onPress={() => navigation.navigate('Deneme')}
+              style={styles.button}
+            />
           </>
         )}
       </Formik>
@@ -216,9 +221,10 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: styleNumbers.spaceLarge,
   },
   logo: {
+    tintColor: Colors.getTheme().icon,
+    marginBottom: styleNumbers.spaceLarge * 2,
     width: 200,
     height: 200,
   },

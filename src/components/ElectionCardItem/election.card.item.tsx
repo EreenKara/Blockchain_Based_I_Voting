@@ -9,10 +9,12 @@ import {ElectionViewModel} from '@viewmodels/election.viewmodel';
 interface ElectionCardItemProps {
   election: ElectionViewModel;
   navigatePress: () => void;
+  buttonTitle?: string;
 }
 const ElectionCardItemComponent: React.FC<ElectionCardItemProps> = ({
   election,
   navigatePress,
+  buttonTitle = 'Seçime Git',
 }) => {
   return (
     <View style={styles.container}>
@@ -34,7 +36,7 @@ const ElectionCardItemComponent: React.FC<ElectionCardItemProps> = ({
       {/* Sağ taraf - Fiyat ve Kaldır */}
       <View style={styles.rightContainer}>
         <View style={styles.removeButton}></View>
-        <ButtonComponent title="Seçime Git" onPress={navigatePress} />
+        <ButtonComponent title={buttonTitle} onPress={navigatePress} />
       </View>
     </View>
   );

@@ -1,4 +1,5 @@
 import {User} from '@entities/user.entity';
+import {ElectionScreenType} from '@enums/election.screen.type';
 import {ElectionViewModel} from '@viewmodels/election.viewmodel';
 import {SehirViewModel} from '@viewmodels/sehir.viewmodel';
 
@@ -12,6 +13,7 @@ export type AuthStackParamList = {
   Register: undefined;
   ForgotPassword: undefined;
   EmailConfirm: {emailOrIdentity: string};
+  Deneme: undefined;
 };
 
 export type MainTabParamList = {
@@ -24,12 +26,11 @@ export type HomeStackParamList = {
   HomeMain: undefined;
   CreateElection: undefined;
   ElectionInfo: undefined;
-  PastElections: {sehir: SehirViewModel};
-  CurrentElections: {sehir: SehirViewModel};
-  UpComingElections: {sehir: SehirViewModel};
+  ListElections: {screenType: ElectionScreenType};
   BeCandidate: undefined;
   Elections: undefined;
-  SpecificElection: {sehir: SehirViewModel; election: ElectionViewModel};
+  SpecificElection: {election: ElectionViewModel};
+  DefaultCustom: undefined;
 };
 
 export type ProfileStackParamList = {
@@ -37,4 +38,13 @@ export type ProfileStackParamList = {
   Payment: undefined;
   Settings: undefined;
   AddCard: undefined;
+  PersonalInformation: undefined;
+  Groups: undefined;
+  Group: undefined;
+  CreateGroup: undefined;
+  CreatedElections: undefined;
+  CastedVotes: undefined;
+  CandidateElections: undefined;
+  AddressInformation: undefined;
+  SpecificElection: {election: ElectionViewModel};
 };

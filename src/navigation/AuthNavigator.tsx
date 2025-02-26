@@ -8,6 +8,7 @@ import {ForgotPasswordScreen} from '@screens/auth/index';
 import Colors from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import EmailConfirmScreen from '@screens/auth/EmailConfirm/email.confirm';
+import DenemeScreen from '@screens/auth/Deneme';
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
@@ -25,6 +26,7 @@ const AuthNavigator: React.FC = () => {
           color: Colors.getTheme().text,
         },
         headerShadowVisible: false,
+        headerShown: true,
         headerTitleAlign: 'center',
       }}>
       <Stack.Screen
@@ -32,7 +34,7 @@ const AuthNavigator: React.FC = () => {
         component={LoginScreen}
         options={{
           title: 'Giriş Yap',
-          headerShown: true,
+          headerShown: false,
         }}
       />
       <Stack.Screen
@@ -48,7 +50,6 @@ const AuthNavigator: React.FC = () => {
         component={ForgotPasswordScreen}
         options={{
           title: 'Şifremi Unuttum',
-          headerShown: true,
 
           presentation: 'modal',
         }}
@@ -58,7 +59,14 @@ const AuthNavigator: React.FC = () => {
         component={EmailConfirmScreen}
         options={{
           title: 'Doğrulama',
-          headerShown: true,
+          presentation: 'modal',
+        }}
+      />
+      <Stack.Screen
+        name="Deneme"
+        component={DenemeScreen}
+        options={{
+          title: 'Deneme',
           presentation: 'modal',
         }}
       />

@@ -17,13 +17,13 @@ const CreateElectionScreen: React.FC<Props> = ({navigation}) => {
           title="Veri Tabanı ile"
           description="Seçim Açıklaması"
           image={require('@assets/images/db_image.png')}
-          onPress={() => navigation.navigate('ElectionInfo')}
+          onPress={() => navigation.navigate('DefaultCustom')}
         />
         <ChoiceCardComponent
           title="Blockchain ile"
           description="Seçim Açıklaması"
           image={require('@assets/images/blockchain_image.png')}
-          onPress={() => navigation.navigate('ElectionInfo')}
+          onPress={() => navigation.navigate('DefaultCustom')}
         />
       </View>
     </View>

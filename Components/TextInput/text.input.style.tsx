@@ -29,8 +29,6 @@ export const textInputStyles = StyleSheet.create({
     position: 'absolute',
     top: -styleNumbers.buttonSize / 2,
     left: styleNumbers.space,
-    backgroundColor: Colors.getTheme().background,
-    paddingHorizontal: styleNumbers.space / 2,
     zIndex: 1,
   },
   label: {
@@ -51,6 +49,7 @@ export const textInputStyles = StyleSheet.create({
   },
   icon: {
     padding: styleNumbers.space,
+    paddingHorizontal: styleNumbers.space * 2,
     color: Colors.getTheme().icon,
   },
   focusedInput: {

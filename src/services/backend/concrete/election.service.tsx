@@ -9,8 +9,8 @@ export class ElectionService
   constructor() {
     super('/election/api/elections');
   }
-  async getElectionsByCity(cityId: number): Promise<Election[]> {
-    const response = await this.api.get(`/elections/city/${cityId}`);
+  async getElectionsByCity(city: string): Promise<Election[]> {
+    const response = await this.api.get(`/elections/city/${city}`);
     return response.data;
   }
 }

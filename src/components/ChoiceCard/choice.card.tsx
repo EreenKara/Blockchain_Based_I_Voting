@@ -22,6 +22,7 @@ interface ChoiceCardComponentProps {
   onPress: () => void;
   height?: number;
   description?: string;
+  tintColor?: string;
 }
 
 const ChoiceCardComponent = ({
@@ -29,6 +30,7 @@ const ChoiceCardComponent = ({
   image,
   description,
   onPress,
+  tintColor,
   height = windowWidth * 0.8,
 }: ChoiceCardComponentProps) => {
   const scaleValue = useRef(new Animated.Value(1)).current;
@@ -63,7 +65,16 @@ const ChoiceCardComponent = ({
         <Text style={[CommonStyles.textStyles.title, {textAlign: 'center'}]}>
           {title}
         </Text>
-        <Image source={image} style={[styles.image, {height: height * 0.77}]} />
+        <Image
+          source={image}
+          style={[
+            styles.image,
+            {
+              height: height * 0.77,
+              tintColor: tintColor,
+            },
+          ]}
+        />
         <Text
           style={[CommonStyles.textStyles.paragraph, {textAlign: 'center'}]}>
           {description}

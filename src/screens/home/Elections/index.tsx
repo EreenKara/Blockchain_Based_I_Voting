@@ -15,6 +15,7 @@ import {ElectionViewModel} from '@viewmodels/election.viewmodel';
 import {HomeStackParamList} from '@navigation/types';
 import {SehirViewModel} from '@viewmodels/sehir.viewmodel';
 import {ElectionService} from '@services/backend/concrete/election.service';
+import {useSearchContext} from '@contexts/search.context';
 type ScreenProps = NativeStackScreenProps<HomeStackParamList>;
 
 const ElectionsScreen: React.FC<ElectionsScreenProps> = () => {
@@ -22,13 +23,10 @@ const ElectionsScreen: React.FC<ElectionsScreenProps> = () => {
   const [elections, setElections] = useState<ElectionViewModel[]>([]);
   const navigation = useNavigation<ScreenProps>();
   const electionService = new ElectionService();
+  const {search, updateSearch, clearSearch} = useSearchContext();
 
-  const [selectedSehir, setSelectedSehir] = useState<SehirViewModel>(
-    new SehirViewModel(0, ''),
-  );
-
-  const onSehirPressed = (id: number, sehir: string) => {
-    setSelectedSehir(new SehirViewModel(id, sehir));
+  const onSehirPressed = (sehir: string) => {
+    updateSearch({city: sehir});
     setIndex(0);
   };
 
@@ -61,14 +59,13 @@ const ElectionsScreen: React.FC<ElectionsScreenProps> = () => {
             <ElectionCardComponent
               title="Popüler Seçimler"
               //items={elections}
-              sehir={selectedSehir}
             />
           </View>
         </View>
         {index >= 0 && (
           <View style={styles.bottomContainer}>
             <BottomSheetComponent index={index} setIndex={setIndex}>
-              <HistoryCardComponent sehir={selectedSehir} />
+              <HistoryCardComponent />
             </BottomSheetComponent>
           </View>
         )}

@@ -13,14 +13,16 @@ import ProgressBarComponent from '@components/ProgressBar/progress.bar';
 import {ProgressView} from '@react-native-community/progress-view';
 import Colors from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
+import {useSearchContext} from '@contexts/search.context';
 const windowHeight = Dimensions.get('window').height;
 
 const SpecificElectionScreen: React.FC<SpecificElectionScreenProps> = ({
   route,
 }) => {
-  const {sehir, election} = route.params;
+  const {election} = route.params;
   const [loading, setLoading] = useState(true);
   const [electionData, setElectionData] = useState<any>(null);
+  const {search} = useSearchContext();
   const [candidates, setCandidates] = useState<CandidateViewModel[]>([]);
   const loadElectionData = async () => {
     setLoading(true);
@@ -46,7 +48,7 @@ const SpecificElectionScreen: React.FC<SpecificElectionScreenProps> = ({
       <ScrollView style={styles.container}>
         <View style={styles.header}>
           <Text style={CommonStyles.textStyles.title}>{election.name}</Text>
-          <Text style={CommonStyles.textStyles.subtitle}>{sehir.name}</Text>
+          <Text style={CommonStyles.textStyles.subtitle}>{search.city}</Text>
         </View>
         <View style={styles.progressView}>
           <Text

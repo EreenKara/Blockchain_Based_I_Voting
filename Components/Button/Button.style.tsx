@@ -8,11 +8,11 @@ export const buttonStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: styleNumbers.space * 0.7,
+    paddingVertical: styleNumbers.space * 1.5,
     paddingHorizontal: styleNumbers.space * 2,
     borderRadius: styleNumbers.borderRadius,
-    height: styleNumbers.buttonSize,
     minWidth: styleNumbers.buttonSize * 1.5,
+
     ...CommonStyles.shadowStyle,
   },
   primaryButton: {

@@ -15,7 +15,7 @@ const WIDTH = Dimensions.get('window').width;
 const HEIGHT = 400;
 
 interface MapAnimationComponentProps {
-  onPress: (id: number, sehir: string) => void;
+  onPress: (sehir: string) => void;
 }
 
 const MapAnimationComponent: React.FC<MapAnimationComponentProps> = ({

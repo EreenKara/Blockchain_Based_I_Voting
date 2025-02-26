@@ -4,14 +4,13 @@ import {HomeStackParamList} from './types';
 import {HomeScreen} from '@screens/home/index';
 import {CreateElectionScreen} from '@screens/home/index';
 import {ElectionInfoScreen} from '@screens/home/index';
-import {PastElectionsScreen} from '@screens/home/index';
-import {CurrentElectionsScreen} from '@screens/home/index';
-import {UpComingElectionsScreen} from '@screens/home/index';
 import {BeCandidateScreen} from '@screens/home/index';
 import {ElectionsScreen} from '@screens/home/index';
 import {SpecificElectionScreen} from '@screens/home/index';
 import Colors from '@styles/common/colors';
 import NavBarTitle from '@shared/navbar_title';
+import DefaultCustomScreen from '@screens/home/DefaultCustom';
+import ListElectionsScreen from '@screens/shared/ListElections';
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 
 const HomeNavigator: React.FC = () => {
@@ -22,7 +21,7 @@ const HomeNavigator: React.FC = () => {
         headerRight: () => <NavBarTitle />,
         headerTitleAlign: 'center',
         headerStyle: {
-          backgroundColor: Colors.getTheme().transition,
+          backgroundColor: Colors.getTheme().bar,
         },
       }}>
       <Stack.Screen
@@ -51,24 +50,19 @@ const HomeNavigator: React.FC = () => {
         options={{title: 'Seçim'}}
       />
       <Stack.Screen
-        name="UpComingElections"
-        component={UpComingElectionsScreen}
-        options={{title: 'Gelecek Seçimler'}}
-      />
-      <Stack.Screen
-        name="CurrentElections"
-        component={CurrentElectionsScreen}
-        options={{title: 'Güncel Seçimler'}}
-      />
-      <Stack.Screen
-        name="PastElections"
-        component={PastElectionsScreen}
-        options={{title: 'Geçmiş Seçimler'}}
+        name="ListElections"
+        component={ListElectionsScreen}
+        options={{title: 'Seçimler'}}
       />
       <Stack.Screen
         name="BeCandidate"
         component={BeCandidateScreen}
         options={{title: 'Aday Ol'}}
+      />
+      <Stack.Screen
+        name="DefaultCustom"
+        component={DefaultCustomScreen}
+        options={{title: 'Varsayılan veya Özel'}}
       />
     </Stack.Navigator>
   );

@@ -1,19 +1,18 @@
 import {
-  KeyboardAvoidingView,
   TouchableWithoutFeedback,
   StyleSheet,
-  Text,
   View,
   Modal,
   ViewStyle,
-  Platform,
-  Pressable,
   Dimensions,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import React from 'react';
 import styleNumbers from '@styles/common/style.numbers';
 import Colors from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 interface CenteredModalComponentProps {
   isOpen: boolean;
@@ -32,25 +31,23 @@ const CenteredModalComponent: React.FC<CenteredModalComponentProps> = ({
   ...rest
 }) => {
   const content = withInput ? (
-    <TouchableWithoutFeedback
-      style={{flex: 1, width: '100%', height: '100%'}}
-      onPress={() => {
-        onClose();
-      }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={[styles.modalContainer]}>
-        <View style={[styles.modalContent, style]}>{children}</View>
-      </KeyboardAvoidingView>
+    <TouchableWithoutFeedback onPress={onClose}>
+      <View style={styles.modalContainer}>
+        <TouchableWithoutFeedback>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={[styles.modalContent, style]}>
+            {children}
+          </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
+      </View>
     </TouchableWithoutFeedback>
   ) : (
-    <TouchableWithoutFeedback
-      style={{flex: 1, width: '100%', height: '100%'}}
-      onPress={() => {
-        onClose();
-      }}>
-      <View style={[styles.modalContainer]}>
-        <View style={[styles.modalContent, style]}>{children}</View>
+    <TouchableWithoutFeedback onPress={onClose}>
+      <View style={styles.modalContainer}>
+        <TouchableWithoutFeedback>
+          <View style={[styles.modalContent, style]}>{children}</View>
+        </TouchableWithoutFeedback>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -62,8 +59,7 @@ const CenteredModalComponent: React.FC<CenteredModalComponentProps> = ({
       animationType="fade"
       statusBarTranslucent={true}
       {...rest}
-      onRequestClose={onClose} // androidde geri tuşuyla kapatmak için
-    >
+      onRequestClose={onClose}>
       {content}
     </Modal>
   );
@@ -83,7 +79,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: Colors.getTheme().cardBackground,
-    padding: styleNumbers.space,
+    padding: styleNumbers.space * 2,
     marginHorizontal: styleNumbers.space * 2,
     width: width * 0.9,
     height: height * 0.35,

@@ -1,5 +1,5 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {HomeStackParamList} from '@navigation/types';
+import {HomeStackParamList, ProfileStackParamList} from '@navigation/types';
 
 type ElectionsScreenProps = NativeStackScreenProps<
   HomeStackParamList,
@@ -7,7 +7,7 @@ type ElectionsScreenProps = NativeStackScreenProps<
 >;
 
 type SpecificElectionScreenProps = NativeStackScreenProps<
-  HomeStackParamList,
+  HomeStackParamList | ProfileStackParamList,
   'SpecificElection'
 >;
 

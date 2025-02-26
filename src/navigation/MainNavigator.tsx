@@ -5,6 +5,7 @@ import HomeNavigator from '@navigation/HomeNavigator';
 import ProfileNavigator from '@navigation/ProfileNavigator';
 import SocialMediaScreen from '@screens/social/SocialMedia';
 import {Image, StyleSheet} from 'react-native';
+import Colors from '@styles/common/colors';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -13,6 +14,9 @@ const MainNavigator: React.FC = () => {
     <Tab.Navigator
       screenOptions={({route}) => ({
         headerShown: false,
+        tabBarStyle: {
+          backgroundColor: Colors.getTheme().bar,
+        },
         tabBarIcon: ({color, size}) => {
           let iconSource;
           if (route.name === 'Home') {

@@ -20,7 +20,7 @@ interface TRMapData {
 }
 
 interface TRMapComponentProps {
-  onPress: (id: number, sehir: string) => void;
+  onPress: (sehir: string) => void;
 }
 
 const TRMapComponent = ({onPress}: TRMapComponentProps): JSX.Element => {
@@ -28,7 +28,7 @@ const TRMapComponent = ({onPress}: TRMapComponentProps): JSX.Element => {
 
   const handleClick = (id: number, sehir: string): void => {
     setSelectedSehir(id);
-    onPress(id, sehir);
+    onPress(sehir);
   };
 
   const mapData = TRMap as TRMapData;

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, VirtualizedList, SafeAreaView} from 'react-native';
+import {View, Text, SafeAreaView, ListRenderItem} from 'react-native';
 import ElectionCardItemComponent from '../ElectionCardItem/election.card.item';
 import {electionCardStyles as styles} from './election.card.style';
 import VirtualizedListComponent from '@components/List/virtualized.list';
@@ -7,7 +7,6 @@ import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
 import {ElectionViewModel} from '@viewmodels/election.viewmodel';
-import {SehirViewModel} from '@viewmodels/sehir.viewmodel';
 type ElectionNavigationProp = NativeStackNavigationProp<HomeStackParamList>;
 
 const sampleItems: ElectionViewModel[] = [
@@ -31,29 +30,27 @@ const sampleItems: ElectionViewModel[] = [
 
 interface ElectionCardComponentProps {
   title: string;
+  renderItem?: ListRenderItem<any>;
   items?: ElectionViewModel[];
-  sehir: SehirViewModel;
 }
 
 const ElectionCardComponent: React.FC<ElectionCardComponentProps> = ({
   title = 'Title girin',
-  sehir,
+  renderItem,
   items = sampleItems,
 }) => {
   const navigation = useNavigation<ElectionNavigationProp>();
 
-  const renderItem = ({item}: {item: ElectionViewModel}) => (
+  const defaultRenderItem = ({item}: {item: ElectionViewModel}) => (
     <ElectionCardItemComponent
       election={item}
       navigatePress={() =>
         navigation.navigate('SpecificElection', {
           election: item,
-          sehir: sehir,
         })
       }
     />
   );
-
   const renderEmptyList = () => (
     <View style={styles.emptyList}>
       <Text style={styles.emptyText}>Gösterilecek seçim bulunamadı.</Text>
@@ -69,7 +66,7 @@ const ElectionCardComponent: React.FC<ElectionCardComponentProps> = ({
         style={styles.listContainer}
         contentContainerStyle={styles.listContent}
         data={items}
-        renderItem={renderItem}
+        renderItem={renderItem ? renderItem : defaultRenderItem}
         ListEmptyComponent={renderEmptyList}
         showsVerticalScrollIndicator={false}
         initialNumToRender={10}
