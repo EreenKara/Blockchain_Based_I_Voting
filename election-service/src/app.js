@@ -3,6 +3,7 @@ const electionRoutes = require('./routes/electionRoutes');
 const sequelize=require("./config/database");
 const choiceRoute=require("./routes/choiceRoutes");
 const electionAdressRoute=require("./routes/electionAdressRoutes");
+const cronJobs = require('./utils/cronJobs');
 
 require('dotenv').config();
 

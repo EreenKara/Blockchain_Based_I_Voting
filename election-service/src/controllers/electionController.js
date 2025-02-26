@@ -1,4 +1,13 @@
-const { createElection,updateElectionStatus,addElectionType,addChoiceToElection,getElectionById} = require("../services/electionService");
+const { 
+    createElection,
+    updateElectionStatus,
+    addElectionType,
+    addChoiceToElection,
+    getElectionById,
+    getActiveElection
+    
+} = require("../services/electionService");
+
 const Election = require("../models/Election");
 
 const handleError = (res, error, message) => {
@@ -56,23 +65,14 @@ const getElectionByIdController = async (req, res) => {
     }
 };
 
-const getActiveElection = async (req, res) => {
-  const { id } = req.params;
-  try {
-      const election = await Election.findByPk(id);
-      if (!election) {
-          return res.status(404).json({ message: "Election not found" });
-      }
-      const now = new Date();
-      if (now >= election.startDate && now <= election.endDate) {
-          return res.status(200).json({ message: "Election is active", election });
-      } else {
-          return res.status(400).json({ message: "Election cannot be started outside of start and end dates" });
-      }
-  } catch (error) {
-      handleError(res, error, "Error checking election status:");
-  }
+const getActiveElectionController=async(req,res)=>{
+try{
+ await getActiveElection(req,res);
+}catch(error){
+    handleError(res, error, "Error getting active elections.:");
+}
 };
+
 
 const updateElectionStatusController = async (req, res) => {
   try {
@@ -81,7 +81,23 @@ const updateElectionStatusController = async (req, res) => {
       handleError(res, error, "Error updating election status:");
   }
 };
+// const updateElectionStatusIfActiveController=async(req,res)=>{
+// try{
+//  await updateElectionStatusIfActive(req,res);
+// }catch(error){
+// handleError(res,error,"error updating election status")
+// }
+// };
 
 
+module.exports = { 
+    createElectionController,
+    getElectionByIdOnly,
+    getActiveElection,
+    getElectionByIdController,
+    updateElectionStatusController,
+    addChoiceToElectionController,
+    addElectionTypeController,
+    getActiveElectionController
 
-module.exports = { createElectionController,getElectionByIdOnly,getActiveElection,getElectionByIdController,updateElectionStatusController,addChoiceToElectionController,addElectionTypeController};
+};

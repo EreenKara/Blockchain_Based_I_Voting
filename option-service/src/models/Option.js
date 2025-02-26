@@ -30,12 +30,6 @@ const Option = sequelize.define(
       onUpdate: "CASCADE",
       onDelete: "CASCADE",
     },
-    // Seçenek türü
-    optionType: {
-      type: DataTypes.ENUM("registered_user", "guest_user", "inanimate_entity"),
-      allowNull: false,
-    },
-    // Kayıtlı kullanıcı için userId, user mikroservisindeki User tablosuna bağlanacak
     userId: {
       type: DataTypes.INTEGER,
       allowNull: true,
@@ -46,23 +40,7 @@ const Option = sequelize.define(
       onUpdate: "CASCADE",
       onDelete: "SET NULL",
     },
-    // Kayıt olmamış kullanıcı için ad ve e-posta
-    guestName: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    guestEmail: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      validate: {
-        isEmail: true,
-      },
-    },
-    // Cansız varlık ismi
-    entityName: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
+
     color: {
       type: DataTypes.STRING(7), // Hex renk kodu için #FFFFFF formatında
       allowNull: false,

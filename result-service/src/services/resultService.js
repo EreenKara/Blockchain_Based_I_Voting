@@ -1,21 +1,15 @@
 const  Result = require("../models/Result");
 const axios = require("axios");
 
-const calculateElectionResult = async (electionId, token) => {
-  if (!token) {
-    throw new Error("Authorization token is missing");
-  }
-
+const calculateElectionResult = async (electionId) => {
   try {
     // Seçimle ilişkili seçenekleri mikroservisten çek
     const response = await axios.get(
-      `${process.env.OPTION_SERVICE_URL}/api/options/election/${electionId}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
+      `${process.env.OPTION_SERVICE_URL}/api/options/election/${electionId}`
     );
 
     const options = response.data.options || [];
+    
     if (options.length === 0) {
       throw new Error("No options found for the given election.");
     }
@@ -35,18 +29,13 @@ const calculateElectionResult = async (electionId, token) => {
       },
     });
 
-    // Seçim durumunu güncelle
-    await axios.patch(
-      `${process.env.ELECTION_SERVICE_URL}/api/elections/change/status/${electionId}`,
-      { isActive: false },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
     return result;
   } catch (error) {
     throw new Error(`Error calculating result: ${error.message}`);
   }
 };
+
+
 
 const getResultByElectionId = async (electionId) => {
   try {

@@ -8,13 +8,14 @@ const createOption = async (req, res) => {
     return res.status(401).json({ message: "Authorization token is missing" });
   }
 
-  const { optionName, optionImgUrl, optionDescription,color, electionId, optionType, userId, guestName, guestEmail, entityName } = req.body;
+  const { optionName, optionImgUrl, optionDescription, color, electionId, userId } = req.body;
 
-  if (!optionName || !electionId || !optionType) {
-    return res.status(400).json({ message: "Option name, election ID, and option type are required." });
+  if (!optionName || !electionId || !userId) {
+    return res.status(400).json({ message: "Option name, election ID, and user ID are required." });
   }
 
   try {
+    // Kullanıcıyı doğrula
     const user = await authenticateUser(token);
     console.log("Authenticated User:", user);
 
@@ -22,6 +23,7 @@ const createOption = async (req, res) => {
       return res.status(403).json({ message: "Access denied: Only businesses can create options" });
     }
 
+    // Seçimi doğrula
     const election = await validateElection(electionId, token);
     if (!election) {
       return res.status(404).json({ message: "Election not found or not valid." });
@@ -30,40 +32,54 @@ const createOption = async (req, res) => {
     if (election.createdBy !== user.email) {
       return res.status(403).json({ message: "You are not authorized to add options to this election" });
     }
+    const isValidUser = await validateUser(userId);
+    if (!isValidUser) {
+      return res.status(400).json({ message: "Invalid user ID. No such user exists." });
+    }
 
+    // userId belirleme mantığı
+    let userType = "registered";
+    if (userId == 1) {
+      userType = "guest"; // Misafir kullanıcı
+    } else if (userId == 2) {
+      userType = "non-human"; // Cansız varlık
+    }
+
+    const existingOptions = await getOptionsByElectionId(electionId);
+
+    // Eğer seçimde daha önce eklenen seçenekler varsa, onların türünü kontrol et
+    if (existingOptions.length > 0) {
+      const existingUserType = existingOptions[0].userId == 2 ? "non-human" : "human";
+
+      if ((userType === "non-human" && existingUserType !== "non-human") || 
+          (userType !== "non-human" && existingUserType === "non-human")) {
+        return res.status(400).json({ message: "Humans and non-humans cannot compete in the same election." });
+      }
+    }
+    // Option verisini oluştur
     let newOptionData = {
       optionName,
       optionImgUrl,
       optionDescription,
       color,
       electionId,
-      optionType,
       voteCount: 0,
+      userId,
     };
 
-    if (optionType === "registered_user") {
-      if (!userId) throw new Error("User ID is required for registered user option.");
-      const isUserValid = await validateUser(userId);
-      if (!isUserValid) throw new Error("Invalid user ID.");
-      newOptionData.userId = userId;
-    } else if (optionType === "guest_user") {
-      if (!guestName || !guestEmail) throw new Error("Guest name and email are required for guest user.");
-      newOptionData.guestName = guestName;
-      newOptionData.guestEmail = guestEmail;
-    } else if (optionType === "inanimate_entity") {
-      if (!entityName) throw new Error("Entity name is required for inanimate entity.");
-      newOptionData.entityName = entityName;
-    } else {
-      throw new Error("Invalid option type.");
-    }
+    const newOption = await Option.create(newOptionData);
 
-    const option = await Option.create(newOptionData);
-
-    res.status(201).json({ message: "Option created successfully", option });
+    res.status(201).json({
+      message: "Option created successfully",
+      option: newOption,
+      userType,
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
+
+
 
 // Kullanıcıyı token ile doğrula
 const authenticateUser = async (token) => {

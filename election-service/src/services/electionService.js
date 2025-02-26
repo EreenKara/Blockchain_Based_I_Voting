@@ -30,7 +30,7 @@ const createElection = async (req, res) => {
             createdBy: user.email,
             accessType,
             step: "step1", // İlk adım
-            status,
+            status:"upcoming",
             electionType:"null"
             
         });
@@ -201,33 +201,83 @@ const getElectionById = async (id, token) => {
 
 const updateElectionStatus = async (req, res) => {
     const { id } = req.params; // Seçim ID'si
-    const { isActive } = req.body; // Yeni aktiflik durumu
 
     try {
-        const election = await Election.findByPk(id); // Sequelize: findByPk (Primary Key)
+        // Seçimi ID'ye göre bul
+        const election = await Election.findByPk(id);
+
         if (!election) {
             return res.status(404).json({ message: "Election not found" });
         }
 
-        if (election.isActive === false) {
-            return res.status(401).json({ message: "Election is not active" });
+        // Eğer seçim zaten COMPLETED durumundaysa işlem yapılmamalı
+        if (election.status === "completed") {
+            return res.status(400).json({ message: "Election is already completed." });
         }
 
-        if (election.isActive === true) {
-            election.isActive = false;
-            await election.save();  // Sequelize: save method
+        // Eğer seçim ACTIVE ise, COMPLETED olarak güncelle
+        if (election.status === "active") {
+            election.status = "completed";
+            await election.save();
 
-            return res.status(200).json({ message: "Election status updated successfully", election });
-        } else {
-            return res.status(400).json({ message: "Election status update is invalid." });
+            return res.status(200).json({ message: "Election status updated to COMPLETED successfully", election });
         }
+
+        // Eğer seçim ACTIVE değilse geçersiz bir durumdur
+        return res.status(400).json({ message: "Election status update is invalid. Only ACTIVE elections can be completed." });
+
     } catch (error) {
         res.status(500).json({ message: "An error occurred while updating the election status.", error: error.message });
     }
 };
 
+const getActiveElection = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const election = await Election.findByPk(id);
+        if (!election) {
+            return res.status(404).json({ message: "Election not found" });
+        }
+        const now = new Date();
+        if (now >= election.startDate && now <= election.endDate) {
+            return res.status(200).json({ message: "Election is active", election });
+        } else {
+            return res.status(400).json({ message: "Election cannot be started outside of start and end dates" });
+        }
+    } catch (error) {
+        handleError(res, error, "Error checking election status:");
+    }
+  };
+//   const updateElectionStatusIfActive = async (req, res) => {
+//     const { id } = req.params;
+
+//     try {
+//         // Seçimi ID ile bul
+//         const election = await Election.findByPk(id);
+//         if (!election) {
+//             return res.status(404).json({ message: "Election not found" });
+//         }
+
+//         const now = new Date();
+
+//         // Eğer seçim upcoming ve tarih aralığındaysa active yap
+//         if (election.status === "upcoming" && now >= election.startDate && now <= election.endDate) {
+//             election.status = "active";
+//             await election.save(); // Güncellenmiş durumu kaydet
+
+//             return res.status(200).json({ message: "Election status updated to ACTIVE", election });
+//         }
+
+//         return res.status(400).json({ message: "Election status update conditions not met." });
+
+//     } catch (error) {
+//         res.status(500).json({ message: "An error occurred while updating election status.", error: error.message });
+//     }
+// };
 
 
 
 
-module.exports = { createElection, authenticateUser, getElectionById, updateElectionStatus,addChoiceToElection,addElectionType };
+
+
+module.exports = { createElection, authenticateUser, getElectionById, updateElectionStatus,addChoiceToElection,addElectionType,getActiveElection };
