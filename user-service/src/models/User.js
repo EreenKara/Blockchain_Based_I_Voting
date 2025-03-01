@@ -1,17 +1,8 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const yup = require('yup');  // Yup kütüphanesini dahil ediyoruz
-require('dotenv').config();
+const sequelize = require("../config/database");
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.DB_HOST,
-    dialect: 'postgres',
-    port: process.env.DB_PORT,
-  }
-);
+
 
 // Yup şeması tanımlıyoruz
 const userValidationSchema = yup.object().shape({
@@ -131,29 +122,21 @@ const User = sequelize.define('User', {
   timestamps: true,
 });
 
-// Veri doğrulama işlemi
-// async function validateUserData(userData) {
-//   try {
-//     await userValidationSchema.validate(userData, { abortEarly: false });
-//     console.log('User data is valid!');
-//   } catch (error) {
-//     console.error('Validation errors:', error.errors);
-//   }
-// }
+
 
 // Veritabanı bağlantısını test etme
-sequelize.authenticate()
-  .then(() => {
-    console.log('PostgreSQL bağlantısı başarılı.');
-  })
-  .catch((error) => {
-    console.error('PostgreSQL bağlantısı hatası:', error);
-  });
+// sequelize.authenticate()
+//   .then(() => {
+//     console.log('PostgreSQL bağlantısı başarılı.');
+//   })
+//   .catch((error) => {
+//     console.error('PostgreSQL bağlantısı hatası:', error);
+//   });
 
-// Veritabanı senkronizasyonu
-sequelize.sync()
-  .then(() => console.log("Users tablosu oluşturuldu veya güncellendi!"))
-  .catch(err => console.error('Tablo oluşturulurken bir hata oluştu:', err));
+// // Veritabanı senkronizasyonu
+// sequelize.sync()
+//   .then(() => console.log("Users tablosu oluşturuldu veya güncellendi!"))
+//   .catch(err => console.error('Tablo oluşturulurken bir hata oluştu:', err));
 
 // Modeli dışa aktarıyoruz
 module.exports = { User, userValidationSchema };

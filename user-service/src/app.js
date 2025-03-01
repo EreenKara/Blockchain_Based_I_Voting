@@ -1,13 +1,17 @@
 const express = require('express');
 const sequelize=require("./config/database");
+const groupRoutes=require("./routes/groupRoutes");
 const userAdressRoute=require("./routes/userAdressRoutes");
-const userRoutes = require('./routes/userRoutes');  // Kullanıcı yönlendirmelerini import ediyoruz
+const userRoutes = require('./routes/userRoutes');
+const electionAccessUsersRoutes=require('./routes/electionAccessUsersRoutes');  // Kullanıcı yönlendirmelerini import ediyoruz
 require('dotenv').config();  // .env dosyasını yüklemek için
 
 const app = express();
 app.use(express.json());
 app.use('/api/users', userRoutes);
+app.use('/api/groups',groupRoutes)
 app.use('/api/userAdresses',userAdressRoute);
+app.use('/api/ElectionAccesUsers',electionAccessUsersRoutes);
 
 // PostgreSQL bağlantısını sağlıyoruz
 
