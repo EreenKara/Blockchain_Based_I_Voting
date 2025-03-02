@@ -8,11 +8,11 @@ class Vote extends Model {}
 Vote.init(
   {
     electionId: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     optionId: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     votedBy: {

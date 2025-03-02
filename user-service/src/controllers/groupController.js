@@ -66,6 +66,10 @@ const addUserToGroup = async (req, res) => {
       return res.status(403).json({ message: "Only the group creator can add users" });
     }
 
+    const existingUserGroup = await UserGroup.findOne({ where: { userId, groupId } });
+    if (existingUserGroup) {
+      return res.status(400).json({ message: `User with ID ${userId} is already in group with ID ${groupId}.` });
+    }
     // Kullanıcıyı gruba ekle
     const userGroup = await UserGroup.create({ userId, groupId });
     res.status(201).json({ message: "User added to group", userGroup });
@@ -78,17 +82,33 @@ const addUserToGroup = async (req, res) => {
 
 // Bir gruptaki tüm kullanıcıları getir
 const getUsersInGroup = async (req, res) => {
-  const { groupId } = req.params;
+  const groupId = Number(req.params.groupId); // ID’yi sayıya çevir
+
+  if (isNaN(groupId)) {
+    return res.status(400).json({ message: "Invalid group ID format" });
+  }
 
   try {
-    const group = await Group.findByPk(groupId, { include: User });
+    const group = await Group.findByPk(groupId, {
+      include: [
+        {
+          model: User,
+          through: UserGroup,
+          attributes: ["id", "name", "email"],
+        },
+      ],
+    });
+
     if (!group) {
       return res.status(404).json({ message: "Group not found" });
     }
+
     res.status(200).json(group);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
+
 
 module.exports = { createGroup, addUserToGroup, getUsersInGroup };

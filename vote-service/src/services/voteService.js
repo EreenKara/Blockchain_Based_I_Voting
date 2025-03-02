@@ -1,3 +1,4 @@
+const { USE } = require("sequelize/lib/index-hints");
 const Vote = require("../models/Vote");
 const axios = require("axios");
 
@@ -44,8 +45,10 @@ const authenticateUser = async (token) => {
   }
 };
 
+
+
 const castVote = async (req, res) => {
-  const token = req.headers.authorization?.split(" ")[1]; // Bearer Token
+const token = req.headers.authorization?.split(" ")[1]; // Bearer Token
   if (!token) {
     return res.status(401).json({ message: "Authorization token is missing" });
   }
@@ -58,10 +61,11 @@ const castVote = async (req, res) => {
   try {
     // Kullanıcıyı doğrula
     const user = await authenticateUser(token);
-
+console.log(user);
     if (!user || !user.email) {
       return res.status(403).json({ message: "Access denied: User information is invalid" });
     }
+    
 
     // Seçim var mı kontrol et
     const electionResponse = await axios.get(
@@ -69,13 +73,86 @@ const castVote = async (req, res) => {
       { headers: { Authorization: `Bearer ${token}` } }
     );
     const election = electionResponse.data.election;
-
+    
     if (!election) {
       return res.status(404).json({ message: "Election not found" });
     }
+
     
-        // Seçimin aktif olup olmadığını kontrol et
-        
+    if (election.accessType.toLowerCase() === "private") {
+      try {
+        console.log(`Checking user access for userId: ${user.userId} in electionId: ${electionId}`);
+    
+        // Kullanıcının doğrudan erişime sahip olup olmadığını kontrol et
+        const accessResponse = await axios.get(
+            `${process.env.USER_SERVICE_URL}/api/ElectionAccesUsers/getUsersWithAccessToElection/${electionId}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+    
+        console.log("User Access Response Data:", JSON.stringify(accessResponse.data, null, 2));
+    
+        if (!accessResponse.data.success) {
+            return res.status(403).json({ message: "You do not have access to vote in this private election." });
+        }
+    
+        // Kullanıcı doğrudan erişime sahip mi?
+        const accessUsers = accessResponse.data.data || [];
+        let userHasAccess = accessUsers.some(accessUser => Number(accessUser.userId) === Number(user.userId));
+    
+        if (!userHasAccess) {
+            console.log("User does not have direct access. Checking group access...");
+    
+            // Kullanıcının dahil olduğu grupları getir
+            const userGroupsResponse = await axios.get(
+                `${process.env.USER_SERVICE_URL}/api/ElectionAccesGroups/getGroupsWithAccessToElection/${electionId}`,
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+    
+            console.log("User Groups Response Data:", JSON.stringify(userGroupsResponse.data, null, 2));
+    
+            if (!userGroupsResponse.data.success) {
+                return res.status(403).json({ message: "You do not have access to vote in this private election." });
+            }
+    
+            // Kullanıcının dahil olduğu grupların bilgilerini al
+            const userGroups = userGroupsResponse.data?.data || [];
+            if (userGroups.length === 0) {
+                return res.status(403).json({ message: "You do not belong to any authorized group for this election." });
+            }
+    
+            console.log("User Groups Processed Data:", userGroups);
+    
+            // Kullanıcının dahil olduğu grup ID'lerini al
+            const groupIds = userGroups.map(group => group.groupId);
+            console.log(`User belongs to groups: ${groupIds}`);
+    
+            // Kullanıcının dahil olduğu grupların kullanıcıları ile `userId` eşleşiyor mu?
+            let userIsInAuthorizedGroup = false;
+            
+            for (const group of userGroups) {
+                console.log(`Checking groupId: ${group.groupId} users:`, group.users);
+    
+                if (group.users.some(member => Number(member.id) === Number(user.userId))) {
+                    userIsInAuthorizedGroup = true;
+                    console.log(`UserId ${user.userId} found in group ${group.groupId}`);
+                    break; // Eşleşme bulunursa devam etmeye gerek yok
+                }
+            }
+    
+            if (!userIsInAuthorizedGroup) {
+                return res.status(403).json({ message: "You do not have access to vote in this private election." });
+            }
+        }
+    
+    } catch (error) {
+        console.error("Error verifying user access:", error.response?.data || error.message);
+        return res.status(500).json({ message: "An error occurred while checking user access.", error: error.message });
+    }
+    
+  }
+      
+     
+
     // Seçim süresi kontrolü
     const activeResponse = await axios.get(
       `${process.env.ELECTION_SERVICE_URL}/api/elections/${electionId}/active`,
@@ -94,7 +171,7 @@ const castVote = async (req, res) => {
     const options = optionsResponse.data.options;
 
     if (!options || options.length === 0) {
-      return res.status(404).json({ message: "No options found for this electionnnn" });
+      return res.status(404).json({ message: "No options found for this election." });
     }
 
     // Seçilen optionId'nin geçerli bir seçenek olup olmadığını kontrol et
@@ -104,7 +181,7 @@ const castVote = async (req, res) => {
     }
 
     // Kullanıcı daha önce oy vermiş mi kontrol et
-    const existingVote = await Vote.findOne({ where: { electionId, votedBy: user.email}});
+    const existingVote = await Vote.findOne({ where: { electionId, votedBy: user.email } });
     if (existingVote) {
       return res.status(400).json({ message: "You have already voted in this election" });
     }
@@ -117,8 +194,6 @@ const castVote = async (req, res) => {
       votedAt: new Date(),
     });
 
-  
-    
     await axios.put(
       `${process.env.OPTION_SERVICE_URL}/api/options/${optionId}/increment-vote`,
       {},
@@ -136,6 +211,7 @@ const castVote = async (req, res) => {
     }
   }
 };
+
 
 
 const getResults = async (req, res) => {

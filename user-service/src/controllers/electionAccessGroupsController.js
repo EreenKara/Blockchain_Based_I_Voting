@@ -1,8 +1,8 @@
-const {addAccessUserToElection,getUsersWithAccessToElection,getGroupsWithAccessToElection}=require("../services/electionAccessUsersService");
+const {addAccessGroupToElection,getGroupsWithAccessToElection}=require("../services/electionAccessGroupsService");
 
-const addAccessUserToElectionController = async (req, res) => {
+const addAccessGroupToElectionController = async (req, res) => {
     try {
-        const { electionId, userId, groupId } = req.body;
+        const { electionId, groupId } = req.body;
         const token = req.headers.authorization?.split(" ")[1];
 
         if (!token) {
@@ -13,7 +13,7 @@ const addAccessUserToElectionController = async (req, res) => {
             return res.status(400).json({ message: "Eksik parametre: electionId gereklidir." });
         }
 
-        const response = await addAccessUserToElection(electionId, userId, groupId, token);
+        const response = await addAccessGroupToElection(electionId, groupId, token);
 
         if (!response.success) {
             return res.status(400).json({ message: response.message });
@@ -25,29 +25,7 @@ const addAccessUserToElectionController = async (req, res) => {
         res.status(500).json({ message: "Kullanıcı veya grup seçime erişilirken hata oluştu.", error: error.message });
     }
 };
-const getUsersWithAccessToElectionController = async (req, res) => {
-    try {
-        // Seçim ID'sini al
-        const { electionId } = req.params;
 
-        // Parametrenin eksik olup olmadığını kontrol et
-        if (!electionId) {
-            return res.status(400).json({ message: "Eksik parametre: electionId gereklidir." });
-        }
-
-        // Kullanıcıları getir
-        const response = await getUsersWithAccessToElection(electionId);
-
-        if (!response.success) {
-            return res.status(400).json({ message: response.message });
-        }
-
-        res.status(200).json({ success:true,message: response.message, data: response.data });
-    } catch (error) {
-        console.error("Hata:", error.message);
-        res.status(500).json({ success:false,message: "Seçime erişimi olan kullanıcıları getirirken hata oluştu.", error: error.message });
-    }
-};
 const getGroupsWithAccessToElectionController=async(req,res)=>{
     try{
 const {electionId}=req.params;
@@ -65,4 +43,4 @@ res.status(200).json({success:true,message:response.message,data:response.data})
     }
 };
 
-module.exports={addAccessUserToElectionController,getUsersWithAccessToElectionController,getGroupsWithAccessToElectionController};
+module.exports={addAccessGroupToElectionController,getGroupsWithAccessToElectionController};
