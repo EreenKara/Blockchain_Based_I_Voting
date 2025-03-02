@@ -57,3 +57,26 @@ pm2.pid
 
 # TypeScript
 *.tsbuildinfo
+
+# Terraform
+terraform.tfstate
+terraform.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+
+# Terraform plan files (generated files)
+*.tfplan
+*.tfvars.json
+*.tfvars
+
+# Ignore SSH keys or sensitive files
+*.pem
+*.key
+*.crt
+*.cer
+*.pfx
+*.kubeconfig
+
+# Kubernetes
+kubeconfig
+.kube/
