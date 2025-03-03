@@ -7,7 +7,7 @@ import {RegisterScreen} from '@screens/auth/index';
 import {ForgotPasswordScreen} from '@screens/auth/index';
 import Colors from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
-import EmailConfirmScreen from '@screens/auth/EmailConfirm/email.confirm';
+import EmailConfirmScreen from '@screens/auth/EmailConfirm';
 import DenemeScreen from '@screens/auth/Deneme';
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();

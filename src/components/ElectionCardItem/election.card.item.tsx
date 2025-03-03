@@ -5,9 +5,9 @@ import {electionCardItemStyles as styles} from './election.card.item.style';
 import styleNumbers from '@styles/common/style.numbers';
 import ButtonComponent from '@components/Button/Button';
 import ProgressBarComponent from '@components/ProgressBar/progress.bar';
-import {ElectionViewModel} from '@viewmodels/election.viewmodel';
+import LightElectionViewModel from '@viewmodels/light.election.viewmodel';
 interface ElectionCardItemProps {
-  election: ElectionViewModel;
+  election: LightElectionViewModel;
   navigatePress: () => void;
   buttonTitle?: string;
 }

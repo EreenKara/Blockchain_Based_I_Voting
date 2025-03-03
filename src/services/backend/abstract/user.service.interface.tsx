@@ -1,11 +1,10 @@
-import {User} from '@entities/user.entity';
-import {GenericBackendService} from '../concrete/generic.backend.sevice';
-
-export interface IUserService extends GenericBackendService<User> {
-  getUsersByEmail(email: string): Promise<User[]>;
-  getCurrentUser(): Promise<User>;
-  getUsersByEmail(email: string): Promise<User[]>;
-  login(user: {email: string; password: string}): Promise<string>;
-  register(user: User): Promise<string>;
+import BaseBackendService from '../concrete/base.backend.sevice';
+import {RegisterViewModel} from '@viewmodels/register.viewmodel';
+import {LoginViewModel} from '@viewmodels/login.viewmodel';
+import UserViewModel from '@viewmodels/user.viewmodel';
+export interface IUserService extends BaseBackendService {
+  getCurrentUser(): Promise<UserViewModel>;
+  login(user: LoginViewModel): Promise<string>;
+  register(user: RegisterViewModel): Promise<string>;
   verifyEmail(emailOrIdentity: string, code: string): Promise<string>;
 }

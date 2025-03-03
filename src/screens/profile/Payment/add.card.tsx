@@ -53,14 +53,16 @@ const AddCardScreen: React.FC<Props> = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAwareScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Text style={styles.closeButton}>✕</Text>
-          </TouchableOpacity>
-          <Text style={[CommonStyles.textStyles.title, styles.title]}>
-            Kart Ekle
-          </Text>
-        </View>
+        {false && (
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Text style={styles.closeButton}>✕</Text>
+            </TouchableOpacity>
+            <Text style={[CommonStyles.textStyles.title, styles.title]}>
+              Kart Ekle
+            </Text>
+          </View>
+        )}
         <View style={styles.creditCard}>
           <Image
             source={require('@assets/images/credit-card.png')}
@@ -123,9 +125,10 @@ const AddCardScreen: React.FC<Props> = ({navigation}) => {
         </View>
 
         <ButtonComponent
-          title="EKLE & ÖDEME YAP"
-          onPress={handleSubmit}
-          style={styles.button}
+          title="Kart Ekle"
+          onPress={() => navigation.navigate('AddCard')}
+          textStyle={styles.continueButtonText}
+          style={styles.continueButton}
         />
       </KeyboardAwareScrollView>
     </SafeAreaView>
@@ -192,7 +195,7 @@ const styles = StyleSheet.create({
   input: {
     fontSize: styleNumbers.textSize * 1.3,
     borderRadius: styleNumbers.borderRadius * 0.2,
-    backgroundColor: '#D1E1F0',
+    backgroundColor: Colors.getTheme().creditCard,
     height: 70,
   },
   row: {
@@ -203,6 +206,20 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 'auto',
     marginBottom: styleNumbers.space * 2,
+  },
+  continueButton: {
+    borderWidth: 2,
+    borderColor: Colors.getTheme().borderColor,
+    backgroundColor: Colors.getTheme().button,
+    borderRadius: styleNumbers.borderRadius,
+    paddingVertical: styleNumbers.space * 2,
+    marginBottom: styleNumbers.space * 2,
+    width: '60%',
+    alignSelf: 'center',
+  },
+  continueButtonText: {
+    ...CommonStyles.textStyles.subtitle,
+    color: Colors.getTheme().cardText,
   },
 });
 

@@ -1,20 +1,20 @@
-import {ElectionScreenType} from '@enums/election.screen.type';
+import {ElectionType} from '@enums/election.type';
 
-const getElectionTexts = (electionType: ElectionScreenType) => {
+const getElectionTexts = (electionType: ElectionType) => {
   switch (electionType) {
-    case ElectionScreenType.PastElections:
+    case ElectionType.Past:
       return {
         title: 'Geçmiş Seçimler',
         description: 'Geçmiş seçimlerin listesi aşağıdadır.',
         errorTitle: 'Geçmiş seçim bulunmamaktadır',
       };
-    case ElectionScreenType.CurrentElections:
+    case ElectionType.Current:
       return {
         title: 'Güncel Seçimler',
         description: 'Güncel seçimlerin listesi aşağıdadır.',
         errorTitle: 'Aktif seçim bulunmamaktadır',
       };
-    case ElectionScreenType.UpComingElections:
+    case ElectionType.Upcoming:
       return {
         title: 'Gelecek Seçimler',
         description: 'Gelecek seçimlerin listesi aşağıdadır.',

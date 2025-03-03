@@ -1,39 +1,31 @@
 import React, {useEffect, useState} from 'react';
 import {View, ScrollView, StyleSheet} from 'react-native';
-import {Text, Avatar} from 'react-native-paper';
 import {useAuthContext} from '@contexts/index';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {
-  MainTabParamList,
-  ProfileStackParamList,
-  RootStackParamList,
-} from '@navigation/types';
+import {ProfileStackParamList, RootStackParamList} from '@navigation/types';
 import {useNavigation} from '@react-navigation/native';
 import Colors from '@styles/common/colors';
-import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import ActivityIndicatorComponent from '@shared/activity.indicator';
 import MenuItemComponent from '@icomponents/MenuItem/menu.item';
-import {useUserContext} from '@contexts/index';
+import {useUserProfileContext} from '@contexts/user.profile.context';
 import AvatarHeaderComponent from '@icomponents/AvatarHeader/avatar.header';
-import UserViewModel from '@viewmodels/user.viewmodel';
-import {User} from '@entities/user.entity';
+import {ElectionType} from '@enums/election.type';
+import ErrorScreenComponent from '@shared/error.screen';
 type ScreenProps = NativeStackScreenProps<ProfileStackParamList, 'ProfileMain'>;
 type RootProps = NativeStackNavigationProp<RootStackParamList>;
 
 const ProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
   const rootNavigation = useNavigation<RootProps>();
   const {logout} = useAuthContext();
-  const {user, fetchUserProfile} = useUserContext();
-  const [loading, setLoading] = useState(true);
+  const {user, fetchUser, loading, error} = useUserProfileContext();
 
   useEffect(() => {
-    const fetchUser = async () => {
-      fetchUserProfile();
-      setLoading(false);
+    const getUser = async () => {
+      await fetchUser();
     };
-    fetchUser();
+    getUser();
   }, []);
 
   const handleLogout = () => {
@@ -48,7 +40,9 @@ const ProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
       </View>
     );
   }
-
+  //if (error) {
+  //  return <ErrorScreenComponent fromScreen="Profile" error={error} />;
+  //}
   return (
     <ScrollView style={styles.container}>
       {/* Profil Başlığı */}
@@ -108,7 +102,7 @@ const ProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
           title="Oluşturduğun Seçimler"
           tintColor={Colors.getTheme().icon}
           onPress={() => {
-            navigation.navigate('CreatedElections');
+            navigation.navigate('ListElections', {type: ElectionType.Created});
           }}
           rightIcon={require('@assets/images/right-arrow.png')}
         />

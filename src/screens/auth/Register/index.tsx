@@ -1,64 +1,28 @@
-import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Text, SafeAreaView} from 'react-native';
+import React from 'react';
+import {View, Text, SafeAreaView} from 'react-native';
 import {Button, Snackbar} from 'react-native-paper';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {Formik, FormikHelpers} from 'formik';
-import * as Yup from 'yup';
+import {Formik} from 'formik';
 import {AuthStackParamList} from '@navigation/types';
 import TextInputComponent from '@components/TextInput/text.input';
 import ButtonComponent from '@components/Button/Button';
-import styleNumbers from '@styles/common/style.numbers';
-import CommonStyles from '@styles/common/commonStyles';
-import Colors from '@styles/common/colors';
-import {bosSchema, registerUserSchema} from '@utility/validations';
+import styles from './index.style';
+import {registerUserSchema} from '@utility/validations';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {UserService} from '@services/backend/concrete/user.service';
-import {User} from '@entities/user.entity';
+import {RegisterViewModel} from '@viewmodels/register.viewmodel';
+import {useAuth} from '@hooks/use.auth';
 type Props = NativeStackScreenProps<AuthStackParamList, 'Register'>;
 
-// Form doğrulama şeması
-
 const RegisterScreen: React.FC<Props> = ({navigation}) => {
-  interface RegisterFormValues {
-    username: string;
-    name: string;
-    surname: string;
-    identityNumber: string;
-    phoneNumber: string;
-    email: string;
-    password: string;
-    passwordConfirm: string;
-  }
-  const userService = new UserService();
-  const [visible, setVisible] = React.useState(false);
-  const [errorMsg, setErrorMsg] = React.useState('');
-  const [submitError, setSubmitError] = React.useState('');
+  const {submitRegister, visible, message, setVisible, submitError} =
+    useAuth(false);
 
-  const handleRegister = async (
-    values: RegisterFormValues,
-    formikHelpers: FormikHelpers<RegisterFormValues>,
-  ) => {
-    formikHelpers.setSubmitting(true);
-    const user: User = new User({
-      username: values.username,
-      name: values.name,
-      surname: values.surname,
-      identityNumber: values.identityNumber,
-      phoneNumber: values.phoneNumber,
-      email: values.email,
-      password: values.password,
-    });
-    try {
-      const message = await userService.register(user);
-      setErrorMsg(message);
-      setVisible(true);
-      navigation.navigate('EmailConfirm', {emailOrIdentity: user.email});
-    } catch (error: any) {
-      setSubmitError(`${error.message}`);
-      formikHelpers.setSubmitting(false);
+  const handleRegister = async (values: RegisterViewModel) => {
+    const result = await submitRegister(values);
+    if (result === true) {
+      navigation.navigate('EmailConfirm', {emailOrIdentity: values.email});
     }
   };
-
   return (
     <SafeAreaView style={{flex: 1}}>
       <Formik
@@ -86,12 +50,7 @@ const RegisterScreen: React.FC<Props> = ({navigation}) => {
           touched,
         }) => (
           <KeyboardAwareScrollView style={styles.container}>
-            {submitError && (
-              <Text
-                style={[CommonStyles.textStyles.error, {textAlign: 'center'}]}>
-                {submitError}
-              </Text>
-            )}
+            {submitError && <Text style={styles.errorText}>{submitError}</Text>}
             <View style={styles.viewTextInput}>
               <TextInputComponent
                 label="Kullanıcı Adı"
@@ -227,33 +186,10 @@ const RegisterScreen: React.FC<Props> = ({navigation}) => {
         onDismiss={() => setVisible(false)}
         duration={3000}
         style={styles.snackbar}>
-        {errorMsg}
+        {message}
       </Snackbar>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    ...CommonStyles.viewStyles.container,
-    flexGrow: 1,
-  },
-  input: {
-    marginBottom: styleNumbers.space,
-    ...CommonStyles.textStyles.paragraph,
-  },
-  button: {
-    ...CommonStyles.textStyles.paragraph,
-    marginTop: styleNumbers.spaceLittle,
-  },
-  snackbar: {
-    position: 'absolute',
-    bottom: 10,
-    backgroundColor: Colors.getTheme().button,
-  },
-  viewTextInput: {
-    marginTop: styleNumbers.spaceLarge,
-  },
-});
 
 export default RegisterScreen;

@@ -1,27 +1,22 @@
-import {User} from '@entities/user.entity';
 import {IUserService} from '@services/backend/abstract/user.service.interface';
-import {GenericBackendService} from './generic.backend.sevice';
+import BaseBackendService from './base.backend.sevice';
 import axios, {AxiosError} from 'axios';
-export class UserService
-  extends GenericBackendService<User>
-  implements IUserService
-{
+import RegisterViewModel from '@viewmodels/register.viewmodel';
+import LoginViewModel from '@viewmodels/login.viewmodel';
+import UserViewModel from '@viewmodels/user.viewmodel';
+import {AddressViewModel} from '@viewmodels/address.viewmodel';
+import GroupViewModel from '@viewmodels/group.viewmodel';
+export class UserService extends BaseBackendService implements IUserService {
   constructor() {
     super('/user/api/users');
   }
-  async getCurrentUser(): Promise<User> {
-    const response = await this.api.get<User>(`${this.endpoint}/current`);
-    return response.data;
-  }
-  async getUsersByEmail(email: string): Promise<User[]> {
-    const response = await this.api.get<User[]>(
-      `${this.endpoint}?email=${email}`,
+  async getCurrentUser(): Promise<UserViewModel> {
+    const response = await this.api.get<UserViewModel>(
+      `${this.endpoint}/current`,
     );
     return response.data;
   }
-  async register(user: User): Promise<string> {
-    console.log(user);
-    console.log('baseURL: ', this.api.defaults.baseURL);
+  async register(user: RegisterViewModel): Promise<string> {
     try {
       const response = await this.api.post(`${this.endpoint}/register`, user);
       return response.data.message;
@@ -39,13 +34,9 @@ export class UserService
       }
     }
   }
-  async login(user: {email: string; password: string}): Promise<string> {
-    const loginUser = {
-      emailOrIdentity: user.email,
-      password: user.password,
-    };
+  async login(user: LoginViewModel): Promise<string> {
     try {
-      const response = await this.api.post(`${this.endpoint}/login`, loginUser);
+      const response = await this.api.post(`${this.endpoint}/login`, user);
       return response.data.token;
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
@@ -61,10 +52,36 @@ export class UserService
     }
   }
   async verifyEmail(emailOrIdentity: string, code: string): Promise<string> {
-    const response = await this.api.post(`${this.endpoint}/verify-email`, {
+    const response = await this.api.post(`${this.endpoint}/verifyCode`, {
       emailOrIdentity,
       code,
     });
     return response.data.message;
   }
+  async getAddressesById(userId: string): Promise<AddressViewModel[]> {
+    const response = await this.api.get<AddressViewModel[]>(
+      `${this.endpoint}/user/${userId}/addresses`,
+    );
+    return response.data;
+  }
+  public async getGroupsByUserId(userId: string): Promise<GroupViewModel[]> {
+    const response = await this.api.get<GroupViewModel[]>(
+      `${this.endpoint}/user/${userId}/groups`,
+    );
+    return response.data;
+  }
+  public async getGroupById(groupId: string): Promise<GroupViewModel> {
+    const response = await this.api.get<GroupViewModel>(
+      `${this.endpoint}/group/${groupId}`,
+    );
+    return response.data;
+  }
+  public async getAddressById(addressId: string): Promise<AddressViewModel> {
+    const response = await this.api.get<AddressViewModel>(
+      `${this.endpoint}/address/${addressId}`,
+    );
+    return response.data;
+  }
 }
+
+export default UserService;

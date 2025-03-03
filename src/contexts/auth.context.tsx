@@ -1,6 +1,6 @@
 import React, {createContext, useContext, useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {GenericBackendService} from '@services/backend/concrete/generic.backend.sevice';
+import {BaseBackendService} from '@services/backend/concrete/base.backend.sevice';
 
 // AuthContext'in arayüzü
 interface AuthContextType {
@@ -15,20 +15,18 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // AuthProvider bileşeni
-export const AuthProvider: React.FC<{children: React.ReactNode}> = ({
-  children,
-}) => {
+const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
   const [token, setToken] = useState<string | null>(null);
   // Token'ı yerel depolamadan yükle
   useEffect(() => {}, []);
 
   const login = (token: string) => {
     setToken(token);
-    GenericBackendService.setToken(token);
+    BaseBackendService.setToken(token);
   };
   const logout = () => {
     setToken(null);
-    GenericBackendService.setToken(null);
+    BaseBackendService.setToken(null);
   };
   const rememberUser = (user: string) => {
     AsyncStorage.setItem('user', user);
@@ -44,7 +42,7 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({
 };
 
 // AuthContext'i kullanmak için bir kanca
-export const useAuthContext = () => {
+const useAuthContext = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
@@ -52,4 +50,4 @@ export const useAuthContext = () => {
   return context;
 };
 
-export default AuthProvider;
+export {AuthProvider, useAuthContext};

@@ -8,7 +8,7 @@ import {useNavigation} from '@react-navigation/native';
 interface ErrorScreenProps {
   fromScreen: string;
   toScreen?: string;
-  message?: string;
+  error?: string;
   onRetry?: () => void;
   fullScreen?: boolean;
 }
@@ -16,7 +16,7 @@ interface ErrorScreenProps {
 const ErrorScreenComponent: React.FC<ErrorScreenProps> = ({
   fromScreen,
   toScreen = 'Home',
-  message = 'Bir hata oluştu',
+  error = 'Bir hata oluştu',
   onRetry,
   fullScreen = true,
 }) => {
@@ -29,14 +29,13 @@ const ErrorScreenComponent: React.FC<ErrorScreenProps> = ({
       ]}>
       <View style={styles.content}>
         <Text style={styles.errorIcon}>⚠️</Text>
-        <Text style={styles.errorMessage}>{message}</Text>
-        {onRetry && (
-          <TouchableOpacity
-            style={styles.retryButton}
-            onPress={() => navigation.navigate(toScreen as never)}>
-            <Text style={styles.retryText}>Kurtar Beni</Text>
-          </TouchableOpacity>
-        )}
+        <Text style={styles.errorMessage}>{error}</Text>
+
+        <TouchableOpacity
+          style={styles.retryButton}
+          onPress={() => navigation.navigate(toScreen as never)}>
+          <Text style={styles.retryText}>Kurtar Beni</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -80,7 +79,7 @@ const styles = StyleSheet.create({
   },
   retryText: {
     ...CommonStyles.textStyles.paragraph,
-    color: Colors.getTheme().button,
+    color: Colors.getTheme().text,
   },
 });
 

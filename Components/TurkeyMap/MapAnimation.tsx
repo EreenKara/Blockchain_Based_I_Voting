@@ -12,7 +12,7 @@ import Animated, {
 import TRMapComponent from './TRMap.tsx';
 
 const WIDTH = Dimensions.get('window').width;
-const HEIGHT = 400;
+const HEIGHT = 300;
 
 interface MapAnimationComponentProps {
   onPress: (sehir: string) => void;
@@ -41,8 +41,7 @@ const MapAnimationComponent: React.FC<MapAnimationComponentProps> = ({
     .onUpdate(event => {
       translateX.value = savedTranslateX.value + event.translationX;
       translateY.value = savedTranslateY.value + event.translationY;
-    })
-    .onEnd(() => {});
+    });
 
   const pinchGesture = Gesture.Pinch()
     .onStart(event => {
@@ -55,8 +54,7 @@ const MapAnimationComponent: React.FC<MapAnimationComponentProps> = ({
 
       // Scale'i güncelle
       scale.value = newScale;
-    })
-    .onEnd(() => {});
+    });
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -70,8 +68,6 @@ const MapAnimationComponent: React.FC<MapAnimationComponentProps> = ({
         {translateY: -focalY.value},
         {translateX: svgWidth.value / 2},
         {translateY: svgHeight.value / 2},
-        {translateX: translateX.value},
-        {translateY: translateY.value},
       ],
     };
   });

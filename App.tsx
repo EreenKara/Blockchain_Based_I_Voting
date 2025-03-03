@@ -7,18 +7,16 @@ import {RootStackParamList} from '@navigation/types';
 import AuthNavigator from '@navigation/AuthNavigator';
 import MainNavigator from '@navigation/MainNavigator';
 import CommonStyles from '@styles/common/commonStyles';
-import styleNumbers from '@styles/common/style.numbers';
-import ActivityIndicatorComponent from './src/shared/activity.indicator';
-import ErrorScreenComponent from './src/shared/error.screen';
+import ActivityIndicatorComponent from '@shared/activity.indicator';
+import ErrorScreenComponent from '@shared/error.screen';
 import {AuthProvider} from '@contexts/index';
-import {UserProvider} from '@contexts/index';
-import {SearchProvider} from '@contexts/search.context';
+import {UserProfileProvider} from '@contexts/index';
+import {SearchProvider} from '@contexts/index';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   if (isLoading) {
     return (
@@ -28,21 +26,9 @@ const App = () => {
     );
   }
 
-  if (error) {
-    return (
-      <View
-        style={[
-          CommonStyles.viewStyles.centerContainer,
-          {padding: styleNumbers.space},
-        ]}>
-        <ErrorScreenComponent message={'Hata:' + error} fromScreen={'App'} />
-      </View>
-    );
-  }
-
   return (
     <AuthProvider>
-      <UserProvider>
+      <UserProfileProvider>
         <SearchProvider>
           <PaperProvider>
             <NavigationContainer>
@@ -55,7 +41,7 @@ const App = () => {
             </NavigationContainer>
           </PaperProvider>
         </SearchProvider>
-      </UserProvider>
+      </UserProfileProvider>
     </AuthProvider>
   );
 };

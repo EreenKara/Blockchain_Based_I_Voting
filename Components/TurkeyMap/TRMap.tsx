@@ -2,6 +2,7 @@ import {StyleSheet, Text, View, Dimensions} from 'react-native';
 import React, {useState} from 'react';
 import Svg, {G, Path} from 'react-native-svg';
 import TRMap from './TRMap.json';
+import Colors from '@styles/common/colors';
 
 interface Sehir {
   id: number;
@@ -39,14 +40,28 @@ const TRMapComponent = ({onPress}: TRMapComponentProps): JSX.Element => {
       height="150%"
       viewBox={`0 -150 1000 1000`}
       preserveAspectRatio="xMidYMid meet"
-      fill={mapData.fill}
-      stroke={mapData.stroke}
+      fill={Colors.getTheme().mapFill}
+      stroke={Colors.getTheme().mapStroke}
       strokeWidth={mapData.strokeWidth}>
       {mapData.sehirler.map(sehir => (
         <G
           key={sehir.id}
           onPress={() => handleClick(sehir.id, sehir.sehir)}
-          fill={selectedSehir === sehir.id ? 'green' : mapData.fill}>
+          fill={
+            selectedSehir === sehir.id
+              ? Colors.getTheme().mapSelectedFill
+              : Colors.getTheme().mapFill
+          }
+          stroke={
+            selectedSehir === sehir.id
+              ? Colors.getTheme().mapSelectedStroke
+              : Colors.getTheme().mapStroke
+          }
+          strokeWidth={
+            selectedSehir === sehir.id
+              ? mapData.strokeWidth + 2
+              : mapData.strokeWidth
+          }>
           {sehir.paths.map((path, index) => (
             <Path key={index} d={path.d} />
           ))}

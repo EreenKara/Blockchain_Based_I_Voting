@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View, Image, Animated, Easing} from 'react-native';
 import React, {useEffect, useRef} from 'react';
-import {CandidateViewModel} from '@viewmodels/candidate.viewmodel';
+import CandidateViewModel from '@viewmodels/candidate.viewmodel';
 import Colors from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';

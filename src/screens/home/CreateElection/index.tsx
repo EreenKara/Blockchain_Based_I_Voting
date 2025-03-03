@@ -6,7 +6,6 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
 import Colors from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
-import CommonStyles from '@styles/common/commonStyles';
 type Props = NativeStackScreenProps<HomeStackParamList, 'CreateElection'>;
 
 const CreateElectionScreen: React.FC<Props> = ({navigation}) => {

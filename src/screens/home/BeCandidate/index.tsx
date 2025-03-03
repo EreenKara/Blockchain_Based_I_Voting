@@ -8,7 +8,6 @@ import {
   Card,
   Paragraph,
 } from 'react-native-paper';
-import {AuthContext} from '../../../../App';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
 import Colors from '@styles/common/colors';
@@ -19,7 +18,6 @@ import ButtonComponent from '@components/Button/Button';
 type Props = NativeStackScreenProps<HomeStackParamList, 'BeCandidate'>;
 
 const BeCandidateScreen: React.FC<Props> = ({navigation}) => {
-  const {username} = useContext(AuthContext);
   const [biography, setBiography] = useState('');
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState('');

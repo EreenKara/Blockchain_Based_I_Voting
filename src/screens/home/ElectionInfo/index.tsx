@@ -6,8 +6,6 @@ import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
 import {Formik} from 'formik';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import Colors from '@styles/common/colors';
-import styleNumbers from '@styles/common/style.numbers';
 import ButtonComponent from '@components/Button/Button';
 import styles from './index.style';
 
@@ -16,7 +14,6 @@ import StartToEndDateComponent from '@icomponents/StartToEndDate/start.to.end.da
 import ImagePickerComponent, {
   ExtendedAsset,
 } from '@icomponents/ImagePicker/image.picker';
-import CommonStyles from '@styles/common/commonStyles';
 import AddressPickerComponent from '@icomponents/AddressPicker/address.picker';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'ElectionInfo'>;
@@ -61,29 +58,15 @@ const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
   };
 
   return (
-    <View
-      style={[
-        {
-          flex: 1,
-          padding: styleNumbers.space * 2,
-          justifyContent: 'center',
-          backgroundColor: Colors.getTheme().background,
-        },
-      ]}>
+    <View style={styles.container}>
       <View>
-        <Text
-          style={[
-            {...CommonStyles.textStyles.title},
-            {fontSize: styleNumbers.textSize * 2, textAlign: 'center'},
-          ]}>
-          Seçim Bilgileri
-        </Text>
+        <Text style={styles.title}>Seçim Bilgileri</Text>
       </View>
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
         {({values, handleSubmit, handleChange, setFieldValue}) => {
           return (
             <KeyboardAwareScrollView
-              style={styles.container}
+              style={styles.formContainer}
               contentContainerStyle={[styles.scrollContainer]}>
               <View style={styles.inputContainer}>
                 <TextInputComponent
@@ -132,7 +115,7 @@ const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
         }}
       </Formik>
       <Snackbar
-        style={{backgroundColor: Colors.getTheme().button}}
+        style={styles.snackbar}
         visible={visible}
         onDismiss={() => setVisible(false)}
         duration={3000}>

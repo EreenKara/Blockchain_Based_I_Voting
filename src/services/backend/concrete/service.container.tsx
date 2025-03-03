@@ -1,0 +1,40 @@
+import BaseBackendService from './base.backend.sevice';
+import {UserService} from './user.service';
+import {ElectionService} from './election.service';
+
+export enum ServiceType {
+  UserService = 'UserService',
+  GroupService = 'GroupService',
+  ElectionService = 'ElectionService',
+}
+
+export class ServiceContainer {
+  private static instance: ServiceContainer;
+  private services: Map<ServiceType, BaseBackendService> = new Map();
+
+  private constructor() {}
+  private static getInstance(): ServiceContainer {
+    if (!ServiceContainer.instance) {
+      ServiceContainer.instance = new ServiceContainer();
+    }
+    return ServiceContainer.instance;
+  }
+  public static getService(serviceType: ServiceType): BaseBackendService {
+    const instance = ServiceContainer.getInstance();
+    if (!instance.services.has(serviceType)) {
+      let service;
+      switch (serviceType) {
+        case ServiceType.UserService:
+          service = new UserService();
+          break;
+        case ServiceType.ElectionService:
+          service = new ElectionService();
+          break;
+        default:
+          throw new Error('Service not found');
+      }
+      instance.services.set(serviceType, service as BaseBackendService);
+    }
+    return instance.services.get(serviceType) as BaseBackendService;
+  }
+}

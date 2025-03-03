@@ -1,81 +1,57 @@
-import React, {useContext, useEffect} from 'react';
-import {View, StyleSheet, Text, SafeAreaView, Image} from 'react-native';
+import React, {useEffect} from 'react';
+import {View, Text, SafeAreaView, Image} from 'react-native';
 import {Button, Snackbar, Checkbox} from 'react-native-paper';
 import type {
   NativeStackScreenProps,
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
-import {useNavigation} from '@react-navigation/native';
 import {Formik} from 'formik';
-import * as Yup from 'yup';
 import {AuthStackParamList, RootStackParamList} from '@navigation/types';
 import TextInputComponent from '@components/TextInput/text.input';
 import ButtonComponent from '@components/Button/Button';
-import CommonStyles from '@styles/common/commonStyles';
-import styleNumbers from '@styles/common/style.numbers';
-import Colors from '@styles/common/colors';
+import styles from './index.style';
 import {bosSchema, loginUserSchema} from '@utility/validations';
-import {UserService} from '@services/backend/concrete/user.service';
-import {useAuthContext} from '@contexts/index';
 import ActivityIndicatorComponent from '@shared/activity.indicator';
-
+import {useAuth} from '@hooks/use.auth';
+import {useNavigation} from '@react-navigation/native';
 type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 type RootProps = NativeStackNavigationProp<RootStackParamList>;
-// Form doğrulama şeması
 
 const LoginScreen: React.FC<Props> = ({navigation}) => {
-  interface LoginFormValues {
-    email: string;
+  const homeNavigation = useNavigation<RootProps>();
+  const {
+    loading,
+    visible,
+    setVisible,
+    submitError,
+    message,
+    submitLogin,
+    emailOrIdentity,
+  } = useAuth(true);
+
+  const handleLogin = async (values: {
+    emailOrIdentity: string;
     password: string;
     rememberMe: boolean;
-  }
-  const homeNavigation = useNavigation<RootProps>();
-  const [loading, setLoading] = React.useState(false);
-  const {login, rememberUser, getUser} = useAuthContext();
-  const [visible, setVisible] = React.useState(false);
-  const [message, setMessage] = React.useState('');
-  const [submitError, setSubmitError] = React.useState('');
-  const userService = new UserService();
-  const [initialValues, setInitialValues] = React.useState<LoginFormValues>({
-    email: '',
-    password: '',
-    rememberMe: false,
-  });
-  useEffect(() => {
-    setLoading(true);
-    getUser().then(user => {
-      initialValues.email = user || '';
-      setLoading(false);
-    });
-  }, []);
-
-  const handleLogin = async (values: LoginFormValues) => {
-    try {
-      const token = await userService.login({
-        email: values.email,
-        password: values.password,
-      });
-      if (values.rememberMe) {
-        rememberUser(values.email);
-      }
-      login(token);
-      setMessage('Giris basarili');
-      setVisible(true);
+  }) => {
+    console.log('handleLogin', values);
+    const result = await submitLogin(values);
+    if (result === true) {
       homeNavigation.navigate('Main');
-    } catch (error: any) {
-      setSubmitError(error.message);
     }
   };
+
+  const initialValues = {
+    emailOrIdentity: emailOrIdentity,
+    password: '',
+    rememberMe: false,
+  };
+
   if (loading) {
     return <ActivityIndicatorComponent />;
   }
   return (
-    <SafeAreaView
-      style={[
-        styles.container,
-        CommonStyles.viewStyles.container,
-        CommonStyles.safearea,
-      ]}>
+    <SafeAreaView style={[styles.container]}>
       <View style={styles.logoContainer}>
         <Image
           source={require('@assets/images/nav_logo.png')}
@@ -84,7 +60,7 @@ const LoginScreen: React.FC<Props> = ({navigation}) => {
       </View>
       <Formik
         initialValues={initialValues}
-        validationSchema={bosSchema}
+        validationSchema={loginUserSchema}
         onSubmit={handleLogin}>
         {({
           handleChange,
@@ -96,19 +72,18 @@ const LoginScreen: React.FC<Props> = ({navigation}) => {
           setFieldValue,
         }) => (
           <>
-            {submitError && (
-              <Text
-                style={[CommonStyles.textStyles.error, {textAlign: 'center'}]}>
-                {submitError}
-              </Text>
-            )}
+            {submitError && <Text style={styles.errorText}>{submitError}</Text>}
             <View style={styles.viewText}>
               <TextInputComponent
                 label="Email"
-                value={values.email}
-                onChangeText={handleChange('email')}
-                onBlur={handleBlur('email')}
-                error={touched.email && errors.email ? errors.email : undefined}
+                value={values.emailOrIdentity}
+                onChangeText={handleChange('emailOrIdentity')}
+                onBlur={handleBlur('emailOrIdentity')}
+                error={
+                  touched.emailOrIdentity && errors.emailOrIdentity
+                    ? errors.emailOrIdentity
+                    : undefined
+                }
                 style={styles.input}
                 autoCapitalize="none"
               />
@@ -141,31 +116,22 @@ const LoginScreen: React.FC<Props> = ({navigation}) => {
               style={styles.button}
             />
             <Button
-              labelStyle={[
-                CommonStyles.textStyles.paragraph,
-                {color: Colors.getTheme().button},
-              ]}
-              onPress={() => navigation.navigate('ForgotPassword')}
+              labelStyle={styles.buttonLabel}
+              onPress={() => navigation.navigate('Register')}
               style={styles.button}>
               Şifremi Unuttum
             </Button>
             <Button
-              labelStyle={[
-                CommonStyles.textStyles.paragraph,
-                {color: Colors.getTheme().button},
-              ]}
+              labelStyle={styles.buttonLabel}
               onPress={() => navigation.navigate('Register')}
               style={styles.button}>
               Hesabın yok mu? Kayıt Ol
             </Button>
             <Button
-              labelStyle={[
-                CommonStyles.textStyles.paragraph,
-                {color: Colors.getTheme().button},
-              ]}
+              labelStyle={styles.buttonLabel}
               onPress={() =>
                 navigation.navigate('EmailConfirm', {
-                  emailOrIdentity: values.email,
+                  emailOrIdentity: values.emailOrIdentity,
                 })
               }
               style={styles.button}>
@@ -189,45 +155,5 @@ const LoginScreen: React.FC<Props> = ({navigation}) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    paddingHorizontal: styleNumbers.spaceLarge,
-  },
-  input: {
-    marginBottom: styleNumbers.space,
-  },
-  viewText: {
-    marginTop: styleNumbers.spaceLarge,
-  },
-  checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: styleNumbers.space,
-  },
-  checkboxLabel: {
-    ...CommonStyles.textStyles.paragraph,
-    marginLeft: styleNumbers.spaceLittle,
-  },
-  button: {
-    ...CommonStyles.textStyles.paragraph,
-    marginTop: styleNumbers.spaceLittle,
-  },
-  snackbar: {
-    position: 'absolute',
-    bottom: 10,
-    backgroundColor: Colors.getTheme().button,
-  },
-  logoContainer: {
-    alignItems: 'center',
-  },
-  logo: {
-    tintColor: Colors.getTheme().icon,
-    marginBottom: styleNumbers.spaceLarge * 2,
-    width: 200,
-    height: 200,
-  },
-});
 
 export default LoginScreen;

@@ -6,10 +6,10 @@ import VirtualizedListComponent from '@components/List/virtualized.list';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
-import {ElectionViewModel} from '@viewmodels/election.viewmodel';
+import LightElectionViewModel from '@viewmodels/light.election.viewmodel';
 type ElectionNavigationProp = NativeStackNavigationProp<HomeStackParamList>;
 
-const sampleItems: ElectionViewModel[] = [
+const sampleItems: LightElectionViewModel[] = [
   {
     id: '1',
     name: 'Seçim 1',
@@ -17,6 +17,8 @@ const sampleItems: ElectionViewModel[] = [
     image: '',
     startDate: '2021-01-01',
     endDate: '2021-01-01',
+    city: 'İstanbul',
+    color: '#000000',
   },
   {
     id: '2',
@@ -25,13 +27,15 @@ const sampleItems: ElectionViewModel[] = [
     image: '',
     startDate: '2021-01-01',
     endDate: '2021-01-01',
+    city: 'İstanbul',
+    color: '#000000',
   },
 ];
 
 interface ElectionCardComponentProps {
   title: string;
   renderItem?: ListRenderItem<any>;
-  items?: ElectionViewModel[];
+  items?: LightElectionViewModel[];
 }
 
 const ElectionCardComponent: React.FC<ElectionCardComponentProps> = ({
@@ -41,7 +45,7 @@ const ElectionCardComponent: React.FC<ElectionCardComponentProps> = ({
 }) => {
   const navigation = useNavigation<ElectionNavigationProp>();
 
-  const defaultRenderItem = ({item}: {item: ElectionViewModel}) => (
+  const defaultRenderItem = ({item}: {item: LightElectionViewModel}) => (
     <ElectionCardItemComponent
       election={item}
       navigatePress={() =>

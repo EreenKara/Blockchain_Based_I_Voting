@@ -11,6 +11,12 @@ interface ColorsSchema {
   disabled: string;
   transparentColor: string;
   bar: string;
+  mapFill: string;
+  mapStroke: string;
+  mapSelectedFill: string;
+  mapSelectedStroke: string;
+  creditCard: string;
+
   error: string;
   errorButton: string;
   borderColor: string;
@@ -29,7 +35,11 @@ const light: ColorsSchema = {
   disabled: '#193333', // herhangi bir tıklanabilir öge disabled oldugunda renkleri
   transparentColor: 'rgba(0,0,0,0.3)', // arka plan'ın blurlaşmasının rengi
   bar: '#CBF2F6',
-
+  mapFill: '#C62F2F',
+  mapStroke: '#011818',
+  mapSelectedFill: '#E48679',
+  mapSelectedStroke: 'white',
+  creditCard: '#D1E1F0',
   error: 'red', // hata renkleri
   errorButton: '#891515', // hata renkleri
   borderColor: '#056161',
@@ -49,6 +59,11 @@ const dark: ColorsSchema = {
   disabled: '#A3D8D8',
   transparentColor: 'rgba(255,255,255,0.4)',
   bar: '#0E5058',
+  mapFill: '#952323',
+  mapStroke: '#000000',
+  mapSelectedFill: '#056161',
+  mapSelectedStroke: 'white',
+  creditCard: '#D1E1F0',
 
   error: 'red',
   errorButton: '#891515',

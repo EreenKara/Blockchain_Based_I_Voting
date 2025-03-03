@@ -1,18 +1,14 @@
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 import {Avatar} from 'react-native-paper';
-import {useUserContext} from '@contexts/index';
 import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
 import Colors from '@styles/common/colors';
-import UserViewModel from '@viewmodels/user.viewmodel';
-import {User} from '@entities/user.entity';
-import CenteredModalComponent from '@components/Modal/CenteredModal/centered.modal';
-import NotificationItemComponent from '@icomponents/NotificationItem/notification.item';
 import NotificationViewModel from '@viewmodels/notification.viewmodel';
 import NotificationBellComponent from '@icomponents/NotificationBell/notification.bell';
+import LightUserViewModel from '@viewmodels/light.user.viewmodel';
 interface AvatarHeaderComponentProps {
-  user?: User;
+  user?: LightUserViewModel;
   notifications: NotificationViewModel[];
 }
 
@@ -20,7 +16,6 @@ const AvatarHeaderComponent = ({
   user,
   notifications,
 }: AvatarHeaderComponentProps) => {
-  const [isOpen, setIsOpen] = useState(false);
   return (
     <View style={styles.header}>
       <Avatar.Image
@@ -36,7 +31,9 @@ const AvatarHeaderComponent = ({
         <Text style={[CommonStyles.textStyles.title]}>
           {user?.name} {user?.surname}
         </Text>
-        <Text style={[CommonStyles.textStyles.paragraph]}>{user?.email}</Text>
+        <Text style={[CommonStyles.textStyles.paragraph]}>
+          {user?.username}
+        </Text>
       </View>
       <NotificationBellComponent notifications={notifications} />
     </View>

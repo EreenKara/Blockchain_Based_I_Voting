@@ -7,10 +7,9 @@ import CommonStyles from '@styles/common/commonStyles';
 import {CandidateViewModel} from '@viewmodels/candidate.viewmodel';
 import ActivityIndicatorComponent from '@shared/activity.indicator';
 import {Dimensions} from 'react-native';
+import {ProgressView} from '@react-native-community/progress-view';
 import ChartLegendComponent from '@components/ChartLegend/chart.legend.style';
 import CandidateItemComponent from '@icomponents/CandidateItem/candidate.item';
-import ProgressBarComponent from '@components/ProgressBar/progress.bar';
-import {ProgressView} from '@react-native-community/progress-view';
 import Colors from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
 import {useSearchContext} from '@contexts/search.context';
@@ -27,11 +26,11 @@ const SpecificElectionScreen: React.FC<SpecificElectionScreenProps> = ({
   const loadElectionData = async () => {
     setLoading(true);
     const mockData = [
-      new CandidateViewModel('1', 'A', '#FF6B6B', 35),
-      new CandidateViewModel('2', 'B', '#4ECDC4', 25),
-      new CandidateViewModel('3', 'C', '#45B7D1', 20),
-      new CandidateViewModel('4', 'D', '#96CEB4', 10),
-      new CandidateViewModel('5', 'F', '#ffffff', 10),
+      {id: '1', name: 'A', color: '#FF6B6B', votes: 35},
+      {id: '2', name: 'B', color: '#4ECDC4', votes: 25},
+      {id: '3', name: 'C', color: '#45B7D1', votes: 20},
+      {id: '4', name: 'D', color: '#96CEB4', votes: 10},
+      {id: '5', name: 'F', color: '#ffffff', votes: 10},
     ];
     setCandidates(mockData);
 

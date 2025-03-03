@@ -1,6 +1,3 @@
-import {Election} from '@entities/election.entity';
-import {GenericBackendService} from '../concrete/generic.backend.sevice';
+import BaseBackendService from '../concrete/base.backend.sevice';
 
-export interface IElectionService extends GenericBackendService<Election> {
-  getElectionsByCity(city: string): Promise<Election[]>;
-}
+export interface IElectionService extends BaseBackendService {}

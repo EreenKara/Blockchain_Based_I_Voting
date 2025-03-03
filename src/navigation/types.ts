@@ -1,7 +1,6 @@
-import {User} from '@entities/user.entity';
-import {ElectionScreenType} from '@enums/election.screen.type';
+import {ElectionType} from '@enums/election.type';
 import {ElectionViewModel} from '@viewmodels/election.viewmodel';
-import {SehirViewModel} from '@viewmodels/sehir.viewmodel';
+import GroupViewModel from '@viewmodels/group.viewmodel';
 
 export type RootStackParamList = {
   Auth: undefined;
@@ -26,7 +25,7 @@ export type HomeStackParamList = {
   HomeMain: undefined;
   CreateElection: undefined;
   ElectionInfo: undefined;
-  ListElections: {screenType: ElectionScreenType};
+  ListElections: {type: ElectionType};
   BeCandidate: undefined;
   Elections: undefined;
   SpecificElection: {election: ElectionViewModel};
@@ -40,7 +39,8 @@ export type ProfileStackParamList = {
   AddCard: undefined;
   PersonalInformation: undefined;
   Groups: undefined;
-  Group: undefined;
+  ListElections: {type: ElectionType};
+  Group: {group: GroupViewModel};
   CreateGroup: undefined;
   CreatedElections: undefined;
   CastedVotes: undefined;

@@ -90,7 +90,7 @@ const registerUserSchema = object({
 const bosSchema = object({});
 
 const loginUserSchema = object({
-  username: userNameValidation,
+  emailOrIdentity: emailValidation,
   password: passwordValidation,
 });
 

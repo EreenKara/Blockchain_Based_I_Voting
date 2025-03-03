@@ -5,6 +5,17 @@ import styleNumbers from '@styles/common/style.numbers';
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    padding: styleNumbers.space * 2,
+    justifyContent: 'center',
+    backgroundColor: Colors.getTheme().background,
+  },
+  title: {
+    ...CommonStyles.textStyles.title,
+    fontSize: styleNumbers.textSize * 2,
+    textAlign: 'center',
+  },
+  formContainer: {
     marginTop: styleNumbers.space * 4,
     padding: styleNumbers.space,
     backgroundColor: Colors.getTheme().background,
@@ -23,6 +34,12 @@ const styles = StyleSheet.create({
 
   addressContainer: {
     marginTop: styleNumbers.space * 2,
+  },
+  snackbar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
 });
 

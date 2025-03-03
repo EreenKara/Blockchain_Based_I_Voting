@@ -1,63 +1,85 @@
 import React, {useState} from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
 import {Card, Text, Avatar, IconButton} from 'react-native-paper';
-import {Story} from '@entities/story.entity';
-import {Post} from '@entities/post.entity';
-import {Candidate} from '@entities/candidate.entity';
-import {SocialMedia} from '@entities/social.media.entity';
-import {User} from '@entities/user.entity';
 import styleNumbers from '@styles/common/style.numbers';
 import Colors from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 
-//unsplash kullanılabilir
+interface Candidate {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+  color: string;
+}
+
+interface Story {
+  id: string;
+  image: string;
+  content: string;
+  candidate: Candidate;
+}
+
+interface Post {
+  id: string;
+  image: string;
+  content: string;
+  socialMedia: {id: string};
+  candidate: Candidate;
+  likes: any[];
+  comments: any[];
+}
 
 const SocialMediaScreen: React.FC = () => {
-  const demoCandidate = new Candidate({
+  const demoCandidate: Candidate = {
     id: '1',
     name: 'John Doe',
     description: 'Bu bir açıklama',
     image: '',
     color: '#000000',
-  });
+  };
 
   const [stories, setStories] = useState<Story[]>([
-    new Story({
+    {
       id: '1',
       image: '',
       content: '1Bu bir hikaye içeriğidir.',
       candidate: demoCandidate,
-    }),
-    new Story({
+    },
+    {
       id: '2',
       image: '',
       content: '2Bu bir hikaye içeriğidir.',
       candidate: demoCandidate,
-    }),
+    },
   ]);
 
   const [posts, setPosts] = useState<Post[]>([
-    new Post({
+    {
       id: '1',
       image: '',
       content: '',
-      socialMedia: new SocialMedia({id: '1'}),
+      socialMedia: {id: '1'},
       candidate: demoCandidate,
-    }),
-    new Post({
+      likes: [],
+      comments: [],
+    },
+    {
       id: '2',
       image: '',
       content: '',
-      socialMedia: new SocialMedia({id: '2'}),
+      socialMedia: {id: '2'},
       candidate: demoCandidate,
-    }),
+      likes: [],
+      comments: [],
+    },
   ]);
 
   const renderStory = ({item}: {item: Story}) => (
     <View style={styles.storyContainer}>
       <Avatar.Image
         size={60}
-        source={{uri: item.image}}
+        source={{uri: item.image || 'https://via.placeholder.com/60'}}
         style={styles.storyAvatar}
       />
       <Text style={styles.storyUsername}>
@@ -72,13 +94,17 @@ const SocialMediaScreen: React.FC = () => {
         <Card.Title
           title={item.candidate?.name || 'İsimsiz'}
           left={props => (
-            <Avatar.Image {...props} size={40} source={{uri: item.image}} />
+            <Avatar.Image
+              {...props}
+              size={40}
+              source={{uri: item.image || 'https://via.placeholder.com/40'}}
+            />
           )}
         />
         <Card.Content>
-          <Text>{item.content}</Text>
+          <Text>{item.content || 'İçerik yok'}</Text>
         </Card.Content>
-        <Card.Cover source={{uri: item.image}} />
+        {item.image && <Card.Cover source={{uri: item.image}} />}
         <Card.Actions>
           <IconButton icon="heart-outline" onPress={() => {}} />
           <Text>{item.likes?.length || 0} beğeni</Text>
@@ -100,6 +126,7 @@ const SocialMediaScreen: React.FC = () => {
               horizontal
               showsHorizontalScrollIndicator={false}
               style={styles.storiesList}
+              keyExtractor={item => item.id}
             />
           </View>
         }

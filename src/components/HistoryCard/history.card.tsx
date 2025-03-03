@@ -9,27 +9,27 @@ import {useNavigation} from '@react-navigation/native';
 import {HomeStackParamList} from '@navigation/types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useSearchContext} from '@contexts/search.context';
-import {ElectionScreenType} from '@enums/election.screen.type';
+import {ElectionType} from '@enums/election.type';
 const menuItems = [
   {
     title: 'Gelecek Seçimler',
     description: 'Yaklaşan seçimleri görüntüleyin',
     screen: 'ListElections' as const,
-    routeParams: {screenType: ElectionScreenType.UpComingElections},
+    routeParams: {type: ElectionType.Upcoming},
     icon: '📅',
   },
   {
     title: 'Güncel Seçimler',
     description: 'Devam eden seçimleri görüntüleyin',
     screen: 'ListElections' as const,
-    routeParams: {screenType: ElectionScreenType.CurrentElections},
+    routeParams: {type: ElectionType.Current},
     icon: '📈',
   },
   {
     title: 'Geçmiş Seçimler',
     description: 'Tamamlanan seçimleri görüntüleyin',
     screen: 'ListElections' as const,
-    routeParams: {screenType: ElectionScreenType.PastElections},
+    routeParams: {type: ElectionType.Past},
     icon: '📊',
   },
 ];

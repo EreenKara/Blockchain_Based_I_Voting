@@ -10,40 +10,71 @@ import {
   TextStyle,
   View,
 } from 'react-native';
+import {Avatar} from 'react-native-paper';
 import Colors from '@styles/common/colors';
 
 interface MenuItemComponentProps {
-  icon: any;
+  iconComponent?: React.ReactNode;
+  icon?: any;
   title: string;
-  onPress: () => void;
+  onPress?: () => void;
   tintColor?: string;
   imageStyle?: StyleProp<ImageStyle>;
   textStyle?: StyleProp<TextStyle>;
   description?: string;
   rightIcon?: any;
+  rightIconComponent?: React.ReactNode;
+  touchable?: boolean;
 }
 
 export const MenuItemComponent: React.FC<MenuItemComponentProps> = ({
+  iconComponent,
   icon,
   title,
-  onPress,
   tintColor,
   imageStyle,
   textStyle,
   description = '',
   rightIcon,
-}) => (
-  <TouchableOpacity style={styles.menuItem} onPress={onPress}>
-    <Image
-      source={icon}
-      style={[
-        styles.menuIcon,
-        {tintColor: tintColor || Colors.getTheme().text},
-        imageStyle,
-      ]}
-    />
-    {description && (
-      <View style={styles.menuTextContainer}>
+  rightIconComponent,
+  touchable = true,
+  onPress = () => {},
+}) => {
+  const item = (
+    <>
+      {iconComponent && iconComponent}
+      {icon && (
+        <Image
+          source={icon}
+          style={[
+            styles.menuIcon,
+            {tintColor: tintColor || Colors.getTheme().text},
+            imageStyle,
+          ]}
+        />
+      )}
+      {description && (
+        <View style={styles.menuTextContainer}>
+          <Text
+            style={[
+              CommonStyles.textStyles.subtitle,
+              styles.menuText,
+              textStyle,
+            ]}>
+            {title}
+          </Text>
+
+          <Text
+            style={[
+              CommonStyles.textStyles.paragraph,
+              styles.menuText,
+              textStyle,
+            ]}>
+            {description}
+          </Text>
+        </View>
+      )}
+      {!description && (
         <Text
           style={[
             CommonStyles.textStyles.subtitle,
@@ -52,32 +83,28 @@ export const MenuItemComponent: React.FC<MenuItemComponentProps> = ({
           ]}>
           {title}
         </Text>
-
-        <Text
+      )}
+      {rightIconComponent && rightIconComponent}
+      {rightIcon && (
+        <Image
+          source={rightIcon}
           style={[
-            CommonStyles.textStyles.paragraph,
-            styles.menuText,
-            textStyle,
-          ]}>
-          {description}
-        </Text>
-      </View>
-    )}
-    {!description && (
-      <Text
-        style={[CommonStyles.textStyles.subtitle, styles.menuText, textStyle]}>
-        {title}
-      </Text>
-    )}
-    <Image
-      source={rightIcon}
-      style={[
-        styles.arrowIcon,
-        {tintColor: tintColor || Colors.getTheme().text},
-      ]}
-    />
-  </TouchableOpacity>
-);
+            styles.arrowIcon,
+            {tintColor: tintColor || Colors.getTheme().text},
+          ]}
+        />
+      )}
+    </>
+  );
+
+  return touchable ? (
+    <TouchableOpacity style={styles.menuItem} onPress={onPress}>
+      {item}
+    </TouchableOpacity>
+  ) : (
+    <View style={styles.menuItem}>{item}</View>
+  );
+};
 
 export default MenuItemComponent;
 

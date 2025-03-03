@@ -18,9 +18,7 @@ export const SearchProvider: React.FC<{children: React.ReactNode}> = ({
 }) => {
   const [search, setSearch] = useState<SearchType>({});
 
-  useEffect(() => {
-    console.log('search', search);
-  }, [search]);
+  useEffect(() => {}, [search]);
 
   const updateSearch = (search: SearchType) => {
     setSearch(search);

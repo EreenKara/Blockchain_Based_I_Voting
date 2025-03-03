@@ -1,12 +1,83 @@
 import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import Colors from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
+import MenuItemComponent from '@icomponents/MenuItem/menu.item';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {ProfileStackParamList} from '@navigation/types';
+import ButtonComponent from '@components/Button/Button';
+import ErrorComponent from '@shared/error.screen';
+import ActivityIndicatorComponent from '@shared/activity.indicator';
+import VirtualizedListComponent from '@components/List/virtualized.list';
+import GroupViewModel from '@viewmodels/group.viewmodel';
+import {useUserProfileContext} from '@contexts/user.profile.context';
+import CommonStyles from '@styles/common/commonStyles';
 
-const GroupsScreen = () => {
+type GroupsProps = NativeStackScreenProps<ProfileStackParamList, 'Groups'>;
+
+const GroupsScreen: React.FC<GroupsProps> = ({navigation}) => {
+  const {
+    user,
+    groups,
+    groupsLoading: loading,
+    groupsError: error,
+    fetchGroups,
+  } = useUserProfileContext();
+
+  useEffect(() => {
+    if (user) {
+      fetchGroups(user.id);
+    }
+  }, [user]);
+
+  if (loading) {
+    return <ActivityIndicatorComponent />;
+  }
+
+  if (error) {
+    return (
+      <ErrorComponent
+        fromScreen="Groups"
+        toScreen="ProfileMain"
+        error={error}
+      />
+    );
+  }
+
+  const renderItem = ({item}: {item: GroupViewModel}) => {
+    return (
+      <MenuItemComponent
+        icon={require('@assets/images/group-people.png')}
+        title={item.name}
+        tintColor={Colors.getTheme().icon}
+        onPress={() =>
+          navigation.navigate('Group', {
+            group: item,
+          })
+        }
+      />
+    );
+  };
   return (
     <View style={styles.container}>
-      <Text> Groups Screen</Text>
+      <View style={styles.listContainer}>
+        <VirtualizedListComponent
+          data={groups}
+          renderItem={renderItem}
+          ListEmptyComponent={
+            <>
+              <Text style={styles.emptyText}>Grup bulunamadı</Text>
+            </>
+          }
+        />
+      </View>
+      <View style={styles.createGroupButton}>
+        <ButtonComponent
+          title="Grup Oluştur"
+          onPress={() => {}}
+          style={styles.createGroupButton}
+        />
+      </View>
     </View>
   );
 };
@@ -19,5 +90,18 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.getTheme().background,
     paddingHorizontal: styleNumbers.space * 2,
     paddingVertical: styleNumbers.space * 3,
+  },
+  listContainer: {
+    flex: 1,
+    width: '100%',
+    paddingVertical: styleNumbers.space,
+  },
+  createGroupButton: {
+    marginTop: styleNumbers.space,
+  },
+  emptyText: {
+    ...CommonStyles.textStyles.paragraph,
+    color: Colors.getTheme().text,
+    textAlign: 'center',
   },
 });

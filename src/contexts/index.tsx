@@ -1,2 +1,6 @@
-export {default as AuthProvider, useAuthContext} from './auth.context';
-export {UserProvider, useUserContext} from './user.context';
+export {AuthProvider, useAuthContext} from './auth.context';
+export {
+  UserProfileProvider,
+  useUserProfileContext,
+} from './user.profile.context';
+export {SearchProvider, useSearchContext} from './search.context';

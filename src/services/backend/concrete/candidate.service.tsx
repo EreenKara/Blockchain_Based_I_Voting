@@ -1,4 +1,5 @@
-import {Candidate} from '@entities/candidate.entity';
-import {GenericBackendService} from './generic.backend.sevice';
+import BaseBackendService from './base.backend.sevice';
 
-export class CandidateService extends GenericBackendService<Candidate> {}
+export class CandidateService extends BaseBackendService {}
+
+export default CandidateService;

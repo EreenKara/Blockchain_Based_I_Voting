@@ -9,13 +9,13 @@ import PaymentScreen from '@screens/profile/Payment';
 import AddCardScreen from '@screens/profile/Payment/add.card';
 import PersonalInformationScreen from '@screens/profile/PersonalInformation';
 import GroupsScreen from '@screens/profile/Groups';
-import CreatedElectionsScreen from '@screens/profile/CreatedElections';
 import CastedVotesScreen from '@screens/profile/CastedVotes';
 import CandidateElectionsScreen from '@screens/profile/CandidateElections';
 import AddressInformationScreen from '@screens/profile/AddressInformation';
 import SpecificElectionScreen from '@screens/shared/SpecificElection';
 import CreateGroupScreen from '@screens/profile/CreateGroup';
 import GroupScreen from '@screens/profile/Group';
+import {ListElectionsScreen} from '@screens/home';
 const Stack = createNativeStackNavigator<ProfileStackParamList>();
 
 const ProfileNavigator: React.FC = () => {
@@ -53,6 +53,11 @@ const ProfileNavigator: React.FC = () => {
         options={{title: 'Kart Ekle'}}
       />
       <Stack.Screen
+        name="ListElections"
+        component={ListElectionsScreen}
+        options={{title: 'Seçimler'}}
+      />
+      <Stack.Screen
         name="PersonalInformation"
         component={PersonalInformationScreen}
         options={{title: 'Kişisel Bilgiler'}}
@@ -71,11 +76,6 @@ const ProfileNavigator: React.FC = () => {
         name="CreateGroup"
         component={CreateGroupScreen}
         options={{title: 'Grup Oluştur'}}
-      />
-      <Stack.Screen
-        name="CreatedElections"
-        component={CreatedElectionsScreen}
-        options={{title: 'Oluşturulan Seçimler'}}
       />
       <Stack.Screen
         name="CastedVotes"
