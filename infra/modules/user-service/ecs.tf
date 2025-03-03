@@ -8,7 +8,9 @@ resource "aws_ecs_task_definition" "user_service_task" {
   requires_compatibilities = ["EC2"]
   cpu                      = "496"
   memory                   = "720"
-  # add roles
+
+  task_role_arn      = aws_iam_role.ecs_task_role.arn
+  execution_role_arn = aws_iam_role.ecs_exe_role.arn
 
   container_definitions = jsonencode([{
     name      = "user-service-container"
@@ -43,4 +45,11 @@ resource "aws_ecs_service" "user_service_ecs_service" {
   desired_count           = 1
   launch_type             = "EC2"
   enable_ecs_managed_tags = false
+
+  network_configuration {
+    subnets          = [var.public_subnet_id]
+    security_groups  = [aws_security_group.user_service_sg.id]
+    assign_public_ip = false
+  }
+
 }

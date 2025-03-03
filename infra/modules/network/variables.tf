@@ -5,15 +5,17 @@ variable "vpc_cidr" {
 
 variable "public_subnet_cidr" {
   type    = string
-  default = "10.0.0.1/24"
+  default = "10.0.1.0/24"
 }
 
 variable "private_subnet_cidr" {
   type    = string
-  default = "10.0.0.2/24"
+  default = "10.0.2.0/24"
 }
 
 variable "availability_zone" {
   type    = string
   default = "eu-north-1b"
 }
+
+variable "user_service_instance_id" {}
