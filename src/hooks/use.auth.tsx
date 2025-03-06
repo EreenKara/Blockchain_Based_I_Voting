@@ -9,8 +9,9 @@ import {RegisterViewModel} from '@viewmodels/register.viewmodel';
 
 const codeLength = 6;
 
+//login page or not gibi düşün.
 export const useAuth = (login: boolean = true) => {
-  const {login: authLogin, rememberUser, getUser} = useAuthContext();
+  const {login: authLogin, rememberUser, getUserMail} = useAuthContext();
   const [submitError, setSubmitError] = useState('');
   const [message, setMessage] = useState('');
   const [visible, setVisible] = useState(false);
@@ -22,9 +23,10 @@ export const useAuth = (login: boolean = true) => {
 
   useEffect(() => {
     if (login) {
+      // login page ise kullaniciyi getir
       setLoading(true);
-      getUser().then(user => {
-        setEmailOrIdentity(user || '');
+      getUserMail().then(userMail => {
+        setEmailOrIdentity(userMail || '');
         setLoading(false);
       });
     }

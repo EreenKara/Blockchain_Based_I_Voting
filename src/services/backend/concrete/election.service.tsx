@@ -1,6 +1,8 @@
 import LightElectionViewModel from '@viewmodels/light.election.viewmodel';
 import {IElectionService} from '../abstract/election.service.interface';
 import BaseBackendService from './base.backend.sevice';
+import {ElectionViewModel} from '@viewmodels/election.viewmodel';
+import {ElectionAccessViewModel} from '@viewmodels/election.access.viewmodel';
 
 export class ElectionService
   extends BaseBackendService
@@ -46,6 +48,24 @@ export class ElectionService
       `${this.endpoint}/user/${userId}`,
     );
     return response.data;
+  }
+  public async postElectionInfo(
+    election: ElectionViewModel,
+  ): Promise<ElectionViewModel> {
+    const response = await this.api.post<ElectionViewModel>(
+      `${this.endpoint}`,
+      election,
+    );
+    return response.data;
+  }
+  public async putElectionAccess(
+    electionId: string,
+    electionAccess: ElectionAccessViewModel,
+  ): Promise<void> {
+    await this.api.put<ElectionViewModel>(
+      `${this.endpoint}/${electionId}`,
+      electionAccess,
+    );
   }
 }
 

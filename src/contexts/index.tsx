@@ -4,3 +4,7 @@ export {
   useUserProfileContext,
 } from './user.profile.context';
 export {SearchProvider, useSearchContext} from './search.context';
+export {
+  ElectionCreationProvider,
+  useElectionCreationContext,
+} from './election.creation.context';

@@ -10,6 +10,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: Colors.getTheme().background,
   },
+  dateContainer: {
+    marginTop: styleNumbers.space * 2,
+  },
   title: {
     ...CommonStyles.textStyles.title,
     fontSize: styleNumbers.textSize * 2,

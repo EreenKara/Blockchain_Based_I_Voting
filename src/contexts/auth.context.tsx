@@ -8,7 +8,7 @@ interface AuthContextType {
   login: (token: string) => void;
   logout: () => void;
   rememberUser: (user: string) => void;
-  getUser: () => Promise<string | null>;
+  getUserMail: () => Promise<string | null>;
 }
 
 // AuthContext'i oluştur
@@ -28,14 +28,15 @@ const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
     setToken(null);
     BaseBackendService.setToken(null);
   };
-  const rememberUser = (user: string) => {
-    AsyncStorage.setItem('user', user);
+  const rememberUser = (userMail: string) => {
+    AsyncStorage.setItem('userMail', userMail);
   };
-  const getUser = async () => {
-    return await AsyncStorage.getItem('user');
+  const getUserMail = async () => {
+    return await AsyncStorage.getItem('userMail');
   };
   return (
-    <AuthContext.Provider value={{token, login, logout, rememberUser, getUser}}>
+    <AuthContext.Provider
+      value={{token, login, logout, rememberUser, getUserMail}}>
       {children}
     </AuthContext.Provider>
   );

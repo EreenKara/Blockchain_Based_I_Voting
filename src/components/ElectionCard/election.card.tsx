@@ -17,7 +17,6 @@ const sampleItems: LightElectionViewModel[] = [
     image: '',
     startDate: '2021-01-01',
     endDate: '2021-01-01',
-    city: 'İstanbul',
     color: '#000000',
   },
   {
@@ -27,7 +26,6 @@ const sampleItems: LightElectionViewModel[] = [
     image: '',
     startDate: '2021-01-01',
     endDate: '2021-01-01',
-    city: 'İstanbul',
     color: '#000000',
   },
 ];

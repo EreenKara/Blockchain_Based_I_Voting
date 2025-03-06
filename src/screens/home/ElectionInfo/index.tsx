@@ -11,10 +11,9 @@ import styles from './index.style';
 
 // Components
 import StartToEndDateComponent from '@icomponents/StartToEndDate/start.to.end.date';
-import ImagePickerComponent, {
-  ExtendedAsset,
-} from '@icomponents/ImagePicker/image.picker';
+import ImagePickerComponent from '@icomponents/ImagePicker/image.picker';
 import AddressPickerComponent from '@icomponents/AddressPicker/address.picker';
+import {ExtendedAsset} from '@hooks/useCamera';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'ElectionInfo'>;
 
@@ -25,8 +24,6 @@ export interface FormValues {
   endDate: Date;
   image: ExtendedAsset | null;
   color: string;
-  city: string;
-  district: string;
 }
 
 const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
@@ -53,8 +50,6 @@ const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
     endDate: new Date(),
     image: null,
     color: '#',
-    city: '',
-    district: '',
   };
 
   return (
@@ -88,12 +83,8 @@ const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
                 />
               </View>
 
-              <AddressPickerComponent
-                values={values}
-                setFieldValue={setFieldValue}
-              />
-
               <StartToEndDateComponent
+                containerStyle={styles.dateContainer}
                 values={values}
                 setFieldValue={setFieldValue}
                 showMessage={showMessage}

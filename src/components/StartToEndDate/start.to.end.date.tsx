@@ -1,5 +1,12 @@
 import React, {useState} from 'react';
-import {View, Text, Platform, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  Platform,
+  StyleSheet,
+  ViewStyle,
+  StyleProp,
+} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import ButtonComponent from '@components/Button/Button';
 import {handleDateTimeChange} from '@hooks/handleDateTimeChange';
@@ -11,19 +18,21 @@ interface StartToEndDateComponentProps {
   };
   setFieldValue: (field: string, value: any) => void;
   showMessage: (message: string) => void;
+  containerStyle?: StyleProp<ViewStyle>;
 }
 
 const StartToEndDateComponent: React.FC<StartToEndDateComponentProps> = ({
   values,
   setFieldValue,
   showMessage,
+  containerStyle,
 }) => {
   const [showStartDate, setShowStartDate] = useState(false);
   const [showEndDate, setShowEndDate] = useState(false);
   const [showStartTime, setShowStartTime] = useState(false);
   const [showEndTime, setShowEndTime] = useState(false);
   return (
-    <>
+    <View style={containerStyle}>
       <View style={styles.dateContainer}>
         <Text style={styles.dateLabel}>Başlangıç:</Text>
         <View style={styles.dateTimeButtons}>
@@ -139,7 +148,7 @@ const StartToEndDateComponent: React.FC<StartToEndDateComponentProps> = ({
           }}
         />
       )}
-    </>
+    </View>
   );
 };
 

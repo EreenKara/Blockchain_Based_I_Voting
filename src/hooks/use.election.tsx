@@ -1,9 +1,4 @@
 import {useCallback, useEffect, useState} from 'react';
-import {
-  ServiceContainer,
-  ServiceType,
-} from '@services/backend/concrete/service.container';
-import {ElectionService} from '@services/backend/concrete/election.service';
 import {useSearchContext} from '@contexts/search.context';
 import LightElectionViewModel from '@viewmodels/light.election.viewmodel';
 import {ElectionType} from '@enums/election.type';

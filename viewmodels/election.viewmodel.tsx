@@ -1,12 +1,14 @@
-export interface ElectionViewModel {
+import GroupViewModel from './group.viewmodel';
+import LightUserViewModel from './light.user.viewmodel';
+
+interface BaseElectionViewModel {
   id: string;
   name: string;
   description: string;
   image: string;
   startDate: string;
   endDate: string;
-  city: string;
   color: string;
 }
 
-export default ElectionViewModel;
+export type ElectionViewModel = BaseElectionViewModel;

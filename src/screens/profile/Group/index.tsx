@@ -19,6 +19,7 @@ import MenuItemComponent from '@icomponents/MenuItem/menu.item';
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import {useUserProfileContext} from '@contexts/user.profile.context';
 import ErrorScreenComponent from '@shared/error.screen';
+import useGroup from '@hooks/use.group';
 type GroupProps = NativeStackScreenProps<ProfileStackParamList, 'Group'>;
 
 /* Item id 'si bu screen de zorunlu olarak verilmeli. */
@@ -27,21 +28,14 @@ const GroupScreen: React.FC<GroupProps> = ({navigation, route}) => {
   navigation.setOptions({
     headerTitle: `${localGroup.name} · Grup Üyeleri`,
   });
-
-  const {
-    group,
-    groupsLoading: loading,
-    groupsError: error,
-    fetchGroup,
-  } = useUserProfileContext();
+  const {group, loading, error, fetchGroup} = useGroup({
+    groupId: localGroup.id,
+    cache: true,
+  });
+  const {} = useUserProfileContext();
 
   useEffect(() => {
-    if (localGroup.users.length === 0) {
-      fetchGroup(localGroup.id);
-    }
-    if (group) {
-      localGroup = group;
-    }
+    fetchGroup();
   }, [localGroup]);
 
   const handleDelete = (userId: string) => {
@@ -104,7 +98,7 @@ const GroupScreen: React.FC<GroupProps> = ({navigation, route}) => {
 
         <GestureHandlerRootView style={styles.listContainer}>
           <VirtualizedListComponent
-            data={localGroup.users}
+            data={group?.users || []}
             renderItem={renderUserItem}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.listContainer}

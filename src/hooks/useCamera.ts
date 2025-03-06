@@ -2,13 +2,19 @@ import {Dimensions} from 'react-native';
 import {
   launchImageLibrary,
   ImageLibraryOptions,
+  ImagePickerResponse,
+  Asset,
 } from 'react-native-image-picker';
 import styleNumbers from '@styles/common/style.numbers';
+export interface ExtendedAsset extends Asset {
+  containerWidth?: number;
+  containerHeight?: number;
+}
 
 export const useCamera = () => {
   const handleCamera = async (
     fieldName: string,
-    setFieldValue: (field: string, value: any) => void,
+    setFieldValue: (field: string, value: ExtendedAsset) => void,
   ) => {
     const imageOptions: ImageLibraryOptions = {
       mediaType: 'photo',

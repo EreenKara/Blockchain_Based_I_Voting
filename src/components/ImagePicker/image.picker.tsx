@@ -1,20 +1,14 @@
 import React from 'react';
 import {View, Pressable, ImageBackground, Text, StyleSheet} from 'react-native';
-import {Asset} from 'react-native-image-picker';
 import CommonStyles from '@styles/common/commonStyles';
 import Colors from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
-import {useCamera} from '@hooks/useCamera';
-
-export interface ExtendedAsset extends Asset {
-  containerWidth?: number;
-  containerHeight?: number;
-}
+import {ExtendedAsset, useCamera} from '@hooks/useCamera';
 
 export interface ImagePickerComponentProps {
   image: ExtendedAsset | null;
   fieldName: string;
-  setFieldValue: (field: string, value: any) => void;
+  setFieldValue: (field: string, value: ExtendedAsset) => void;
   responsive?: boolean;
 }
 

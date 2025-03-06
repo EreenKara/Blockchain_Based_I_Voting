@@ -5,7 +5,6 @@ export interface LightElectionViewModel {
   image: string;
   startDate: string;
   endDate: string;
-  city: string;
   color: string;
 }
 

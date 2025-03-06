@@ -9,7 +9,7 @@ import MainNavigator from '@navigation/MainNavigator';
 import CommonStyles from '@styles/common/commonStyles';
 import ActivityIndicatorComponent from '@shared/activity.indicator';
 import ErrorScreenComponent from '@shared/error.screen';
-import {AuthProvider} from '@contexts/index';
+import {AuthProvider, ElectionCreationProvider} from '@contexts/index';
 import {UserProfileProvider} from '@contexts/index';
 import {SearchProvider} from '@contexts/index';
 
@@ -29,18 +29,20 @@ const App = () => {
   return (
     <AuthProvider>
       <UserProfileProvider>
-        <SearchProvider>
-          <PaperProvider>
-            <NavigationContainer>
-              <Stack.Navigator
-                initialRouteName="Auth"
-                screenOptions={{headerShown: false}}>
-                <Stack.Screen name="Auth" component={AuthNavigator} />
-                <Stack.Screen name="Main" component={MainNavigator} />
-              </Stack.Navigator>
-            </NavigationContainer>
-          </PaperProvider>
-        </SearchProvider>
+        <ElectionCreationProvider>
+          <SearchProvider>
+            <PaperProvider>
+              <NavigationContainer>
+                <Stack.Navigator
+                  initialRouteName="Auth"
+                  screenOptions={{headerShown: false}}>
+                  <Stack.Screen name="Auth" component={AuthNavigator} />
+                  <Stack.Screen name="Main" component={MainNavigator} />
+                </Stack.Navigator>
+              </NavigationContainer>
+            </PaperProvider>
+          </SearchProvider>
+        </ElectionCreationProvider>
       </UserProfileProvider>
     </AuthProvider>
   );
