@@ -14,9 +14,9 @@ locals {
 module "user_service" {
   source = "./modules/user-service"
 
-  aws_region       = var.aws_region
-  vpc_id           = module.network.vpc_id
-  public_subnet_id = module.network.public_subnet_id
+  aws_region        = var.aws_region
+  vpc_id            = module.network.vpc_id
+  public_subnet_ids = module.network.public_subnet_ids
 
   user_service_image_uri = var.user_service_image_uri
   ecs_cluster_id         = local.ecs_cluster_id
@@ -24,10 +24,11 @@ module "user_service" {
 
   ecs_ami_id    = local.ecs_ami_id
   instance_type = var.instance_type
+
+  user_service_target_group_arn = module.network.user_service_target_group_arn
 }
 
 module "network" {
   source = "./modules/network"
 
-  user_service_instance_id = module.user_service.instance_id
 }

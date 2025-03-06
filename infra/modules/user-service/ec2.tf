@@ -3,7 +3,7 @@ resource "aws_iam_instance_profile" "ecs_instance_profile" {
   role = aws_iam_role.ecs_instance_role.name
 }
 
-resource "aws_launch_template" "user_service_launch_template" {
+resource "aws_launch_template" "user_service" {
   name                   = "user-service-ec2-launch-template"
   image_id               = var.ecs_ami_id
   instance_type          = var.instance_type
@@ -15,6 +15,26 @@ resource "aws_launch_template" "user_service_launch_template" {
   ECS_CLUSTER=${var.ecs_cluster_name}
   EOF
   )
+}
+
+resource "aws_autoscaling_group" "user_service_asg" {
+  desired_capacity    = 2
+  max_size            = 4
+  min_size            = 1
+  vpc_zone_identifier = var.public_subnet_ids
+  target_group_arns   = [var.user_service_target_group_arn]
+
+  launch_template {
+    id      = aws_launch_template.user_service.id
+    version = "$Latest"
+  }
+
+  tag {
+    key                 = "Name"
+    value               = "user-service-instance"
+    propagate_at_launch = true # propagate this tag to all
+  }
+
 }
 
 resource "aws_security_group" "user_service_sg" {

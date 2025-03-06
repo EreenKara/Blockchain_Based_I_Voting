@@ -47,7 +47,7 @@ resource "aws_ecs_service" "user_service_ecs_service" {
   enable_ecs_managed_tags = false
 
   network_configuration {
-    subnets          = [var.public_subnet_id]
+    subnets          = var.public_subnet_ids
     security_groups  = [aws_security_group.user_service_sg.id]
     assign_public_ip = false
   }
