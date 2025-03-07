@@ -21,7 +21,7 @@ resource "aws_autoscaling_group" "user_service_asg" {
   desired_capacity    = 2
   max_size            = 4
   min_size            = 1
-  vpc_zone_identifier = var.public_subnet_ids
+  vpc_zone_identifier = var.subnet_ids
   target_group_arns   = [var.user_service_target_group_arn]
 
   launch_template {
@@ -46,7 +46,7 @@ resource "aws_security_group" "user_service_sg" {
     from_port   = 5004
     to_port     = 5004
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # allow inbound from everywhere, to port 5004
+    cidr_blocks = [var.vpc_cidr] # allow inbound within vpc, to port 5004
   }
 
   egress {

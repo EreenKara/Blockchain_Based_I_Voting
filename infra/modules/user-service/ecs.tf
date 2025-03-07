@@ -19,6 +19,29 @@ resource "aws_ecs_task_definition" "user_service_task" {
     cpu       = 496
     memory    = 720
 
+    environment = [
+      {
+        name  = "DB_HOST"
+        value = var.db_host
+      },
+      {
+        name  = "DB_PORT"
+        value = "5432"
+      },
+      {
+        name  = "DB_USER"
+        value = var.db_username
+      },
+      {
+        name  = "DB_PASSWORD"
+        value = var.db_username
+      },
+      {
+        name  = "DB_NAME"
+        value = var.db_name
+      }
+    ]
+
     portMappings = [
       {
         containerPort = 5004,
@@ -47,7 +70,7 @@ resource "aws_ecs_service" "user_service_ecs_service" {
   enable_ecs_managed_tags = false
 
   network_configuration {
-    subnets          = var.public_subnet_ids
+    subnets          = var.subnet_ids
     security_groups  = [aws_security_group.user_service_sg.id]
     assign_public_ip = false
   }

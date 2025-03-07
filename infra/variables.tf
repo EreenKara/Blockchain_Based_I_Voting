@@ -11,3 +11,13 @@ variable "instance_type" {
   type    = string
   default = "t3.micro"
 }
+
+variable "db_name" {
+  default = "postgre-db"
+}
+variable "db_username" {
+  default = "postgres"
+}
+variable "db_password" {
+  default = "123456"
+}

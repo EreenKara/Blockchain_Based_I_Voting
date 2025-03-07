@@ -9,8 +9,8 @@ resource "aws_vpc" "main" {
 resource "aws_subnet" "public" {
   count                   = 2
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = count.index == 0 ? var.public_cidr1 : var.public_cidr2
-  availability_zone       = count.index == 0 ? var.az1 : var.az2
+  cidr_block              = var.public_cidrs[count.index]
+  availability_zone       = var.azs[count.index]
   map_public_ip_on_launch = true
 
   tags = {
@@ -21,8 +21,8 @@ resource "aws_subnet" "public" {
 resource "aws_subnet" "private" {
   count                   = 2
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = count.index == 0 ? var.private_cidr1 : var.private_cidr2
-  availability_zone       = count.index == 0 ? var.az1 : var.az2
+  cidr_block              = var.private_cidrs[count.index]
+  availability_zone       = var.azs[count.index]
   map_public_ip_on_launch = false
 
   tags = {
