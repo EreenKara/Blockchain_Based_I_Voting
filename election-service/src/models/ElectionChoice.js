@@ -1,28 +1,39 @@
-const {Sequelize,DataTypes}=require("sequelize");
-const sequelize=require("../config/database");
+const { Sequelize, DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
 const Election = require("./Election");
 const Choice = require("./Choice");
- 
 
+// Ara tablo: ElectionChoice
 const ElectionChoice = sequelize.define("ElectionChoice", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  electionId: { 
-      type: DataTypes.INTEGER, 
-      allowNull: false, 
-      references: { model: Election, key: "id" }, 
-      onDelete: "CASCADE"
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+  electionId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: Election,
+      key: "id",
+    },
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
   },
-  choiceId: { 
-      type: DataTypes.INTEGER, 
-      allowNull: false, 
-      references: { model: Choice, key: "id" }, 
-      onDelete: "CASCADE"
-  }
+  choiceId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: Choice,
+      key: "id",
+    },
+    onUpdate: "CASCADE",
+    onDelete: "CASCADE",
+  },
+}, {
+  timestamps: true, // Seçeneğin hangi tarihte seçime eklendiğini görmek için
+  tableName: "ElectionChoices" // Tablo adını belirtiyoruz
 });
 
-// // Many-to-Many ilişki tanımlaması
-// Election.belongsToMany(Choice, { through: ElectionChoice });
-// Choice.belongsToMany(Election, { through: ElectionChoice });
-  
 
-module.exports=ElectionChoice;
+module.exports = ElectionChoice;

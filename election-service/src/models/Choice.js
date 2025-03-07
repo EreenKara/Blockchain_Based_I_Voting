@@ -26,6 +26,4 @@ const Choice = sequelize.define("Choice", {
 
 
 
-
-
 module.exports=Choice;

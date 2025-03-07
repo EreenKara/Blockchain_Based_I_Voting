@@ -3,12 +3,13 @@ const bcryptjs = require('bcryptjs');
 const axios = require("axios");
 const { Op } = require('sequelize');
 const {userValidationSchema} = require('../models/User');
+const UserAddress=require("../models/UserAdress");
 
 const registerUser = async (req, res) => {
   try {
-    const { name, surname, identityNumber, email, phoneNumber, password,imageUrl } = req.body;
+    const { name, surname,username, identityNumber, email, phoneNumber, password,imageUrl } = req.body;
     await userValidationSchema.validate({
-      name, surname, identityNumber, email, phoneNumber, password,imageUrl
+      name, surname,username, identityNumber, email, phoneNumber, password,imageUrl
     }, { abortEarly: false });
 
     // Unique alanların kontrolü
@@ -37,6 +38,7 @@ const registerUser = async (req, res) => {
     const user = await User.create({
       name,
       surname,
+      username,
       identityNumber,
       email,
       phoneNumber,
@@ -128,10 +130,14 @@ const authanticateUser = async (req, res) => {
       return res.status(403).json({ message: "Hesabınızı aktifleştirmek için e-posta adresinize gönderilen doğrulama kodunu girmeniz gerekmektedir." });
     }
 
+    const userAddress = await UserAddress.findOne({ where: { userId: user.id } });
+    const cityId = userAddress ? userAddress.cityId : null;
+
     const response = await axios.post(`${process.env.AUTH_SERVICE_URL}/api/auths/generate`, {
       email: user.email,
       hasPaidBalance: user.hasPaidBalance,
-      userId:user.id
+      userId:user.id,
+      cityId: cityId,
     });
 
     res.status(200).json({ token: response.data.token });

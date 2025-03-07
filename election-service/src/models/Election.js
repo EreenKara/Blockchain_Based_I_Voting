@@ -1,7 +1,5 @@
 const {Sequelize,DataTypes}=require("sequelize");
 const sequelize=require("../config/database");
-const ElectionChoice=require("./ElectionChoice")
-
 
 
 const Election = sequelize.define("Election", {
@@ -31,10 +29,6 @@ const Election = sequelize.define("Election", {
   
   createdAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
   updatedAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
-});
-Election.hasMany(ElectionChoice, {
-  foreignKey: 'electionId', // Dış anahtar
-  as: 'choices', // İlişkili seçeneklerin adlandırılması
 });
 module.exports = Election;
 

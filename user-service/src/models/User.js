@@ -15,6 +15,9 @@ const userValidationSchema = yup.object().shape({
     .required('Soyisim gereklidir')
     .matches(/^[a-zA-ZıİçÇğĞöÖşŞüÜ\s]+$/, 'Soyisim sadece harflerden oluşabilir')
     .trim(),
+    username: yup.string()
+    .required('Kullanıcı Adı gereklidir')
+    .trim(),
     
     identityNumber: yup.string()
     .length(11, 'TC Kimlik numarası 11 haneli olmalıdır')
@@ -81,6 +84,12 @@ const User = sequelize.define('User', {
     trim: true,
   },
   surname: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    trim: true,
+    unique:true,
+  },
+  username: {
     type: DataTypes.STRING,
     allowNull: false,
     trim: true,
