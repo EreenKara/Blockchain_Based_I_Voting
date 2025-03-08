@@ -4,7 +4,7 @@ const Group=require("../models/Group");
 const ElectionAccessUsers = require("../models/ElectionAccessUsers");
 require("dotenv").config();
 
-const addAccessUserToElection = async (electionId, userId = null, groupId = null, token) => {
+const addAccessUserToElection = async (electionId, userId , token) => {
     try {
         if (!token) {
             return { success: false, message: "Yetkilendirme hatası: Token eksik." };
@@ -75,15 +75,16 @@ const getUsersWithAccessToElection = async (electionId) => {
           return { success: false, message: "Seçim bulunamadı." };
       }
 
+   
       // Kullanıcıları getir
       const users = await ElectionAccessUsers.findAll({
           where: { electionId },
           attributes: ["userId"],
           include: [{ model: User, attributes: ["id", "name", "email"] }] // Sadece gerekli alanları al
       });
-
+     
       if (!users || users.length === 0) {
-        return res.status(200).json({ success: false, message: "No users have access to this election." });
+        return { success: false, message: "No users have access to this election." };
     }
 
       return {
@@ -99,41 +100,7 @@ const getUsersWithAccessToElection = async (electionId) => {
       };
   }
 };
-const getGroupsWithAccessToElection = async (electionId) => {
-    try {
-        // Seçimin olup olmadığını kontrol et
-        const response = await axios.get(
-            `${process.env.ELECTION_SERVICE_URL}/api/elections/${electionId}`
-        );
-  
-        if (!response || !response.data || !response.data.election) {
-            return { success: false, message: "Seçim bulunamadı." };
-        }
-  
-        // Grupları getir
-        const groups = await ElectionAccessUsers.findAll({
-            where: { electionId },
-            attributes: ["groupId"],
-            include: [{ model: Group, attributes: ["id", "name"] }] // Grup bilgilerini al
-        });
-  
-        if (!groups || groups.length === 0) {
-          return { success: false, message: "Bu seçim için erişime sahip grup bulunamadı." };
-        }
-  
-        return {
-            success: true,
-            message: "Erişime sahip gruplar başarıyla getirildi.",
-            data: groups
-        };
-    } catch (error) {
-        console.error("Error fetching groups with access to election:", error.message);
-        return {
-            success: false,
-            message: error.message
-        };
-    }
-  };
+
 
 // Token doğrulama fonksiyonu
 const authenticateUser = async (token) => {
@@ -151,4 +118,4 @@ const authenticateUser = async (token) => {
     }
 };
 
-module.exports = { addAccessUserToElection,getUsersWithAccessToElection,getGroupsWithAccessToElection};
+module.exports = { addAccessUserToElection,getUsersWithAccessToElection};

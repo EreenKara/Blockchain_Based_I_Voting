@@ -1,4 +1,5 @@
 const express = require('express');
+require("./models/associations");
 const sequelize=require("./config/database");
 const groupRoutes=require("./routes/groupRoutes");
 const userAdressRoute=require("./routes/userAdressRoutes");

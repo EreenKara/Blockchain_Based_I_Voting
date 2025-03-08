@@ -6,4 +6,7 @@ const UserGroup = require("./UserGroup");
 User.belongsToMany(Group, { through: UserGroup, foreignKey: "userId" });
 Group.belongsToMany(User, { through: UserGroup, foreignKey: "groupId" });
 
+
+
+
 module.exports = { User, Group, UserGroup };

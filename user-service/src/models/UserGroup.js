@@ -5,6 +5,11 @@ const Group = require("./Group");
 
 // UserGroup modelini oluşturuyoruz (Ara Tablo)
 const UserGroup = sequelize.define("UserGroup", {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -31,7 +36,6 @@ const UserGroup = sequelize.define("UserGroup", {
 });
 
 // **İlişkileri Tanımlıyoruz**
-User.belongsToMany(Group, { through: UserGroup, foreignKey: "userId" });
-Group.belongsToMany(User, { through: UserGroup, foreignKey: "groupId" });
+
 
 module.exports = UserGroup;

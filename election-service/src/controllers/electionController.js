@@ -1,10 +1,11 @@
 const { 
     createElection,
     updateElectionStatus,
-    addElectionType,
+    setElectionAccess,
     addChoiceToElection,
     getElectionById,
-    getActiveElection
+    getActiveElection,
+    updateElectionAccess
     
 } = require("../services/electionService");
 
@@ -36,9 +37,9 @@ const createElectionController = async (req, res) => {
     }
 };
 
-const addElectionTypeController = async (req, res) => {
+const setElectionAccessController = async (req, res) => {
     try {
-        await addElectionType(req, res);
+        await setElectionAccess(req, res);
     } catch (error) {
         handleError(res, error, "Error adding type to election:");
     }
@@ -73,10 +74,17 @@ try{
 }
 };
 
-
 const updateElectionStatusController = async (req, res) => {
+    try {
+        await updateElectionStatus(req, res);
+    } catch (error) {
+        handleError(res, error, "Error updating election status:");
+    }
+  };
+
+const updateElectionAccessController = async (req, res) => {
   try {
-      await updateElectionStatus(req, res);
+      await updateElectionAccess(req, res);
   } catch (error) {
       handleError(res, error, "Error updating election status:");
   }
@@ -97,7 +105,8 @@ module.exports = {
     getElectionByIdController,
     updateElectionStatusController,
     addChoiceToElectionController,
-    addElectionTypeController,
-    getActiveElectionController
+    setElectionAccessController,
+    getActiveElectionController,
+    updateElectionAccessController
 
 };

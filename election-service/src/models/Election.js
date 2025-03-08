@@ -20,7 +20,7 @@ const Election = sequelize.define("Election", {
       allowNull: false 
   },
   electionType: { 
-    type: DataTypes.ENUM("blockchain", "database","null"),  // Yeni eklenen alan
+    type: DataTypes.ENUM("blockchain", "database"),  // Yeni eklenen alan
     allowNull: false 
   },
   step:{

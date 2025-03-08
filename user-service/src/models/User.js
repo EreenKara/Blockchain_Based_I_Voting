@@ -1,6 +1,8 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const yup = require('yup');  // Yup kütüphanesini dahil ediyoruz
 const sequelize = require("../config/database");
+const UserGroup = require("./UserGroup");
+const Group = require("./Group");
 
 
 
@@ -130,22 +132,4 @@ const User = sequelize.define('User', {
 }, {
   timestamps: true,
 });
-
-
-
-// Veritabanı bağlantısını test etme
-// sequelize.authenticate()
-//   .then(() => {
-//     console.log('PostgreSQL bağlantısı başarılı.');
-//   })
-//   .catch((error) => {
-//     console.error('PostgreSQL bağlantısı hatası:', error);
-//   });
-
-// // Veritabanı senkronizasyonu
-// sequelize.sync()
-//   .then(() => console.log("Users tablosu oluşturuldu veya güncellendi!"))
-//   .catch(err => console.error('Tablo oluşturulurken bir hata oluştu:', err));
-
-// Modeli dışa aktarıyoruz
 module.exports = { User, userValidationSchema };

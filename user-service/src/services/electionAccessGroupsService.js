@@ -69,9 +69,67 @@ const addAccessGroupToElection = async (electionId, groupId, token) => {
     }
 };
 
-const getGroupsWithAccessToElection = async (electionId) => {
+// const getGroupsWithAccessToElection = async (electionId) => {
+//     try {
+//         // Seçimin olup olmadığını kontrol et
+//         const response = await axios.get(
+//             `${process.env.ELECTION_SERVICE_URL}/api/elections/${electionId}`
+//         );
+  
+//         if (!response || !response.data || !response.data.election) {
+//             return { success: false, message: "Seçim bulunamadı." };
+//         }
+
+//         console.log("ElectionAccessGroups Associations:", ElectionAccessGroups.associations);
+//         // Seçime erişimi olan grupları getir
+//         const groups = await ElectionAccessGroups.findAll({
+//             where: { electionId },
+//             attributes: ["groupId"],
+//             include: [{ model: Group, attributes: ["id", "name"] }],
+     
+//         });
+        
+//         console.log("grousp:",groups);
+
+
+//         if (!groups || groups.length === 0) {
+//             return { success: false, message: "Bu seçim için erişime sahip grup bulunamadı." };
+//         }
+
+//         // Her grup için kullanıcıları getir
+//         const groupData = await Promise.all(groups.map(async (group) => {
+//             // Gruba üye olan kullanıcıları getir
+//             const users = await UserGroup.findAll({
+//                 where: { groupId: group.groupId },
+//                 include: [{ model: User, attributes: ["id", "name", "email"] }] // Kullanıcı bilgilerini al
+//             });
+
+//             return {
+//                 groupId: group.groupId,
+//                 groupName: group.Group.name,
+//                 users: users.map(userGroup => ({
+//                     id: userGroup.User?.id || null,
+//                     name: userGroup.User?.name || "Bilinmeyen Kullanıcı",
+//                     email: userGroup.User?.email || "Bilinmeyen Email"
+//                 }))
+//             };
+//         }));
+
+//         return {
+//             success: true,
+//             message: "Erişime sahip gruplar ve üyeleri başarıyla getirildi.",
+//             data: groupData
+//         };
+//     } catch (error) {
+//         console.error("Error fetching groups with access to election:", error.message);
+//         return {
+//             success: false,
+//             message: error.message
+//         };
+//     }
+// };
+const getElectionAccessGroups = async (electionId) => {
     try {
-        // Seçimin olup olmadığını kontrol et
         const response = await axios.get(
             `${process.env.ELECTION_SERVICE_URL}/api/elections/${electionId}`
         );
@@ -79,53 +137,35 @@ const getGroupsWithAccessToElection = async (electionId) => {
         if (!response || !response.data || !response.data.election) {
             return { success: false, message: "Seçim bulunamadı." };
         }
-  
-        // Seçime erişimi olan grupları getir
-        const groups = await ElectionAccessGroups.findAll({
-            where: { electionId },
-            attributes: ["groupId"],
-            include: [{ model: Group, attributes: ["id", "name"] }] // Grup bilgilerini al
-        });
-
-        console.log("Groups Data:", JSON.stringify(groups, null, 2));
-
-        if (!groups || groups.length === 0) {
-            return { success: false, message: "Bu seçim için erişime sahip grup bulunamadı." };
+        if (!electionId) {
+            return { success: false, message: "Seçim ID belirtilmelidir." };
         }
 
-        // Her grup için kullanıcıları getir
-        const groupData = await Promise.all(groups.map(async (group) => {
-            // Gruba üye olan kullanıcıları getir
-            const users = await UserGroup.findAll({
-                where: { groupId: group.groupId },
-                include: [{ model: User, attributes: ["id", "name", "email"] }] // Kullanıcı bilgilerini al
-            });
+       
+        const accessGroups = await ElectionAccessGroups.findAll({
+            where: { electionId },
+            attributes: ["groupId"],
+            include: [{ model: Group, attributes: ["id", "name"] }],
+     
+        });
 
-            return {
-                groupId: group.groupId,
-                groupName: group.Group.name,
-                users: users.map(userGroup => ({
-                    id: userGroup.User?.id || null,
-                    name: userGroup.User?.name || "Bilinmeyen Kullanıcı",
-                    email: userGroup.User?.email || "Bilinmeyen Email"
-                }))
-            };
-        }));
+        if (!accessGroups || accessGroups.length === 0) {
+            return { success: false, message: "Bu seçim için tanımlı erişim grubu bulunmamaktadır." };
+        }
 
         return {
             success: true,
-            message: "Erişime sahip gruplar ve üyeleri başarıyla getirildi.",
-            data: groupData
+            message: "Seçime erişimi olan gruplar başarıyla getirildi.",
+            data: accessGroups.map((access) => ({
+                id: access.Group.id,
+                name: access.Group.name,
+            })),
         };
     } catch (error) {
-        console.error("Error fetching groups with access to election:", error.message);
-        return {
-            success: false,
-            message: error.message
-        };
+        console.error("Error fetching election access groups:", error.message);
+        return { success: false, message: error.message };
     }
 };
-
 
 // Token doğrulama fonksiyonu
 const authenticateUser = async (token) => {
@@ -143,4 +183,4 @@ const authenticateUser = async (token) => {
     }
 };
 
-module.exports = { addAccessGroupToElection,getGroupsWithAccessToElection};
+module.exports = { addAccessGroupToElection,getElectionAccessGroups};

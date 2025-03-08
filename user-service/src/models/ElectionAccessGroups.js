@@ -1,34 +1,35 @@
-const {DataTypes}=require("sequelize");
-const sequelize=require("../config/database");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
 const Group = require("./Group");
 
-const ElectionAccessGroups=sequelize.define("ElectionAccessGroups",{
-
+const ElectionAccessGroups = sequelize.define("ElectionAccessGroups", {
     groupId: {
         type: DataTypes.INTEGER,
-        allowNull: true, // Bireysel erişimler için null olabilir
+        allowNull: true,
         references: {
             model: "Groups",
-            key: "id"
+            key: "id",
         },
         onUpdate: "CASCADE",
-        onDelete: "CASCADE"
+        onDelete: "CASCADE",
     },
-    electionId:{
-        type:DataTypes.INTEGER,
-        references:{
-            model:"Elections",
-            key:"id"
+    electionId: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: "Elections",
+            key: "id",
         },
-        onUpdate:"CASCADE",
-        onDelete:"CASCADE",
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
     },
-    
+  
 
 });
 
+// ✅ Grup ilişkisini tanımla
 
-Group.hasMany(ElectionAccessGroups, { foreignKey: "groupId", onDelete: "CASCADE" });
+Group.hasMany(ElectionAccessGroups, { foreignKey: "groupId",onDelete: "CASCADE"});
 ElectionAccessGroups.belongsTo(Group, { foreignKey: "groupId" });
 
-module.exports=ElectionAccessGroups;
+
+module.exports = ElectionAccessGroups;

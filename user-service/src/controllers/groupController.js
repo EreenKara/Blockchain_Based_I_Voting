@@ -93,7 +93,7 @@ const getUsersInGroup = async (req, res) => {
       include: [
         {
           model: User,
-          through: UserGroup,
+          through: { model: UserGroup }, // ✅ Ara tabloyu açıkça belirtiyoruz
           attributes: ["id", "name", "email"],
         },
       ],
@@ -103,11 +103,13 @@ const getUsersInGroup = async (req, res) => {
       return res.status(404).json({ message: "Group not found" });
     }
 
-    res.status(200).json(group);
+    res.status(200).json({ success: true, message: "Group members fetched successfully", data: group });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error fetching group members:", error.message);
+    res.status(500).json({ success: false, message: "Error fetching group members", error: error.message });
   }
 };
+
 // Tüm grupları listele (Kullanıcısız)
 const getAllGroups = async (req, res) => {
   try {

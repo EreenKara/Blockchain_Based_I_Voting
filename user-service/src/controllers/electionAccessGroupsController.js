@@ -1,4 +1,4 @@
-const {addAccessGroupToElection,getGroupsWithAccessToElection}=require("../services/electionAccessGroupsService");
+const {addAccessGroupToElection,getElectionAccessGroups}=require("../services/electionAccessGroupsService");
 
 const addAccessGroupToElectionController = async (req, res) => {
     try {
@@ -32,7 +32,7 @@ const {electionId}=req.params;
 if(!electionId){
     return res.status(400).json({message:"Eksik parametre electionId gereklidir."});
 }
-const response=await getGroupsWithAccessToElection(electionId);
+const response=await getElectionAccessGroups(electionId);
 if(!response.success){
     return res.status(400).json({message:response.message});
 }
