@@ -13,11 +13,11 @@ variable "instance_type" {
 }
 
 variable "db_name" {
-  default = "postgre-db"
+  default = "ivotedb"
 }
 variable "db_username" {
   default = "postgres"
 }
 variable "db_password" {
-  default = "123456"
+  default = "Admin123"
 }

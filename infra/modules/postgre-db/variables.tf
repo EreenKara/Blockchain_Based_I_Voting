@@ -11,9 +11,9 @@ variable "db_instance_class" {
 }
 
 variable "db_storage" {
-  default = 10 # 10 gb for now
+  default = 5 # 5 gb for now
 }
 
 variable "db_engine_version" {
-  default = "13.4" # postgresql
+  default = "11.22" # supported version for this region
 }

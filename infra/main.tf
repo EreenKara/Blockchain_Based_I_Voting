@@ -3,6 +3,15 @@ provider "aws" {
   region  = var.aws_region
 }
 
+resource "aws_ecs_cluster" "ivote_cluster" {
+  name = "i-vote-ecs-cluster"
+}
+
+resource "aws_ecs_cluster_capacity_providers" "default" {
+  cluster_name       = aws_ecs_cluster.ivote_cluster.name
+  capacity_providers = [module.user_service.user_service_cp_name]
+}
+
 # computed values
 locals {
   ecs_cluster_id   = aws_ecs_cluster.ivote_cluster.id

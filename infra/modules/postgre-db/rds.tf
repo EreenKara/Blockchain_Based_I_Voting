@@ -30,10 +30,11 @@ resource "aws_db_instance" "postgre_db" {
   db_name                 = var.db_name
   vpc_security_group_ids  = [aws_security_group.rds_sg.id]
   db_subnet_group_name    = aws_db_subnet_group.rds_subnet_group.name
-  multi_az                = false # true for high availability, if needed
+  multi_az                = false # true for high availability, costs money though
   backup_retention_period = 7
   storage_type            = "gp2"
   publicly_accessible     = false
+  skip_final_snapshot     = true # this deletes the db without backup !!!
 
   tags = {
     Name = "I-Vote Postgresql Db"
