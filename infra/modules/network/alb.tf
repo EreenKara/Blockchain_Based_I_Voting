@@ -63,7 +63,7 @@ resource "aws_lb_target_group" "user_service" {
   port        = 5004
   protocol    = "HTTP"
   vpc_id      = aws_vpc.main.id
-  target_type = "instance"
+  target_type = "ip" # awsvpc mode
 
   health_check {
     path                = "/health"

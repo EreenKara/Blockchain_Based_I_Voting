@@ -66,8 +66,7 @@ resource "aws_ecs_service" "user_service_ecs_service" {
   name                    = "user-service-ecs-service"
   cluster                 = var.ecs_cluster_id
   task_definition         = aws_ecs_task_definition.user_service_task.arn
-  desired_count           = 1
-  launch_type             = "EC2"
+  desired_count           = 2
   enable_ecs_managed_tags = false
 
   network_configuration {
@@ -79,11 +78,6 @@ resource "aws_ecs_service" "user_service_ecs_service" {
   capacity_provider_strategy {
     capacity_provider = aws_ecs_capacity_provider.user_service_cp.name
     weight            = 1
-    base              = 1
-  }
-
-  deployment_controller {
-    type = "ECS"
   }
 }
 
@@ -96,8 +90,9 @@ resource "aws_ecs_capacity_provider" "user_service_cp" {
       status                    = "ENABLED"
       target_capacity           = 75
       minimum_scaling_step_size = 1
-      maximum_scaling_step_size = 5
+      maximum_scaling_step_size = 2
+      instance_warmup_period    = 60 # wait 1 min for ec2 to warmup 
     }
-    managed_termination_protection = "ENABLED"
+    managed_termination_protection = "DISABLED"
   }
 }

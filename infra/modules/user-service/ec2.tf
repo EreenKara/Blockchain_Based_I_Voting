@@ -11,7 +11,7 @@ resource "aws_launch_template" "user_service" {
 
   user_data = base64encode(<<EOF
   #!/bin/bash
-  cat << 'EOF' >> /etc/ecs/ecs.config
+  cat <<'EOF' >> /etc/ecs/ecs.config
   ECS_CLUSTER=${var.ecs_cluster_name}
   EOF
   )
@@ -25,31 +25,15 @@ resource "aws_launch_template" "user_service" {
 }
 
 resource "aws_autoscaling_group" "user_service_asg" {
-  desired_capacity      = 2
-  max_size              = 4
-  min_size              = 1
-  vpc_zone_identifier   = var.subnet_ids
-  target_group_arns     = [var.user_service_target_group_arn]
-  protect_from_scale_in = true
+  desired_capacity    = 1
+  min_size            = 1
+  max_size            = 2
+  vpc_zone_identifier = var.subnet_ids # private subnets
 
   launch_template {
     id      = aws_launch_template.user_service.id
     version = aws_launch_template.user_service.latest_version
   }
-
-  health_check_type         = "EC2"
-  health_check_grace_period = 300
-
-  instance_refresh {
-    strategy = "Rolling"
-  }
-
-  tag {
-    key                 = "Name"
-    value               = "user-service-instance"
-    propagate_at_launch = true # propagate this tag to all
-  }
-
 }
 
 resource "aws_security_group" "user_service_sg" {
