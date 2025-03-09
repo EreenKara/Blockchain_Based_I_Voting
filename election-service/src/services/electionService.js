@@ -4,8 +4,9 @@ const ElectionChoice=require("../models/ElectionChoice");
 const {Sequelize} =require("sequelize");
 require('dotenv').config();
 const axios = require("axios");
+const asyncHandler = require("../middlewares/asyncHandler");
 
-const createElection = async (req, res) => {
+const createElection = asyncHandler(async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
         return res.status(401).json({ message: 'Authorization token is missing' });
@@ -16,7 +17,7 @@ const createElection = async (req, res) => {
         return res.status(400).json({ message: 'Başlık, başlangıç ve bitiş tarihleri zorunludur.' });
     }
     
-    try {
+    
         const user = await authenticateUser(token);
         if (!user || !user.email || !user.hasPaidBalance) {
             return res.status(403).json({ message: 'Yetkisiz erişim veya bakiye yetersiz.' });
@@ -36,10 +37,8 @@ const createElection = async (req, res) => {
         });
 
         res.status(201).json({ message: "Step 1: Election created successfully", election });
-    } catch (error) {
-        res.status(500).json({ message: "Error creating election", error: error.message });
-    }
-};
+    
+});
 const setElectionAccess = async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
@@ -246,7 +245,7 @@ const updateElectionAccess = async (req, res) => {
 
 
 
-const addChoiceToElection = async (req, res) => {
+const addChoiceToElection = asyncHandler(async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
         return res.status(401).json({ message: 'Authorization token is missing' });
@@ -258,7 +257,7 @@ const addChoiceToElection = async (req, res) => {
     if (!choiceIds || !Array.isArray(choiceIds) || choiceIds.length === 0) {
         return res.status(400).json({ message: "choiceIds array olarak gönderilmeli ve boş olmamalı." });
     }
-    try {
+    
         const user = await authenticateUser(token);
         if (!user || !user.email || !user.hasPaidBalance) {
             return res.status(403).json({ message: 'Yetkisiz erişim veya bakiye yetersiz.' });
@@ -284,13 +283,11 @@ const addChoiceToElection = async (req, res) => {
         await election.save();
         
         res.status(201).json({ message: "Step 3: Choices added successfully", election });
-    } catch (error) {
-        res.status(500).json({ message: "Error adding choices", error: error.message });
-    }
-};
+  
+});
 //Blockchain'den seçenekleri almak için fonksiyon
-const getChoicesFromBlockchain = async (choiceIds) => {
-    try {
+const getChoicesFromBlockchain = asyncHandler(async (choiceIds) => {
+    
         console.log("Received choiceIds:", choiceIds);
 
         if (!choiceIds || !Array.isArray(choiceIds) || choiceIds.length === 0) {
@@ -307,14 +304,11 @@ const getChoicesFromBlockchain = async (choiceIds) => {
         });
 
         return blockchainChoices;
-    } catch (error) {
-        console.error("Error fetching choices from Blockchain:", error.message);
-        throw new Error("Blockchain'den seçimler alınırken bir hata oluştu.");
-    }
-};
+   
+});
 // Veritabanından seçimleri almak için fonksiyon
-const getChoicesFromDatabase = async (choiceIds) => {
-    try {
+const getChoicesFromDatabase = asyncHandler(async (choiceIds) => {
+    
         console.log("Received choiceIds:", choiceIds);
 
         if (!choiceIds || !Array.isArray(choiceIds) || choiceIds.length === 0) {
@@ -331,11 +325,8 @@ const getChoicesFromDatabase = async (choiceIds) => {
         });
 
         return databaseChoices;
-    } catch (error) {
-        console.error("Error fetching choices from database:", error.message);
-        throw new Error("database'den seçimler alınırken bir hata oluştu.");
-    }
-};
+  
+});
 
 // Kullanıcıyı doğrulamak için fonksiyon
 const authenticateUser = async (token) => {
@@ -343,16 +334,14 @@ const authenticateUser = async (token) => {
         throw new Error('Token is required');
     }
 
-    try {
+    
         const response = await axios.post(`${process.env.AUTH_SERVICE_URL}/api/auths/validate`, { token });
         if (response.data.valid) {
             return response.data.decoded; // Kullanıcıyı döndür
         } else {
             throw new Error('Invalid token');
         }
-    } catch (error) {
-        throw new Error('Error verifying token');
-    }
+  
 };
 
 const getElectionById = async (id, token) => {
@@ -378,10 +367,10 @@ const getElectionById = async (id, token) => {
     }
 };
 
-const updateElectionStatus = async (req, res) => {
+const updateElectionStatus = asyncHandler(async (req, res) => {
     const { id } = req.params; // Seçim ID'si
 
-    try {
+   
         // Seçimi ID'ye göre bul
         const election = await Election.findByPk(id);
 
@@ -405,14 +394,12 @@ const updateElectionStatus = async (req, res) => {
         // Eğer seçim ACTIVE değilse geçersiz bir durumdur
         return res.status(400).json({ message: "Election status update is invalid. Only ACTIVE elections can be completed." });
 
-    } catch (error) {
-        res.status(500).json({ message: "An error occurred while updating the election status.", error: error.message });
-    }
-};
+  
+});
 
-const getActiveElection = async (req, res) => {
+const getActiveElection = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    try {
+    
         const election = await Election.findByPk(id);
         if (!election) {
             return res.status(404).json({ message: "Election not found" });
@@ -423,10 +410,8 @@ const getActiveElection = async (req, res) => {
         } else {
             return res.status(400).json({ message: "Election cannot be started outside of start and end dates" });
         }
-    } catch (error) {
-        handleError(res, error, "Error checking election status:");
-    }
-  };
+  
+  });
 //   const updateElectionStatusIfActive = async (req, res) => {
 //     const { id } = req.params;
 

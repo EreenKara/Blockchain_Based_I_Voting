@@ -26,7 +26,7 @@ app.use(limiter);
 app.use(express.json());
 
 app.use(bodyParser.json());
-app.use('/api/users', limiter,userRoutes);
+app.use('/api/users',userRoutes);
 app.use('/api/groups',groupRoutes);
 app.use('/api/userAdresses',userAdressRoute);
 app.use('/api/ElectionAccesUsers',electionAccessUsersRoutes);
