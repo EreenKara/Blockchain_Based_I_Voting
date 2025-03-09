@@ -1,8 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const yup = require('yup');  // Yup kütüphanesini dahil ediyoruz
 const sequelize = require("../config/database");
-const UserGroup = require("./UserGroup");
-const Group = require("./Group");
 
 
 
@@ -89,7 +87,7 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false,
     trim: true,
-    unique:true,
+    
   },
   username: {
     type: DataTypes.STRING,

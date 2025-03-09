@@ -4,6 +4,7 @@ const axios = require("axios");
 const { Op } = require('sequelize');
 const {userValidationSchema} = require('../models/User');
 const UserAddress=require("../models/UserAdress");
+const {sendVerificationEmail}=require("../services/emailService")
 
 const registerUser = async (req, res) => {
   try {
@@ -67,10 +68,8 @@ const registerUser = async (req, res) => {
 
     // Kullanıcıya e-posta ile doğrulama kodu gönder
     try {
-      await axios.post(`${process.env.EMAIL_SERVICE_URL}/api/emails/send-verification`, {
-        email: user.email,
-        code: verificationCode
-      });
+      await sendVerificationEmail(email,verificationCode);
+       
 
       // Doğrulama kodunu veritabanına kaydet
       user.verificationCode = verificationCode;

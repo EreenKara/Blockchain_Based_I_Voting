@@ -132,25 +132,6 @@ services:
     networks:
       - ivote-network
 
-  email-service:
-    build: ./email-service
-    container_name: email-service
-    environment:
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_NAME: ivote
-      DB_USER: postgres
-      DB_PASSWORD: 123456
-    ports:
-      - "5006:5006"
-    depends_on:
-      - postgres
-    volumes:
-      - ./email-service:/email-service
-      - /email-service/node_modules
-    networks:
-      - ivote-network
-
   gateway:
     build: ./gateway
     container_name: gateway
