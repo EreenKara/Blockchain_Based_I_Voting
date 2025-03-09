@@ -9,8 +9,6 @@ app.use(express.json());
 
 app.use("/api/auths", tokenRoutes);
 
-
-
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`JWT-Service ${PORT} portunda çalışıyor.`);

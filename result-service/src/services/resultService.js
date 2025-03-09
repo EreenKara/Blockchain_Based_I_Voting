@@ -1,4 +1,4 @@
-const  Result = require("../models/Result");
+const Result = require("../models/Result");
 const axios = require("axios");
 
 const calculateElectionResult = async (electionId) => {
@@ -9,7 +9,7 @@ const calculateElectionResult = async (electionId) => {
     );
 
     const options = response.data.options || [];
-    
+
     if (options.length === 0) {
       throw new Error("No options found for the given election.");
     }
@@ -35,8 +35,6 @@ const calculateElectionResult = async (electionId) => {
   }
 };
 
-
-
 const getResultByElectionId = async (electionId) => {
   try {
     // Sequelize ile sonuç sorgusu yapıyoruz
@@ -50,7 +48,6 @@ const getResultByElectionId = async (electionId) => {
     const kazanan = result.winnerOption?.optionName || "Unknown";
 
     return { ...result.toJSON(), kazanan };
-
   } catch (error) {
     throw new Error(`Error retrieving result: ${error.message}`);
   }

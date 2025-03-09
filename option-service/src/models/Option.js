@@ -47,7 +47,9 @@ const Option = sequelize.define(
       validate: {
         isHexColor(value) {
           if (!/^#[0-9A-Fa-f]{6}$/.test(value)) {
-            throw new Error("Color must be a valid hexadecimal code (e.g., #FFAABB).");
+            throw new Error(
+              "Color must be a valid hexadecimal code (e.g., #FFAABB)."
+            );
           }
         },
       },

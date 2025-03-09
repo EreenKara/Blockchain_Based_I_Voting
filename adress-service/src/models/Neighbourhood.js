@@ -26,5 +26,4 @@ const Neigbourhood = sequelize.define(
   }
 );
 
-
 module.exports = Neigbourhood;

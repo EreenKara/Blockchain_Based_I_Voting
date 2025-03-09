@@ -26,5 +26,4 @@ const District = sequelize.define(
   }
 );
 
-
 module.exports = District;

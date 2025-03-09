@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 const sequelize = require("./config/database");
 const cityRoutes = require("./routes/cityRoutes");
 const districtRoutes = require("./routes/districtRoutes");
- const neighbourhoodRoutes = require("./routes/neighbourhoodRoutes");
+const neighbourhoodRoutes = require("./routes/neighbourhoodRoutes");
 
 dotenv.config();
 const app = express();

@@ -1,35 +1,35 @@
-
 const District = require("../models/District"); // District modelini içe aktar
 
-const createDistrict=async (req, res)=>{
-  const {name,cityId}=req.body;
+const createDistrict = async (req, res) => {
+  const { name, cityId } = req.body;
 
-  if(!name||!cityId){
-    return res.status(400).json({message:"district or cityId is required"});
+  if (!name || !cityId) {
+    return res.status(400).json({ message: "district or cityId is required" });
   }
-  try{
-    const district=await District.create({
+  try {
+    const district = await District.create({
       name,
-      cityId
+      cityId,
     });
-    res.status(201).json({message:"District created successfully",district});
-  }catch(error){
-    res.status(400).json({error:error.message})
+    res
+      .status(201)
+      .json({ message: "District created successfully", district });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
-  
 };
-const getDistrictListAll=async()=>{
- try{
-  const districts=await District.findAll();
-  return districts;
-}catch(error){
-  console.error("error:",error.message);
-  throw new Error("Unable to fetch districts")
- }
+const getDistrictListAll = async () => {
+  try {
+    const districts = await District.findAll();
+    return districts;
+  } catch (error) {
+    console.error("error:", error.message);
+    throw new Error("Unable to fetch districts");
+  }
 };
 const getDistrictById = async (id) => {
   try {
-    console.log("Gelen ID:", id);  // Debug için ID'yi yazdır
+    console.log("Gelen ID:", id); // Debug için ID'yi yazdır
 
     if (!id) {
       throw new Error("ID is required");
@@ -59,14 +59,14 @@ const getDistrictById = async (id) => {
 //   async createDistrict(name,cityId) {
 //     try {
 //       console.log("Service - Gelen Veriler:", { name, cityId });
-  
+
 //       console.log("Controller - name:", name);
 //       console.log("Controller - cityId:", cityId);
-      
+
 //       if (!name || !cityId) {
 //         throw new Error("Name and cityId are required");
 //       }
-  
+
 //       const district = await District.create({ name, cityId });
 //       return district;
 //     } catch (error) {
@@ -74,7 +74,7 @@ const getDistrictById = async (id) => {
 //       throw new Error(error.message); // Hata yönetimi
 //     }
 //   },
-  
+
 //   async updateDistrict(id, data) {
 //     const district = await District.findByPk(id);
 //     if (!district) return null;
@@ -89,4 +89,4 @@ const getDistrictById = async (id) => {
 //   }
 // };
 
-module.exports = {createDistrict,getDistrictListAll,getDistrictById};
+module.exports = { createDistrict, getDistrictListAll, getDistrictById };

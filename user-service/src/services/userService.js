@@ -1,34 +1,52 @@
-const {User} = require("../models/User");
-const bcryptjs = require('bcryptjs');
+const { User } = require("../models/User");
+const bcryptjs = require("bcryptjs");
 const axios = require("axios");
-const { Op } = require('sequelize');
-const {userValidationSchema} = require('../models/User');
-const UserAddress=require("../models/UserAdress");
-const {sendVerificationEmail}=require("../services/emailService")
+const { Op } = require("sequelize");
+const { userValidationSchema } = require("../models/User");
+const UserAddress = require("../models/UserAdress");
+const { sendVerificationEmail } = require("../services/emailService");
 
 const registerUser = async (req, res) => {
   try {
-    const { name, surname,username, identityNumber, email, phoneNumber, password,imageUrl } = req.body;
-    await userValidationSchema.validate({
-      name, surname,username, identityNumber, email, phoneNumber, password,imageUrl
-    }, { abortEarly: false });
+    const {
+      name,
+      surname,
+      username,
+      identityNumber,
+      email,
+      phoneNumber,
+      password,
+      imageUrl,
+    } = req.body;
+    await userValidationSchema.validate(
+      {
+        name,
+        surname,
+        username,
+        identityNumber,
+        email,
+        phoneNumber,
+        password,
+        imageUrl,
+      },
+      { abortEarly: false }
+    );
 
     // Unique alanların kontrolü
     const existingUser = await User.findOne({
       where: {
-        [Op.or]: [
-          { identityNumber },
-          { email },
-          { phoneNumber }
-        ]
-      }
+        [Op.or]: [{ identityNumber }, { email }, { phoneNumber }],
+      },
     });
 
     if (existingUser) {
-      let message = '';
-      if (existingUser.identityNumber === identityNumber) message = "Bu TC kimlik numarası zaten kayıtlı.";
-      if (existingUser.email === email) message = "Bu e-posta adresi zaten kayıtlı.";
-      if (existingUser.phoneNumber === phoneNumber) message = "Bu telefon numarası zaten kayıtlı.";
+      let message = "";
+      if (existingUser.identityNumber === identityNumber)
+        message = "Bu TC kimlik numarası zaten kayıtlı.";
+      if (existingUser.email === email)
+        message = "Bu e-posta adresi zaten kayıtlı.";
+      if (existingUser.phoneNumber === phoneNumber)
+        message = "Bu telefon numarası zaten kayıtlı.";
       return res.status(409).json({ message });
     }
 
@@ -45,15 +63,18 @@ const registerUser = async (req, res) => {
       phoneNumber,
       password: hashedPassword,
       hasPaidBalance: false,
-      imageUrl:imageUrl||null,
+      imageUrl: imageUrl || null,
     });
 
     if (imageUrl) {
       try {
         // Image yükleme mikroservisi çağrısı
-        const imageResponse = await axios.post(`${process.env.IMAGE_SERVICE_URL}/api/images/upload`, {
-          imageUrl: imageUrl
-        });
+        const imageResponse = await axios.post(
+          `${process.env.IMAGE_SERVICE_URL}/api/images/upload`,
+          {
+            imageUrl: imageUrl,
+          }
+        );
 
         // Yüklenen resmin path bilgisini kullanıcıya ekle
         user.imageUrl = imageResponse.data.image.path;
@@ -68,34 +89,42 @@ const registerUser = async (req, res) => {
 
     // Kullanıcıya e-posta ile doğrulama kodu gönder
     try {
-      await sendVerificationEmail(email,verificationCode);
-       
+      await sendVerificationEmail(email, verificationCode);
 
       // Doğrulama kodunu veritabanına kaydet
       user.verificationCode = verificationCode;
       await user.save();
 
       // Yanıt gönder
-      res.status(201).json({ message: "Kullanıcı başarıyla oluşturuldu ve e-posta ile doğrulama kodu gönderildi." });
-
+      res
+        .status(201)
+        .json({
+          message:
+            "Kullanıcı başarıyla oluşturuldu ve e-posta ile doğrulama kodu gönderildi.",
+        });
     } catch (error) {
       console.error("E-posta gönderme hatası: ", error);
-      res.status(500).json({ message: "Kullanıcı oluşturuldu ancak e-posta gönderilemedi." });
+      res
+        .status(500)
+        .json({
+          message: "Kullanıcı oluşturuldu ancak e-posta gönderilemedi.",
+        });
     }
-
   } catch (error) {
-    if (error.name === 'ValidationError') {
+    if (error.name === "ValidationError") {
       // ValidationError durumunda, tüm hata mesajlarını `error.inner` üzerinden alabiliriz
-      const validationErrors = error.inner.map(err => err.message);
+      const validationErrors = error.inner.map((err) => err.message);
       return res.status(400).json({
         message: "Veri doğrulama hatası",
-        errors: validationErrors,  // Tüm hata mesajlarını buraya koyuyoruz
+        errors: validationErrors, // Tüm hata mesajlarını buraya koyuyoruz
       });
     }
 
     // Diğer hatalar için genel bir hata mesajı
     console.error(error);
-    res.status(500).json({ message: "Kullanıcı oluşturulurken bir hata oluştu." });
+    res
+      .status(500)
+      .json({ message: "Kullanıcı oluşturulurken bir hata oluştu." });
   }
 };
 
@@ -104,51 +133,74 @@ const authanticateUser = async (req, res) => {
     const { emailOrIdentity, password } = req.body;
 
     if (!emailOrIdentity || !password) {
-      return res.status(400).json({ message: "Email/TCKN ve şifre alanları zorunludur." });
+      return res
+        .status(400)
+        .json({ message: "Email/TCKN ve şifre alanları zorunludur." });
     }
     const user = await User.findOne({
-      where: { 
-        [Op.or]: [{ email: emailOrIdentity }, { identityNumber: emailOrIdentity }] 
+      where: {
+        [Op.or]: [
+          { email: emailOrIdentity },
+          { identityNumber: emailOrIdentity },
+        ],
       },
     });
-    
+
     if (!user) {
-      return res.status(401).json({ message: "Geçersiz email/TCKN veya şifre." });
+      return res
+        .status(401)
+        .json({ message: "Geçersiz email/TCKN veya şifre." });
     }
 
     const isPasswordValid = await bcryptjs.compare(password, user.password);
     if (!emailOrIdentity || !isPasswordValid) {
-      return res.status(400).json({ message: "Geçersiz email/TCKN veya şifre." });
+      return res
+        .status(400)
+        .json({ message: "Geçersiz email/TCKN veya şifre." });
     }
-
-   
-
-  
 
     if (user.verificationCode) {
-      return res.status(403).json({ message: "Hesabınızı aktifleştirmek için e-posta adresinize gönderilen doğrulama kodunu girmeniz gerekmektedir." });
+      return res
+        .status(403)
+        .json({
+          message:
+            "Hesabınızı aktifleştirmek için e-posta adresinize gönderilen doğrulama kodunu girmeniz gerekmektedir.",
+        });
     }
 
-    const userAddress = await UserAddress.findOne({ where: { userId: user.id } });
+    const userAddress = await UserAddress.findOne({
+      where: { userId: user.id },
+    });
     const cityId = userAddress ? userAddress.cityId : null;
 
-    const response = await axios.post(`${process.env.AUTH_SERVICE_URL}/api/auths/generate`, {
-      email: user.email,
-      hasPaidBalance: user.hasPaidBalance,
-      userId:user.id,
-      cityId: cityId,
-    });
+    const response = await axios.post(
+      `${process.env.AUTH_SERVICE_URL}/api/auths/generate`,
+      {
+        email: user.email,
+        hasPaidBalance: user.hasPaidBalance,
+        userId: user.id,
+        cityId: cityId,
+      }
+    );
 
     res.status(200).json({ token: response.data.token });
   } catch (error) {
     console.error("Authentication Error: ", error);
 
     if (error.response) {
-      return res.status(error.response.status).json({ message: error.response.data.message || "Giriş sırasında hata oluştu" });
+      return res
+        .status(error.response.status)
+        .json({
+          message: error.response.data.message || "Giriş sırasında hata oluştu",
+        });
     } else if (error.request) {
-      return res.status(500).json({ message: "AUTH_SERVICE'e istek atılırken bir sorun oluştu." });
+      return res
+        .status(500)
+        .json({ message: "AUTH_SERVICE'e istek atılırken bir sorun oluştu." });
     } else {
-      return res.status(500).json({ message: "Giriş sırasında beklenmedik bir hata oluştu." });
+      return res
+        .status(500)
+        .json({ message: "Giriş sırasında beklenmedik bir hata oluştu." });
     }
   }
 };
@@ -156,8 +208,11 @@ const authanticateUser = async (req, res) => {
 const verifyCodeAndActivate = async (emailOrIdentity, code) => {
   try {
     const user = await User.findOne({
-      where: { 
-        [Op.or]: [{ email: emailOrIdentity }, { identityNumber: emailOrIdentity }] 
+      where: {
+        [Op.or]: [
+          { email: emailOrIdentity },
+          { identityNumber: emailOrIdentity },
+        ],
       },
     });
 
@@ -215,26 +270,36 @@ const getUserByIdentityNumber = async (identityNumber) => {
     throw new Error("Kullanıcı bilgileri getirilirken bir hata oluştu.");
   }
 };
-const getUserWithAdress=async(userId)=>{
+const getUserWithAdress = async (userId) => {
   try {
     // Kullanıcıyı ID'ye göre getir
-    const user = await User.findByPk(userId); 
+    const user = await User.findByPk(userId);
     if (!user) {
       throw new Error("Kullanıcı bulunamadı");
     }
 
     // Kullanıcı adresini almak için address-service'e istek gönder
-    const userAddressResponse = await axios.get(`${process.env.ADDRESS_SERVICE_URL}/api/userAdress/${userId}`);
+    const userAddressResponse = await axios.get(
+      `${process.env.ADDRESS_SERVICE_URL}/api/userAdress/${userId}`
+    );
     const userAddress = userAddressResponse.data;
 
     // Kullanıcı bilgileri ve adres bilgilerini birleştirerek döndür
     return {
       ...user.toJSON(), // Kullanıcı bilgileri
-      address: userAddress || null // Adres bilgisi
+      address: userAddress || null, // Adres bilgisi
     };
   } catch (error) {
     throw new Error("Kullanıcı bilgileri getirilirken bir hata oluştu.");
   }
 };
 
-module.exports = { registerUser, authanticateUser, getUsers, getUserById, verifyCodeAndActivate, getUserByIdentityNumber,getUserWithAdress };
+module.exports = {
+  registerUser,
+  authanticateUser,
+  getUsers,
+  getUserById,
+  verifyCodeAndActivate,
+  getUserByIdentityNumber,
+  getUserWithAdress,
+};

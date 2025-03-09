@@ -10,9 +10,7 @@ const Group = sequelize.define("Group", {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  createdBy: { type: DataTypes.STRING,
-    allowNull: false, },
+  createdBy: { type: DataTypes.STRING, allowNull: false },
 });
-
 
 module.exports = Group;

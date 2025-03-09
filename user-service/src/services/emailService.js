@@ -1,12 +1,12 @@
 const nodemailer = require("nodemailer");
-require('dotenv').config();
+require("dotenv").config();
 
 const transporter = nodemailer.createTransport({
   service: "gmail", // SMTP servis sağlayıcısı
   auth: {
-    user: process.env.EMAIL_USER,  // E-posta adresi
-    pass: process.env.EMAIL_PASS   // E-posta şifresi
-  }
+    user: process.env.EMAIL_USER, // E-posta adresi
+    pass: process.env.EMAIL_PASS, // E-posta şifresi
+  },
 });
 
 const sendVerificationEmail = async (to, code) => {
@@ -15,7 +15,7 @@ const sendVerificationEmail = async (to, code) => {
     to,
     subject: "Hesap Onayı",
     text: `Hesabınızı onaylamak için lütfen şu kodu girin: ${code}`,
-    html: `<p>Hesabınızı onaylamak için lütfen şu kodu girin: <strong>${code}</strong></p>`
+    html: `<p>Hesabınızı onaylamak için lütfen şu kodu girin: <strong>${code}</strong></p>`,
   };
 
   try {
@@ -32,7 +32,7 @@ const sendPasswordResetEmail = async (to, resetLink) => {
     to,
     subject: "Şifre Sıfırlama",
     text: `Şifrenizi sıfırlamak için lütfen şu linki kullanın: ${resetLink}`,
-    html: `<p>Şifrenizi sıfırlamak için lütfen şu linki kullanın: <a href="${resetLink}">Şifreyi sıfırla</a></p>`
+    html: `<p>Şifrenizi sıfırlamak için lütfen şu linki kullanın: <a href="${resetLink}">Şifreyi sıfırla</a></p>`,
   };
 
   try {
@@ -45,5 +45,5 @@ const sendPasswordResetEmail = async (to, resetLink) => {
 
 module.exports = {
   sendVerificationEmail,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
 };

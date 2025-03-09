@@ -1,4 +1,4 @@
-const Option = require("../models/Option"); 
+const Option = require("../models/Option");
 const axios = require("axios");
 
 // Yeni bir seçenek oluştur
@@ -8,10 +8,19 @@ const createOption = async (req, res) => {
     return res.status(401).json({ message: "Authorization token is missing" });
   }
 
-  const { optionName, optionImgUrl, optionDescription, color, electionId, userId } = req.body;
+  const {
+    optionName,
+    optionImgUrl,
+    optionDescription,
+    color,
+    electionId,
+    userId,
+  } = req.body;
 
   if (!optionName || !electionId || !userId) {
-    return res.status(400).json({ message: "Option name, election ID, and user ID are required." });
+    return res
+      .status(400)
+      .json({ message: "Option name, election ID, and user ID are required." });
   }
 
   try {
@@ -20,21 +29,31 @@ const createOption = async (req, res) => {
     console.log("Authenticated User:", user);
 
     if (!user || !user.email) {
-      return res.status(403).json({ message: "Access denied: Only businesses can create options" });
+      return res
+        .status(403)
+        .json({ message: "Access denied: Only businesses can create options" });
     }
 
     // Seçimi doğrula
     const election = await validateElection(electionId, token);
     if (!election) {
-      return res.status(404).json({ message: "Election not found or not valid." });
+      return res
+        .status(404)
+        .json({ message: "Election not found or not valid." });
     }
 
     if (election.createdBy !== user.email) {
-      return res.status(403).json({ message: "You are not authorized to add options to this election" });
+      return res
+        .status(403)
+        .json({
+          message: "You are not authorized to add options to this election",
+        });
     }
     const isValidUser = await validateUser(userId);
     if (!isValidUser) {
-      return res.status(400).json({ message: "Invalid user ID. No such user exists." });
+      return res
+        .status(400)
+        .json({ message: "Invalid user ID. No such user exists." });
     }
 
     // userId belirleme mantığı
@@ -49,11 +68,19 @@ const createOption = async (req, res) => {
 
     // Eğer seçimde daha önce eklenen seçenekler varsa, onların türünü kontrol et
     if (existingOptions.length > 0) {
-      const existingUserType = existingOptions[0].userId == 2 ? "non-human" : "human";
+      const existingUserType =
+        existingOptions[0].userId == 2 ? "non-human" : "human";
 
-      if ((userType === "non-human" && existingUserType !== "non-human") || 
-          (userType !== "non-human" && existingUserType === "non-human")) {
-        return res.status(400).json({ message: "Humans and non-humans cannot compete in the same election." });
+      if (
+        (userType === "non-human" && existingUserType !== "non-human") ||
+        (userType !== "non-human" && existingUserType === "non-human")
+      ) {
+        return res
+          .status(400)
+          .json({
+            message:
+              "Humans and non-humans cannot compete in the same election.",
+          });
       }
     }
     // Option verisini oluştur
@@ -78,8 +105,6 @@ const createOption = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-
-
 
 // Kullanıcıyı token ile doğrula
 const authenticateUser = async (token) => {
@@ -131,7 +156,8 @@ const getOptionsByElectionId = async (electionId) => {
 // Seçeneğe oy ekle
 const incrementVoteCount = async (req, res) => {
   const { optionId } = req.params;
-  if (!optionId) return res.status(400).json({ message: "Option ID is required." });
+  if (!optionId)
+    return res.status(400).json({ message: "Option ID is required." });
 
   try {
     const option = await Option.findOne({ where: { id: optionId } });
@@ -140,10 +166,21 @@ const incrementVoteCount = async (req, res) => {
     option.voteCount += 1;
     await option.save();
 
-    res.status(200).json({ message: "Vote count incremented successfully.", option });
+    res
+      .status(200)
+      .json({ message: "Vote count incremented successfully.", option });
   } catch (error) {
-    res.status(500).json({ message: "An error occurred while incrementing vote count." });
+    res
+      .status(500)
+      .json({ message: "An error occurred while incrementing vote count." });
   }
 };
 
-module.exports = { createOption, authenticateUser, validateElection, validateUser, getOptionsByElectionId, incrementVoteCount };
+module.exports = {
+  createOption,
+  authenticateUser,
+  validateElection,
+  validateUser,
+  getOptionsByElectionId,
+  incrementVoteCount,
+};

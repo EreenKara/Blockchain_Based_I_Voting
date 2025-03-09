@@ -57,4 +57,3 @@ module.exports = { generateToken, validateToken };
 //     throw new Error("Token doğrulama başarısız.");
 //   }
 // };
-

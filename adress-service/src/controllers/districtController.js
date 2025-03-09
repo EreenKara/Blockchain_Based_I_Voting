@@ -1,38 +1,36 @@
 const {
-  createDistrict,getDistrictListAll,getDistrictById
-
+  createDistrict,
+  getDistrictListAll,
+  getDistrictById,
 } = require("../services/districtService");
 
-const createDistrictController=async (req,res)=> {
-  try{
-    await createDistrict(req,res);
-
-  }catch(err){
-    res.status(500).json({message:"an error occured while creating the district"});
-
-  }
-};
-const getDistrictList=async(req,res)=>{
-
-  try{
-    const districts =await getDistrictListAll();
-    res.status(200).json({districts})
-  }catch(error){
-    res.status(500).json({error:error.message});
-  }
-};
-const getDistrictByIdController=async(req,res)=>{
-  const {id}=req.params;
+const createDistrictController = async (req, res) => {
   try {
-  
-    const districts=await getDistrictById(id);
-    res.status(200).json({districts})
-  }catch (error){
-    res.status(500).json({error:error.message});
+    await createDistrict(req, res);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "an error occured while creating the district" });
+  }
+};
+const getDistrictList = async (req, res) => {
+  try {
+    const districts = await getDistrictListAll();
+    res.status(200).json({ districts });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+const getDistrictByIdController = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const districts = await getDistrictById(id);
+    res.status(200).json({ districts });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
 // const DistrictController = {
-
 
 //   async getDistrictById(req, res) {
 //     try {
@@ -49,21 +47,21 @@ const getDistrictByIdController=async(req,res)=>{
 //   async createDistrict(req, res) {
 //     try {
 //       console.log("Controller - Gelen Veriler:", req.body);
-  
+
 //       // Eğer name içinde bir obje varsa, düzelt
 //       if (typeof req.body.name === "object") {
 //         req.body.name = req.body.name.name;
 //       }
-  
+
 //       const { name, cityId } = req.body;
-  
+
 //       console.log("Controller - Düzeltilmiş name:", name);
 //       console.log("Controller - Düzeltilmiş cityId:", cityId);
-  
+
 //       if (!name || !cityId) {
 //         return res.status(400).json({ message: "Name and cityId are required" });
 //       }
-  
+
 //       const district = await DistrictService.createDistrict(name, cityId);
 //       return res.status(201).json(district);
 //     } catch (error) {
@@ -97,4 +95,8 @@ const getDistrictByIdController=async(req,res)=>{
 //   }
 // };
 
-module.exports = {createDistrictController,getDistrictList,getDistrictByIdController};
+module.exports = {
+  createDistrictController,
+  getDistrictList,
+  getDistrictByIdController,
+};

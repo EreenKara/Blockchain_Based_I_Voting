@@ -1,7 +1,9 @@
-const express=require("express");
-const router=express.Router();
-const {createElectionAdressController}=require("../controllers/electionAdressController");
+const express = require("express");
+const router = express.Router();
+const {
+  createElectionAdressController,
+} = require("../controllers/electionAdressController");
 
-router.post("/create",createElectionAdressController);
+router.post("/create", createElectionAdressController);
 
-module.exports=router;
+module.exports = router;

@@ -3,14 +3,21 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const generateToken = (req, res) => {
-  const { email,hasPaidBalance,userId } = req.body;
-  if (!email && !hasPaidBalance&&!userId) {
+  const { email, hasPaidBalance, userId } = req.body;
+  if (!email && !hasPaidBalance && !userId) {
     return res.status(400).json({ message: "Email is required" });
   }
-  const token = jwt.sign({ 
-    email, hasPaidBalance,userId}, process.env.JWT_SECRET, {
-    expiresIn: "1h",
-  });
+  const token = jwt.sign(
+    {
+      email,
+      hasPaidBalance,
+      userId,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "1h",
+    }
+  );
   res.json({ token });
 };
 

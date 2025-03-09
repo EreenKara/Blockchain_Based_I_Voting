@@ -1,4 +1,4 @@
-const Image=require("../models/Image"); // Image modelini dahil et
+const Image = require("../models/Image"); // Image modelini dahil et
 
 // URL üzerinden resim kaydetme
 const uploadImageUrl = async (req, res) => {
@@ -7,7 +7,7 @@ const uploadImageUrl = async (req, res) => {
     const { imageUrl } = req.body;
 
     if (!imageUrl) {
-      return res.status(400).json({ message: 'Image URL is required' });
+      return res.status(400).json({ message: "Image URL is required" });
     }
 
     // Resim URL'sini veritabanına kaydet
@@ -21,7 +21,9 @@ const uploadImageUrl = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: "Error adding image URL", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error adding image URL", error: error.message });
   }
 };
 

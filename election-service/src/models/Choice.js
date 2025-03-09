@@ -1,5 +1,5 @@
-const {Sequelize,DataTypes}=require("sequelize");
-const sequelize=require("../config/database");
+const { Sequelize, DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
 
 const Choice = sequelize.define("Choice", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -8,7 +8,7 @@ const Choice = sequelize.define("Choice", {
   parentChoiceId: {
     type: DataTypes.INTEGER,
     allowNull: true, // Bir parentChoice varsa belirtilmeli
-    references: { model: "Choices", key: "id" }
+    references: { model: "Choices", key: "id" },
   },
   // Seçeneğin türünü belirtmek için 'type' ekliyoruz (blockchain veya database)
   type: {
@@ -19,11 +19,7 @@ const Choice = sequelize.define("Choice", {
   category: {
     type: DataTypes.STRING,
     allowNull: true,
-  }
+  },
 });
 
-
-
-
-
-module.exports=Choice;
+module.exports = Choice;

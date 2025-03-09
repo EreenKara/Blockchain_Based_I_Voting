@@ -1,5 +1,7 @@
-const {sendPasswordResetEmail,sendVerificationEmail} = require("../services/emailService");
-
+const {
+  sendPasswordResetEmail,
+  sendVerificationEmail,
+} = require("../services/emailService");
 
 const sendVerificationEmailCt = async (req, res) => {
   const { email, code } = req.body;
@@ -23,5 +25,5 @@ const sendPasswordResetEmailCt = async (req, res) => {
 
 module.exports = {
   sendVerificationEmailCt,
-  sendPasswordResetEmailCt
+  sendPasswordResetEmailCt,
 };

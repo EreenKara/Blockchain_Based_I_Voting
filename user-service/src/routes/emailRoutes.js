@@ -1,5 +1,8 @@
 const express = require("express");
-const { sendVerificationEmailCt,sendPasswordResetEmailCt} = require("../controllers/emailController");
+const {
+  sendVerificationEmailCt,
+  sendPasswordResetEmailCt,
+} = require("../controllers/emailController");
 const router = express.Router();
 
 // Kullanıcı onayı için e-posta gönderme

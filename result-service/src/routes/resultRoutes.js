@@ -1,5 +1,8 @@
 const express = require("express");
-const { calculateResultController, getResultController } = require("../controllers/resultController");
+const {
+  calculateResultController,
+  getResultController,
+} = require("../controllers/resultController");
 
 const router = express.Router();
 

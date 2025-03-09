@@ -1,4 +1,8 @@
-const { getElectionWithOptions, castVote, getResults } = require("../services/voteService");
+const {
+  getElectionWithOptions,
+  castVote,
+  getResults,
+} = require("../services/voteService");
 
 const getElection = async (req, res) => {
   const { electionId } = req.params; // URL'den seçim ID'si alınır
@@ -14,19 +18,22 @@ const getElection = async (req, res) => {
     return res.status(200).json(electionWithOptions); // Cevap başarıyla döndürülür
   } catch (error) {
     console.error("Error fetching election details:", error.message);
-    return res.status(400).json({ error: "An error occurred while fetching election details." });
+    return res
+      .status(400)
+      .json({ error: "An error occurred while fetching election details." });
   }
 };
 
 const vote = async (req, res) => {
-  
   try {
     // Oy verme işlemi VoteService üzerinden gerçekleştirilir
     await castVote(req, res); // Request ve response nesneleri doğrudan geçilir
     // İşlem başarılı, cevabı burada dönmeye gerek yok çünkü castVote içinde yanıt dönülecek
   } catch (error) {
     console.error("Error casting vote:", error.message);
-    return res.status(500).json({ error: "An error occurred while casting the vote." });
+    return res
+      .status(500)
+      .json({ error: "An error occurred while casting the vote." });
   }
 };
 
@@ -43,7 +50,9 @@ const results = async (req, res) => {
     return res.status(200).json({ results: electionResults });
   } catch (error) {
     console.error("Error fetching election results:", error.message);
-    return res.status(500).json({ error: "An error occurred while fetching election results." });
+    return res
+      .status(500)
+      .json({ error: "An error occurred while fetching election results." });
   }
 };
 

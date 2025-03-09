@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes } = require("sequelize");
-const sequelize = require("../config/database");  // Veritabanı bağlantısını içe aktar
+const sequelize = require("../config/database"); // Veritabanı bağlantısını içe aktar
 
 const City = sequelize.define("City", {
   name: { type: DataTypes.STRING, allowNull: false },
