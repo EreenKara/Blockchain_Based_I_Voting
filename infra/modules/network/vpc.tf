@@ -2,7 +2,7 @@ resource "aws_vpc" "main" {
   cidr_block = var.vpc_cidr
 
   tags = {
-    "Name" = "i-vote-vpc"
+    "Name" = "ivote-vpc"
   }
 }
 
@@ -14,19 +14,7 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
   tags = {
-    "Name" = "i-vote-public-subnet-${count.index + 1}"
-  }
-}
-
-resource "aws_subnet" "private" {
-  count                   = 2
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = var.private_cidrs[count.index]
-  availability_zone       = var.azs[count.index]
-  map_public_ip_on_launch = false
-
-  tags = {
-    "Name" = "i-vote-private-subnet-${count.index + 1}"
+    "Name" = "ivote-public-subnet-${count.index + 1}"
   }
 }
 
@@ -46,7 +34,7 @@ resource "aws_route_table" "public" {
     gateway_id = aws_internet_gateway.ivote_igw.id
   }
   tags = {
-    Name = "ivote-internet-route-table"
+    Name = "ivote-internet-rt"
   }
 }
 

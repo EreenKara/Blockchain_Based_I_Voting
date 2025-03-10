@@ -37,7 +37,7 @@ resource "aws_security_group" "alb_sg" {
   }
 
   tags = {
-    Name = "alb-security-group"
+    Name = "ivote-alb-sec-group"
   }
 }
 
@@ -71,6 +71,10 @@ resource "aws_lb_target_group" "user_service" {
     timeout             = 5
     healthy_threshold   = 2
     unhealthy_threshold = 2
+  }
+
+  tags = {
+    Name = "ivote-user-service-tg"
   }
 }
 

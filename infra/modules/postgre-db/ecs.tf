@@ -6,7 +6,7 @@ resource "aws_security_group" "postgre_sg" {
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = var.private_cidrs # internal access only
+    cidr_blocks = [var.vpc_cidr]
   }
 
   egress {
@@ -15,16 +15,17 @@ resource "aws_security_group" "postgre_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = {
+    Name = "ivote-postgre-sg"
+  }
 }
 
 resource "aws_ebs_volume" "postgre_ebs" {
-  availability_zone = var.azs[1] # same with launc template's
-  size              = 10
+  count             = 2
+  availability_zone = var.azs[count.index] # for each AZ
+  size              = 5
   type              = "gp2"
-
-  tags = {
-    Name = "postgre-ebs-volume"
-  }
 }
 
 resource "aws_launch_template" "ecs_lt" {
@@ -36,10 +37,6 @@ resource "aws_launch_template" "ecs_lt" {
     associate_public_ip_address = false
     security_groups             = [aws_security_group.postgre_sg.id]
   }
-
-  #placement {
-  #  availability_zone = var.azs[1]
-  #}
 
   block_device_mappings {
     device_name = "/dev/xvdf" # ebs volume mount path
@@ -63,10 +60,25 @@ resource "aws_launch_template" "ecs_lt" {
   echo "/dev/xvdf /mnt/ebs ext4 defaults,nofail 0 2" >> /etc/fstab
   EOF
   )
+
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      Name = "ivote-postgre-instance"
+    }
+  }
+
+  tag_specifications {
+    resource_type = "volume"
+    tags = {
+      Name = "ivote-postgre-volume"
+    }
+  }
+
 }
 
 resource "aws_autoscaling_group" "postgre_asg" {
-  desired_capacity    = 1
+  desired_capacity    = 2
   max_size            = 2
   min_size            = 1
   vpc_zone_identifier = var.subnet_ids
@@ -74,6 +86,12 @@ resource "aws_autoscaling_group" "postgre_asg" {
   launch_template {
     id      = aws_launch_template.ecs_lt.id
     version = aws_launch_template.ecs_lt.latest_version
+  }
+
+  tag {
+    key                 = "Name"
+    value               = "ivote-postgre-asg"
+    propagate_at_launch = false
   }
 }
 
@@ -84,7 +102,7 @@ resource "aws_cloudwatch_log_group" "postgre_logs" {
 
 resource "aws_ecs_task_definition" "postgre" {
   family                   = "ivote-postgre"
-  network_mode             = "awsvpc"
+  network_mode             = "bridge"
   requires_compatibilities = ["EC2"]
   cpu                      = "512"
   memory                   = "768"
@@ -107,8 +125,9 @@ resource "aws_ecs_task_definition" "postgre" {
 
     portMappings = [
       {
-        containerPort = 5432
-        hostPort      = 5432
+        containerPort = 5432,
+        hostPort      = 5432,
+        protocol      = "tcp"
       }
     ]
 
@@ -135,19 +154,19 @@ resource "aws_ecs_task_definition" "postgre" {
 }
 
 resource "aws_ecs_service" "postgre_service" {
-  name            = "postgres-service"
-  cluster         = var.ecs_cluster_id
-  task_definition = aws_ecs_task_definition.postgre.arn
-  desired_count   = 2
-
-  network_configuration {
-    subnets         = var.subnet_ids
-    security_groups = [aws_security_group.postgre_sg.id]
-  }
+  name                    = "postgres-service"
+  cluster                 = var.ecs_cluster_id
+  task_definition         = aws_ecs_task_definition.postgre.arn
+  desired_count           = 2
+  enable_ecs_managed_tags = false
 
   capacity_provider_strategy {
     capacity_provider = aws_ecs_capacity_provider.postgre_cp.name
     weight            = 1
+  }
+
+  tags = {
+    Name = "ivote-postgre-ecs-service"
   }
 }
 
@@ -163,5 +182,9 @@ resource "aws_ecs_capacity_provider" "postgre_cp" {
       instance_warmup_period    = 60
     }
     managed_termination_protection = "DISABLED"
+  }
+
+  tags = {
+    Name = "ivote-postgre-cp"
   }
 }

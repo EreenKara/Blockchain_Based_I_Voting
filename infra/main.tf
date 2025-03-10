@@ -42,10 +42,10 @@ module "postgre_db" {
 
   aws_region = var.aws_region
 
-  azs           = module.network.azs
-  vpc_id        = module.network.vpc_id
-  subnet_ids    = module.network.private_subnet_ids
-  private_cidrs = module.network.private_cidrs
+  azs        = module.network.azs
+  vpc_id     = module.network.vpc_id
+  vpc_cidr   = module.network.vpc_cidr
+  subnet_ids = module.network.public_subnet_ids
 
   ecs_cluster_id   = local.ecs_cluster_id
   ecs_cluster_name = local.ecs_cluster_name
@@ -62,7 +62,7 @@ module "user_service" {
 
   vpc_id                        = module.network.vpc_id
   vpc_cidr                      = module.network.vpc_cidr
-  subnet_ids                    = module.network.private_subnet_ids
+  subnet_ids                    = module.network.public_subnet_ids
   user_service_target_group_arn = module.network.user_service_target_group_arn
 
   aws_region             = var.aws_region

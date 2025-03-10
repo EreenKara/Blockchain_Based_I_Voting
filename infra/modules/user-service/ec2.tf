@@ -22,17 +22,30 @@ resource "aws_launch_template" "user_service" {
   iam_instance_profile {
     name = aws_iam_instance_profile.ecs_instance_profile.name
   }
+
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      Name = "ivote-user-service-instance"
+    }
+  }
 }
 
 resource "aws_autoscaling_group" "user_service_asg" {
-  desired_capacity    = 1
-  min_size            = 1
+  vpc_zone_identifier = var.subnet_ids
+  desired_capacity    = 2
   max_size            = 2
-  vpc_zone_identifier = var.subnet_ids # private subnets
+  min_size            = 1
 
   launch_template {
     id      = aws_launch_template.user_service.id
     version = aws_launch_template.user_service.latest_version
+  }
+
+  tag {
+    key                 = "Name"
+    value               = "ivote-user-service-asg"
+    propagate_at_launch = false
   }
 }
 
@@ -42,10 +55,24 @@ resource "aws_security_group" "user_service_sg" {
   vpc_id      = var.vpc_id
 
   ingress {
+    from_port   = 80 # http
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 443 # https
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     from_port   = 5004
     to_port     = 5004
     protocol    = "tcp"
-    cidr_blocks = [var.vpc_cidr] # allow inbound within vpc, to port 5004
+    cidr_blocks = ["0.0.0.0/0"] # allow inbound only (var.vpc_cidr)
   }
 
   egress {

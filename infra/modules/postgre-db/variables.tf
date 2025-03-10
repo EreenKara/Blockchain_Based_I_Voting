@@ -1,8 +1,8 @@
 variable "aws_region" {}
 
 variable "vpc_id" {}
+variable "vpc_cidr" {}
 variable "subnet_ids" {}
-variable "private_cidrs" {}
 variable "azs" {}
 
 variable "ecs_cluster_id" {}

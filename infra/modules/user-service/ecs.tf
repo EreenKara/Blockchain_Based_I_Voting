@@ -5,7 +5,7 @@ resource "aws_cloudwatch_log_group" "user_service_logs" {
 
 resource "aws_ecs_task_definition" "user_service_task" {
   family                   = "user-service-task"
-  network_mode             = "awsvpc"
+  network_mode             = "bridge"
   requires_compatibilities = ["EC2"]
   cpu                      = "512"
   memory                   = "768"
@@ -50,6 +50,7 @@ resource "aws_ecs_task_definition" "user_service_task" {
         protocol      = "tcp"
       }
     ]
+
     logConfiguration = {
       logDriver = "awslogs"
       options = {
@@ -69,15 +70,13 @@ resource "aws_ecs_service" "user_service_ecs_service" {
   desired_count           = 2
   enable_ecs_managed_tags = false
 
-  network_configuration {
-    subnets          = var.subnet_ids
-    security_groups  = [aws_security_group.user_service_sg.id]
-    assign_public_ip = false
-  }
-
   capacity_provider_strategy {
     capacity_provider = aws_ecs_capacity_provider.user_service_cp.name
     weight            = 1
+  }
+
+  tags = {
+    Name = "ivote-user-service-ecs-service"
   }
 }
 
@@ -94,5 +93,8 @@ resource "aws_ecs_capacity_provider" "user_service_cp" {
       instance_warmup_period    = 60 # wait 1 min for ec2 to warmup 
     }
     managed_termination_protection = "DISABLED"
+  }
+  tags = {
+    Name = "ivote-user-service-cp"
   }
 }
