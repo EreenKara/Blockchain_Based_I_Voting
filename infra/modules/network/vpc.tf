@@ -7,14 +7,35 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_subnet" "public" {
-  count                   = 2
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = var.public_cidrs[count.index]
-  availability_zone       = var.azs[count.index]
+  cidr_block              = var.public_cidr
+  availability_zone       = var.az1
   map_public_ip_on_launch = true
 
   tags = {
-    "Name" = "ivote-public-subnet-${count.index + 1}"
+    "Name" = "ivote-public-subnet"
+  }
+}
+
+resource "aws_subnet" "private1" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = var.private_cidr1
+  availability_zone       = var.az1
+  map_public_ip_on_launch = false
+
+  tags = {
+    "Name" = "ivote-private-subnet-1"
+  }
+}
+
+resource "aws_subnet" "private2" { # second private subnet, RDS requires it
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = var.private_cidr2
+  availability_zone       = var.az2
+  map_public_ip_on_launch = false
+
+  tags = {
+    "Name" = "ivote-private-subnet-2"
   }
 }
 
@@ -39,7 +60,6 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route_table_association" "public" {
-  count          = 2
-  subnet_id      = aws_subnet.public[count.index].id
+  subnet_id      = aws_subnet.public.id
   route_table_id = aws_route_table.public.id
 }

@@ -62,39 +62,17 @@ resource "aws_ecs_task_definition" "user_service_task" {
   }])
 }
 
-# bind all with a service
+
 resource "aws_ecs_service" "user_service_ecs_service" {
   name                    = "user-service-ecs-service"
   cluster                 = var.ecs_cluster_id
   task_definition         = aws_ecs_task_definition.user_service_task.arn
-  desired_count           = 2
+  desired_count           = 1
   enable_ecs_managed_tags = false
-
-  capacity_provider_strategy {
-    capacity_provider = aws_ecs_capacity_provider.user_service_cp.name
-    weight            = 1
-  }
+  launch_type             = "EC2" # no cap provider
 
   tags = {
     Name = "ivote-user-service-ecs-service"
   }
 }
 
-resource "aws_ecs_capacity_provider" "user_service_cp" {
-  name = "user-service-cap-provider"
-
-  auto_scaling_group_provider {
-    auto_scaling_group_arn = aws_autoscaling_group.user_service_asg.arn
-    managed_scaling {
-      status                    = "ENABLED"
-      target_capacity           = 75
-      minimum_scaling_step_size = 1
-      maximum_scaling_step_size = 2
-      instance_warmup_period    = 60 # wait 1 min for ec2 to warmup 
-    }
-    managed_termination_protection = "DISABLED"
-  }
-  tags = {
-    Name = "ivote-user-service-cp"
-  }
-}

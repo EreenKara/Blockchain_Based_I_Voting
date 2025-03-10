@@ -16,14 +16,7 @@ resource "aws_ecs_cluster" "ivote_cluster" {
   name = "i-vote-ecs-cluster"
 }
 
-resource "aws_ecs_cluster_capacity_providers" "ivote_cluster_cps" {
-  cluster_name = aws_ecs_cluster.ivote_cluster.name
-
-  capacity_providers = [
-    module.postgre_db.postgre_cp_name,
-    module.user_service.user_service_cp_name
-  ]
-}
+#resource "aws_ecs_cluster_capacity_providers" "ivote_cluster_cps" {}
 
 # computed values
 locals {
@@ -35,22 +28,17 @@ locals {
 module "network" {
   source = "./modules/network"
 
+  user_service_public_ip = module.user_service.user_service_public_ip
 }
 
 module "postgre_db" {
   source = "./modules/postgre-db"
 
-  aws_region = var.aws_region
-
-  azs        = module.network.azs
-  vpc_id     = module.network.vpc_id
-  vpc_cidr   = module.network.vpc_cidr
-  subnet_ids = module.network.public_subnet_ids
-
-  ecs_cluster_id   = local.ecs_cluster_id
-  ecs_cluster_name = local.ecs_cluster_name
-  ecs_ami_id       = local.ecs_ami_id
-  instance_type    = var.instance_type
+  vpc_id             = module.network.vpc_id
+  vpc_cidr           = module.network.vpc_cidr
+  az                 = module.network.az1
+  private_subnet1_id = module.network.private_subnet1_id
+  private_subnet2_id = module.network.private_subnet2_id
 
   db_name     = var.db_name
   db_username = var.db_username
@@ -60,10 +48,9 @@ module "postgre_db" {
 module "user_service" {
   source = "./modules/user-service"
 
-  vpc_id                        = module.network.vpc_id
-  vpc_cidr                      = module.network.vpc_cidr
-  subnet_ids                    = module.network.public_subnet_ids
-  user_service_target_group_arn = module.network.user_service_target_group_arn
+  vpc_id           = module.network.vpc_id
+  vpc_cidr         = module.network.vpc_cidr
+  public_subnet_id = module.network.public_subnet_id
 
   aws_region             = var.aws_region
   instance_type          = var.instance_type
@@ -73,7 +60,7 @@ module "user_service" {
   ecs_cluster_name = local.ecs_cluster_name
   ecs_ami_id       = local.ecs_ami_id
 
-  db_host     = module.postgre_db.postgre_dns_name
+  db_host     = module.postgre_db.db_endpoint
   db_name     = var.db_name
   db_username = var.db_username
   db_password = var.db_password

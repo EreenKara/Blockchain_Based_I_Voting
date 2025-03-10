@@ -4,6 +4,8 @@ resource "aws_iam_instance_profile" "ecs_instance_profile" {
 }
 
 resource "aws_launch_template" "user_service" {
+  depends_on = [var.postgre_db_instance]
+
   name                   = "user-service-ec2-launch-template"
   image_id               = var.ecs_ami_id
   instance_type          = var.instance_type
@@ -32,9 +34,9 @@ resource "aws_launch_template" "user_service" {
 }
 
 resource "aws_autoscaling_group" "user_service_asg" {
-  vpc_zone_identifier = var.subnet_ids
-  desired_capacity    = 2
-  max_size            = 2
+  vpc_zone_identifier = [var.public_subnet_id]
+  desired_capacity    = 1
+  max_size            = 1 # only one instance
   min_size            = 1
 
   launch_template {
@@ -46,6 +48,15 @@ resource "aws_autoscaling_group" "user_service_asg" {
     key                 = "Name"
     value               = "ivote-user-service-asg"
     propagate_at_launch = false
+  }
+}
+
+data "aws_instances" "user_service" {
+  depends_on = [aws_autoscaling_group.user_service_asg]
+
+  filter {
+    name   = "tag:Name"
+    values = ["ivote-user-service-instance"]
   }
 }
 
@@ -72,7 +83,7 @@ resource "aws_security_group" "user_service_sg" {
     from_port   = 5004
     to_port     = 5004
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # allow inbound only (var.vpc_cidr)
+    cidr_blocks = [var.vpc_cidr] # allow vpc only
   }
 
   egress {

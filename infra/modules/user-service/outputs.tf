@@ -1,3 +1,4 @@
-output "user_service_cp_name" {
-  value = aws_ecs_capacity_provider.user_service_cp.name
+output "user_service_public_ip" {
+  depends_on = [data.aws_instances.user_service]
+  value      = data.aws_instances.user_service.public_ips[0]
 }
