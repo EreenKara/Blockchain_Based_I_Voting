@@ -12,21 +12,21 @@ const electionAccessGroupsRoutes = require("./routes/electionAccessGroupsRoutes"
 require("dotenv").config(); // .env dosyasını yüklemek için
 const app = express();
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  handler: (req, res, next) => {
-    console.warn(
-      `🚨 Rate limit aşıldı! IP: ${req.ip}, URL: ${req.originalUrl}`
-    );
-    res
-      .status(429)
-      .json({
-        message: "Çok fazla istek attınız, lütfen daha sonra tekrar deneyin.",
-      });
-  },
-});
-app.use(limiter);
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000,
+//   max: 5,
+//   handler: (req, res, next) => {
+//     console.warn(
+//       `🚨 Rate limit aşıldı! IP: ${req.ip}, URL: ${req.originalUrl}`
+//     );
+//     res
+//       .status(429)
+//       .json({
+//         message: "Çok fazla istek attınız, lütfen daha sonra tekrar deneyin.",
+//       });
+//   },
+// });
+// app.use(limiter);
 
 app.use(express.json());
 

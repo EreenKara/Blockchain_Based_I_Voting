@@ -138,6 +138,7 @@ const authanticateUser = async (req, res) => {
         .json({ message: "Email/TCKN ve şifre alanları zorunludur." });
     }
     const user = await User.findOne({
+      attributes:["id","email","identityNumber","password"],
       where: {
         [Op.or]: [
           { email: emailOrIdentity },
@@ -208,6 +209,7 @@ const authanticateUser = async (req, res) => {
 const verifyCodeAndActivate = async (emailOrIdentity, code) => {
   try {
     const user = await User.findOne({
+      attributes:["id","email","identityNumber"],
       where: {
         [Op.or]: [
           { email: emailOrIdentity },
@@ -249,7 +251,9 @@ const getUsers = async () => {
 
 const getUserById = async (userId) => {
   try {
-    const user = await User.findByPk(userId); // Kullanıcıyı ID'ye göre getir
+    const user = await User.findByPk(userId,{
+      attributes:["id","name","surname","username","phoneNumber","email","identityNumber"],
+    }); // Kullanıcıyı ID'ye göre getir
     if (!user) {
       throw new Error("Kullanıcı bulunamadı");
     }

@@ -116,22 +116,87 @@ const authenticateUser = async (token) => {
   }
 };
 
-const getAddressByUserId = async (userId) => {
+
+
+
+
+
+const getAddressByUserId = async (req, res) => {
   try {
-    // Kullanıcıya ait adresleri UserAdress modelinden al
+    const userId = req.params.id; // ID'yi URL'den al
+
+    if (!userId || isNaN(userId)) {
+      return res.status(400).json({ message: "Geçersiz userId" });
+    }
+
+    // Kullanıcının adres bilgilerini al
     const userAddress = await UserAdress.findOne({
-      where: { userId: userId },
+      where: { userId: parseInt(userId, 10) },
+      attributes: ["id", "buildingNumber", "cityId", "districtId", "neighbourhoodId"],
     });
 
     if (!userAddress) {
-      throw new Error("Address not found for this user");
+      return res.status(404).json({ message: "Bu kullanıcı için adres bulunamadı" });
     }
 
-    return userAddress;
+    const { cityId, districtId, neighbourhoodId } = userAddress;
+
+    console.log(`City ID: ${cityId}, District ID: ${districtId}, Neighbourhood ID: ${neighbourhoodId}`);
+
+    // Şehir, ilçe ve mahalle bilgilerini adres mikroservisinden al
+    let cityName = "Bilinmeyen Şehir";
+    let districtName = "Bilinmeyen İlçe";
+    let neighbourhoodName = "Bilinmeyen Mahalle";
+
+    try {
+      const cityResponse = await axios.get(`${process.env.ADDRESS_SERVICE_URL}/api/cities/getCityById/${cityId}`);
+      console.log("City Response:", cityResponse.data);
+      if (cityResponse.data && cityResponse.data.city && cityResponse.data.city.name) {
+        cityName = cityResponse.data.city.name;
+      }
+    } catch (error) {
+      console.error("City API Error:", error.message);
+    }
+
+    try {
+      const districtResponse = await axios.get(`${process.env.ADDRESS_SERVICE_URL}/api/districts/getDistrictById/${districtId}`);
+      console.log("District Response:", districtResponse.data);
+      if (districtResponse.data && districtResponse.data.districts && districtResponse.data.districts.name) {
+        districtName = districtResponse.data.districts.name;
+      }
+    } catch (error) {
+      console.error("District API Error:", error.message);
+    }
+
+    try {
+      const neighbourhoodResponse = await axios.get(`${process.env.ADDRESS_SERVICE_URL}/api/neighbourhoods/getNeighbourhoodById/${neighbourhoodId}`);
+      console.log("Neighbourhood Response:", neighbourhoodResponse.data);
+      if (neighbourhoodResponse.data && neighbourhoodResponse.data.neighboorhood && neighbourhoodResponse.data.neighboorhood.name) {
+        neighbourhoodName = neighbourhoodResponse.data.neighboorhood.name;
+      }
+    } catch (error) {
+      console.error("Neighbourhood API Error:", error.message);
+    }
+
+    // Sonuç formatı
+    const formattedAddress = {
+      id: userAddress.id,
+      city: cityName,
+      district: districtName,
+      neighbourhood: neighbourhoodName,
+      buildingNumber: userAddress.buildingNumber,
+    };
+
+    return res.json(formattedAddress);
   } catch (error) {
     console.error("Error fetching address for user:", error.message);
-    throw new Error("Error fetching address for user");
+    return res.status(500).json({ message: "Adres getirme hatası", error: error.message });
   }
 };
+
+
+
+
+
 
 module.exports = { createUserAdress, authenticateUser, getAddressByUserId };

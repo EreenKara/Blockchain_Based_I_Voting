@@ -14,7 +14,7 @@ const createGroup = async (req, res) => {
 
   try {
     const user = await authenticateUser(token);
-    if (!user || !user.email || !user.hasPaidBalance) {
+    if (!user || !user.email) {
       return res
         .status(403)
         .json({ message: "Yetkisiz erişim veya bakiye yetersiz." });
@@ -107,10 +107,13 @@ const getUsersInGroup = async (req, res) => {
 
   try {
     const group = await Group.findByPk(groupId, {
+      attributes:["id","name","description","createdBy"],
       include: [
         {
           model: User,
-          through: { model: UserGroup }, // ✅ Ara tabloyu açıkça belirtiyoruz
+          through: { model: UserGroup,
+            attributes:["id","userId","groupId"],
+           }, // ✅ Ara tabloyu açıkça belirtiyoruz
           attributes: ["id", "name", "email"],
         },
       ],

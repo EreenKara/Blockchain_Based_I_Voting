@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post("/addAccessGroupToElection", addAccessGroupToElectionController);
 router.get(
-  "/getGroupsWithAccessToElection/:electionId",
+  "/getGroupsWithAccessToElection/:electionId/groups",
   getGroupsWithAccessToElectionController
 );
 

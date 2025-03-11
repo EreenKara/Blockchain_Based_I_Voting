@@ -3,6 +3,7 @@ const { User } = require("../models/User");
 const Group = require("../models/Group");
 const ElectionAccessUsers = require("../models/ElectionAccessUsers");
 require("dotenv").config();
+const asyncHandler = require("../middlewares/asyncHandler");
 
 const addAccessUserToElection = async (electionId, userId, token) => {
   try {
@@ -78,47 +79,81 @@ const addAccessUserToElection = async (electionId, userId, token) => {
     return { success: false, message: error.message };
   }
 };
-const getUsersWithAccessToElection = async (electionId) => {
+const getUsersWithAccessToElection = async (electionId, page = 1, limit = 10) => {
   try {
-    // Seçimin olup olmadığını kontrol et
-    const response = await axios.get(
-      `${process.env.ELECTION_SERVICE_URL}/api/elections/${electionId}`
-    );
+      console.log(`📢 getUsersWithAccessToElection çağrıldı: electionId=${electionId}, page=${page}, limit=${limit}`);
 
-    if (!response || !response.data || !response.data.election) {
-      return { success: false, message: "Seçim bulunamadı." };
-    }
+      page = parseInt(page) || 1;
+      limit = parseInt(limit) || 10;
+      const offset = (page - 1) * limit; // ✅ Sayfalama için OFFSET hesaplandı
 
-    // Kullanıcıları getir
-    const users = await ElectionAccessUsers.findAll({
-      where: { electionId },
-      attributes: ["userId"],
-      include: [{ model: User, attributes: ["id", "name", "email"] }], // Sadece gerekli alanları al
-    });
+      console.log(`🔍 Sayfa Bilgileri: Page: ${page}, Limit: ${limit}, Offset: ${offset}`);
 
-    if (!users || users.length === 0) {
+      console.log(`📡 Seçim bilgisi çekiliyor...`);
+      const response = await axios.get(`${process.env.ELECTION_SERVICE_URL}/api/elections/${electionId}`);
+
+      if (!response || !response.data || !response.data.election) {
+          console.error("❌ Seçim bulunamadı veya API yanıtı hatalı!");
+          return { success: false, message: "Seçim bulunamadı veya API yanıtı hatalı." };
+      }
+
+      console.log(`✅ Seçim bulundu. Kullanıcılar çekiliyor... (Limit: ${limit}, Offset: ${offset})`);
+
+      const { count, rows } = await ElectionAccessUsers.findAndCountAll({
+          where: { electionId },
+          attributes: ["userId"],
+          include: [{ model: User, attributes: ["id", "name", "email"] }],
+          limit,
+          offset,
+          logging: console.log // ✅ SQL sorgusunu logla
+      });
+
+      console.log(`🔍 Kullanıcı erişim listesi alındı. Toplam Kullanıcı: ${count}, Dönen Veri: ${rows.length}`);
+
+      if (!rows || rows.length === 0) {
+          console.warn("⚠ Erişimi olan kullanıcı bulunamadı.");
+          return { success: false, message: "No users have access to this election." };
+      }
+
+      const formattedUsers = rows.map(u => ({
+          userId: u.userId,
+          id: u.User?.id || null,
+          name: u.User?.name || "Bilinmiyor",
+          email: u.User?.email || "Bilinmiyor",
+      }));
+
+      const totalPages = Math.ceil(count / limit);
+      const nextPage = page < totalPages ? page + 1 : null;
+      const prevPage = page > 1 ? page - 1 : null;
+
+      console.log(`✅ Sayfa: ${page}/${totalPages}, Kullanıcı Sayısı: ${count}`);
+
       return {
-        success: false,
-        message: "No users have access to this election.",
+          success: true,
+          message: "Erişime sahip kullanıcılar başarıyla getirildi.",
+          totalUsers: count,
+          totalPages,
+          currentPage: page,
+          nextPage,
+          prevPage,
+          data: formattedUsers
       };
-    }
 
-    return {
-      success: true,
-      message: "Erişime sahip kullanıcılar başarıyla getirildi.",
-      data: users,
-    };
   } catch (error) {
-    console.error(
-      "Error fetching users with access to election:",
-      error.message
-    );
-    return {
-      success: false,
-      message: error.message,
-    };
+      console.error("❌ Kullanıcıları getirirken hata oluştu:", error.message, error.stack);
+      return { 
+          success: false,
+          message: "Seçime erişimi olan kullanıcıları getirirken hata oluştu.", 
+          error: error.message 
+      };
   }
 };
+
+
+
+
+
+
 
 // Token doğrulama fonksiyonu
 const authenticateUser = async (token) => {

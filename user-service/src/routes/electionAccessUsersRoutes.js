@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post("/addAccessUserToElection", addAccessUserToElectionController);
 router.get(
-  "/getUsersWithAccessToElection/:electionId",
+  "/getUsersWithAccessToElection/:electionId/users",
   getUsersWithAccessToElectionController
 );
 

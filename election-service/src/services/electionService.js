@@ -59,7 +59,10 @@ const setElectionAccess = async (req, res) => {
         .json({ message: "Yetkisiz erişim veya bakiye yetersiz." });
     }
 
-    const election = await Election.findByPk(electionId);
+    const election = await Election.findByPk(electionId,{
+      attributes:["id","step","accessType"],
+    });
+    console.log(election);
     if (!election || election.step !== "step1") {
       return res
         .status(400)
@@ -170,7 +173,9 @@ const updateElectionAccess = async (req, res) => {
         .json({ message: "Yetkisiz erişim veya bakiye yetersiz." });
     }
 
-    const election = await Election.findByPk(electionId);
+    const election = await Election.findByPk(electionId,{
+      attributes:["id","step","createdBy"],
+    });
     if (!election || election.step !== "step2") {
       console.error("❌ Seçim bulunamadı veya yanlış aşamada:", electionId);
       return res
@@ -201,6 +206,7 @@ const updateElectionAccess = async (req, res) => {
           `${process.env.USER_SERVICE_URL}/api/ElectionAccesUsers/getUsersWithAccessToElection/${electionId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
+        
 
         console.log(
           "✅ Kullanıcı erişim kontrolü API cevabı:",
@@ -353,7 +359,9 @@ const addChoiceToElection = asyncHandler(async (req, res) => {
       .status(403)
       .json({ message: "Yetkisiz erişim veya bakiye yetersiz." });
   }
-  const election = await Election.findByPk(electionId);
+  const election = await Election.findByPk(electionId,{
+    attributes:["id","step","electionType"]
+  });
   if (!election || election.step !== "step2") {
     return res
       .status(400)
@@ -382,43 +390,45 @@ const addChoiceToElection = asyncHandler(async (req, res) => {
     .json({ message: "Step 3: Choices added successfully", election });
 });
 //Blockchain'den seçenekleri almak için fonksiyon
-const getChoicesFromBlockchain = asyncHandler(async (choiceIds) => {
-  console.log("Received choiceIds:", choiceIds);
+const getChoicesFromBlockchain = async (choiceIds) => {
+  console.log("Blockchain Choices Requested:", choiceIds);
 
   if (!choiceIds || !Array.isArray(choiceIds) || choiceIds.length === 0) {
-    throw new Error("choiceIds array olarak gönderilmeli ve boş olmamalı.");
+     console.error("Invalid choiceIds:", choiceIds);
+     throw new Error("choiceIds array olarak gönderilmeli ve boş olmamalı.");
   }
 
   const blockchainChoices = await Choice.findAll({
-    where: {
-      id: {
-        [Sequelize.Op.in]: choiceIds, // Dizi içindeki ID'leri filtrele
-      },
-      type: "blockchain",
-    },
+     where: {
+        id: { [Sequelize.Op.in]: choiceIds },
+        type: "blockchain",
+     },
   });
 
+  console.log("Blockchain Choices Found:", blockchainChoices);
   return blockchainChoices;
-});
+};
+
 // Veritabanından seçimleri almak için fonksiyon
-const getChoicesFromDatabase = asyncHandler(async (choiceIds) => {
-  console.log("Received choiceIds:", choiceIds);
+const getChoicesFromDatabase = async (choiceIds) => {
+  console.log("Database Choices Requested:", choiceIds);
 
   if (!choiceIds || !Array.isArray(choiceIds) || choiceIds.length === 0) {
-    throw new Error("choiceIds array olarak gönderilmeli ve boş olmamalı.");
+     console.error("Invalid choiceIds:", choiceIds);
+     throw new Error("choiceIds array olarak gönderilmeli ve boş olmamalı.");
   }
 
   const databaseChoices = await Choice.findAll({
-    where: {
-      id: {
-        [Sequelize.Op.in]: choiceIds, // Dizi içindeki ID'leri filtrele
-      },
-      type: "database",
-    },
+     where: {
+        id: { [Sequelize.Op.in]: choiceIds },
+        type: "database",
+     },
   });
 
+  console.log("Database Choices Found:", databaseChoices);
   return databaseChoices;
-});
+};
+
 
 // Kullanıcıyı doğrulamak için fonksiyon
 const authenticateUser = async (token) => {
@@ -439,7 +449,9 @@ const authenticateUser = async (token) => {
 
 const getElectionById = async (id, token) => {
   try {
-    const election = await Election.findByPk(id); // Sequelize: findByPk (Primary Key)
+    const election = await Election.findByPk(id,{
+      attributes:["id","name","description","createdBy","image","startDate","endDate","status","accessType","electionType"],
+    }); // Sequelize: findByPk (Primary Key)
     if (!election) {
       throw new Error("Election not found");
     }
@@ -464,7 +476,9 @@ const updateElectionStatus = asyncHandler(async (req, res) => {
   const { id } = req.params; // Seçim ID'si
 
   // Seçimi ID'ye göre bul
-  const election = await Election.findByPk(id);
+  const election = await Election.findByPk(id,{
+    attributes:["id","name","description","createdBy","status"],
+  });
 
   if (!election) {
     return res.status(404).json({ message: "Election not found" });
@@ -496,7 +510,9 @@ const updateElectionStatus = asyncHandler(async (req, res) => {
 const getActiveElection = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const election = await Election.findByPk(id);
+  const election = await Election.findByPk(id,{
+    attributes:["id","name","description","createdBy","startDate","endDate"],
+  });
   if (!election) {
     return res.status(404).json({ message: "Election not found" });
   }

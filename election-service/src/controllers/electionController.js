@@ -15,7 +15,9 @@ const Election = require("../models/Election");
 
 const getElectionByIdOnly = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const election = await Election.findByPk(id);
+  const election = await Election.findByPk(id,{
+    attributes:["id","name","description","createdBy","image","startDate","endDate","status","accessType","electionType"]
+  });
   if (!election) {
     res.status(404);
     throw new Error("Election not found");

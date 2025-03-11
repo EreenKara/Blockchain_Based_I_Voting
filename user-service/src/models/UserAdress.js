@@ -44,12 +44,7 @@ const UserAdress = sequelize.define("UserAdress", {
   },
   buildingNumber: { type: DataTypes.INTEGER, allowNull: false },
 });
+
 module.exports = UserAdress;
 
-//   UserAddress.associate = (models) => {
-//     UserAddress.belongsTo(models.City, { foreignKey: "cityId" });
-//     UserAddress.belongsTo(models.District, { foreignKey: "districtId" });
-//     UserAddress.belongsTo(models.Neighbourhood, { foreignKey: "neighbourhoodId" });
-//   };
-//   return UserAddress;
-// };
+

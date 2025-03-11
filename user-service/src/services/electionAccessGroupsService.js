@@ -141,46 +141,75 @@ const addAccessGroupToElection = async (electionId, groupId, token) => {
 //         };
 //     }
 // };
-const getElectionAccessGroups = async (electionId) => {
+const getElectionAccessGroups = async (electionId, page = 1, limit = 10) => {
   try {
-    const response = await axios.get(
-      `${process.env.ELECTION_SERVICE_URL}/api/elections/${electionId}`
-    );
+      console.log(`📢 getGroupsWithAccessToElection çağrıldı: electionId=${electionId}, page=${page}, limit=${limit}`);
 
-    if (!response || !response.data || !response.data.election) {
-      return { success: false, message: "Seçim bulunamadı." };
-    }
-    if (!electionId) {
-      return { success: false, message: "Seçim ID belirtilmelidir." };
-    }
+      page = parseInt(page) || 1;
+      limit = parseInt(limit) || 10;
+      const offset = (page - 1) * limit; // ✅ Sayfalama için OFFSET hesaplandı
 
-    const accessGroups = await ElectionAccessGroups.findAll({
-      where: { electionId },
-      attributes: ["groupId"],
-      include: [{ model: Group, attributes: ["id", "name"] }],
-    });
+      console.log(`🔍 Sayfa Bilgileri: Page: ${page}, Limit: ${limit}, Offset: ${offset}`);
 
-    if (!accessGroups || accessGroups.length === 0) {
+      console.log(`📡 Seçim bilgisi çekiliyor...`);
+      const response = await axios.get(`${process.env.ELECTION_SERVICE_URL}/api/elections/${electionId}`);
+
+      if (!response || !response.data || !response.data.election) {
+          console.error("❌ Seçim bulunamadı veya API yanıtı hatalı!");
+          return { success: false, message: "Seçim bulunamadı veya API yanıtı hatalı." };
+      }
+
+      console.log(`✅ Seçim bulundu. Kullanıcılar çekiliyor... (Limit: ${limit}, Offset: ${offset})`);
+
+      const { count, rows } = await ElectionAccessGroups.findAndCountAll({
+          where: { electionId },
+          attributes: ["groupId"],
+          include: [{ model: Group, attributes: ["id", "name","description"] }],
+          limit,
+          offset,
+          logging: console.log // ✅ SQL sorgusunu logla
+      });
+
+      console.log(`🔍 Kullanıcı erişim listesi alındı. Toplam Kullanıcı: ${count}, Dönen Veri: ${rows.length}`);
+
+      if (!rows || rows.length === 0) {
+          console.warn("⚠ Erişimi olan kullanıcı bulunamadı.");
+          return { success: false, message: "No Groups have access to this election." };
+      }
+
+      const formattedGroups = rows.map(u => ({
+          groupId: u.groupId,
+          id: u.Group.id || null,
+          name: u.Group.name || "Bilinmiyor",
+          description:u.Group.description||"Bilinmiyor"
+      }));
+
+      const totalPages = Math.ceil(count / limit);
+      const nextPage = page < totalPages ? page + 1 : null;
+      const prevPage = page > 1 ? page - 1 : null;
+
+      console.log(`✅ Sayfa: ${page}/${totalPages}, Kullanıcı Sayısı: ${count}`);
+
       return {
-        success: false,
-        message: "Bu seçim için tanımlı erişim grubu bulunmamaktadır.",
+          success: true,
+          message: "Erişime sahip kullanıcılar başarıyla getirildi.",
+          totalGroups: count,
+          totalPages,
+          currentPage: page,
+          nextPage,
+          prevPage,
+          data: formattedGroups
       };
-    }
 
-    return {
-      success: true,
-      message: "Seçime erişimi olan gruplar başarıyla getirildi.",
-      data: accessGroups.map((access) => ({
-        id: access.Group.id,
-        name: access.Group.name,
-      })),
-    };
   } catch (error) {
-    console.error("Error fetching election access groups:", error.message);
-    return { success: false, message: error.message };
+      console.error("❌ Grupları getirirken hata oluştu:", error.message, error.stack);
+      return { 
+          success: false,
+          message: "Seçime erişimi olan grupları getirirken hata oluştu.", 
+          error: error.message 
+      };
   }
 };
-
 // Token doğrulama fonksiyonu
 const authenticateUser = async (token) => {
   try {
