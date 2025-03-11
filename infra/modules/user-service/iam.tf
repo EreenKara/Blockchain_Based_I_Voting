@@ -36,6 +36,7 @@ resource "aws_iam_role" "ecs_exe_role" {
   })
 }
 
+# pulling from ECR, etc
 resource "aws_iam_role_policy_attachment" "ecs_exe_policy_attach" {
   role       = aws_iam_role.ecs_exe_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
@@ -56,7 +57,7 @@ resource "aws_iam_role" "ecs_task_role" {
 
 resource "aws_iam_policy" "ecs_task_policy" {
   name        = "ecs-task-policy"
-  description = "Policy for ECS tasks for log events"
+  description = "Policy for ECS tasks for RDS and log events"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -66,6 +67,14 @@ resource "aws_iam_policy" "ecs_task_policy" {
         Action = [
           "logs:CreateLogStream",
           "logs:PutLogEvents"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "rds:DescribeDBInstances",
+          "rds:Connect"
         ]
         Resource = "*"
       }

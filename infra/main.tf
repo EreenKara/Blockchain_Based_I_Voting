@@ -40,6 +40,8 @@ module "postgre_db" {
   private_subnet1_id = module.network.private_subnet1_id
   private_subnet2_id = module.network.private_subnet2_id
 
+  user_service_sg_id = module.user_service.user_service_sg_id
+
   db_name     = var.db_name
   db_username = var.db_username
   db_password = var.db_password
@@ -60,9 +62,10 @@ module "user_service" {
   ecs_cluster_name = local.ecs_cluster_name
   ecs_ami_id       = local.ecs_ami_id
 
-  db_host     = module.postgre_db.db_endpoint
-  db_name     = var.db_name
-  db_username = var.db_username
-  db_password = var.db_password
+  postgre_db_instance = module.postgre_db.postgre_db_instance
+  db_host             = module.postgre_db.db_endpoint
+  db_name             = var.db_name
+  db_username         = var.db_username
+  db_password         = var.db_password
 }
 

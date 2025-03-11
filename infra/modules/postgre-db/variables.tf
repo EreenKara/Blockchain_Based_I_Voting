@@ -4,6 +4,8 @@ variable "az" {}
 variable "private_subnet1_id" {}
 variable "private_subnet2_id" {}
 
+variable "user_service_sg_id" {}
+
 variable "db_name" {}
 variable "db_username" {}
 variable "db_password" {}
