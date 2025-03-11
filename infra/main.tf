@@ -23,6 +23,9 @@ locals {
   ecs_cluster_id   = aws_ecs_cluster.ivote_cluster.id
   ecs_cluster_name = aws_ecs_cluster.ivote_cluster.name
   ecs_ami_id       = data.aws_ami.ecs_optimized.id
+
+  db_host = split(":", module.postgre_db.db_endpoint)[0]
+  db_port = split(":", module.postgre_db.db_endpoint)[1]
 }
 
 module "network" {
@@ -63,7 +66,8 @@ module "user_service" {
   ecs_ami_id       = local.ecs_ami_id
 
   postgre_db_instance = module.postgre_db.postgre_db_instance
-  db_host             = module.postgre_db.db_endpoint
+  db_host             = var.db_host
+  db_port             = var.db_port
   db_name             = var.db_name
   db_username         = var.db_username
   db_password         = var.db_password

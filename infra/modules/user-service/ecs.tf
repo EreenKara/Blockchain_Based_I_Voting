@@ -5,10 +5,10 @@ resource "aws_cloudwatch_log_group" "user_service_logs" {
 
 resource "aws_ecs_task_definition" "user_service_task" {
   family                   = "user-service-task"
-  network_mode             = "bridge"
+  network_mode             = "awsvpc"
   requires_compatibilities = ["EC2"]
-  cpu                      = "512"
-  memory                   = "768"
+  cpu                      = "920"
+  memory                   = "920"
 
   task_role_arn      = aws_iam_role.ecs_task_role.arn
   execution_role_arn = aws_iam_role.ecs_exe_role.arn
@@ -17,8 +17,8 @@ resource "aws_ecs_task_definition" "user_service_task" {
     name      = "user-service-container"
     image     = var.user_service_image_uri
     essential = true
-    cpu       = 512
-    memory    = 768
+    cpu       = 920
+    memory    = 920
 
     environment = [
       {
@@ -27,7 +27,7 @@ resource "aws_ecs_task_definition" "user_service_task" {
       },
       {
         name  = "DB_PORT"
-        value = "5432"
+        value = var.db_port
       },
       {
         name  = "DB_USER"
@@ -70,6 +70,11 @@ resource "aws_ecs_service" "user_service_ecs_service" {
   desired_count           = 1
   enable_ecs_managed_tags = false
   launch_type             = "EC2" # no cap provider
+
+  network_configuration {
+    subnets         = [var.public_subnet_id]
+    security_groups = [aws_security_group.user_service_sg.id]
+  }
 
   tags = {
     Name = "ivote-user-service-ecs-service"

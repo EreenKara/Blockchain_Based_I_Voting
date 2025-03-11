@@ -15,6 +15,7 @@ variable "instance_type" {}
 
 variable "postgre_db_instance" {}
 variable "db_host" {}
+variable "db_port" {}
 variable "db_name" {}
 variable "db_username" {}
 variable "db_password" {}

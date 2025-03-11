@@ -19,5 +19,12 @@ variable "db_username" {
   default = "postgres"
 }
 variable "db_password" {
-  default = "Admin123"
+  default = "Admin123-"
+}
+
+variable "db_host" {
+  default = "ivote-postgre.cfcw48gec8ko.eu-north-1.rds.amazonaws.com"
+}
+variable "db_port" {
+  default = "5432"
 }
