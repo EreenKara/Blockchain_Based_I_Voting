@@ -20,17 +20,21 @@ const swaggerOptions = {
       version: "1.0.0",
       description: "API documentation for the User Service",
     },
-    servers: [
-      {
-        url: "http://localhost:5004",
-      },
-    ],
+    servers: [],
   },
   apis: ["./routes/*.js"],
 };
 
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use(
+  "/api-docs",
+  (req, res, next) => {
+    swaggerOptions.definition.servers = [{ url: `${req.protocol}://${req.get("host")}` }];
+    req.swaggerDocs = swaggerJsDoc(swaggerOptions);
+    next();
+  },
+  swaggerUi.serve,
+  (req, res) => swaggerUi.setup(req.swaggerDocs)(req, res)
+);
 
 app.use("/api/users", userRoutes);
 app.use("/api/groups", groupRoutes);

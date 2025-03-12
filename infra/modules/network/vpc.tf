@@ -9,14 +9,25 @@ resource "aws_vpc" "main" {
   }
 }
 
-resource "aws_subnet" "public" {
+resource "aws_subnet" "public1" {
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = var.public_cidr
+  cidr_block              = var.public_cidr1
   availability_zone       = var.az1
   map_public_ip_on_launch = true
 
   tags = {
-    "Name" = "ivote-public-subnet"
+    "Name" = "ivote-public-subnet-1"
+  }
+}
+
+resource "aws_subnet" "public2" { # redundant for infra, but necessity for ALB to work
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = var.public_cidr2
+  availability_zone       = var.az2
+  map_public_ip_on_launch = true
+
+  tags = {
+    "Name" = "ivote-public-subnet-2"
   }
 }
 
@@ -63,6 +74,6 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route_table_association" "public" {
-  subnet_id      = aws_subnet.public.id
+  subnet_id      = aws_subnet.public1.id
   route_table_id = aws_route_table.public.id
 }

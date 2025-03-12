@@ -46,7 +46,7 @@ resource "aws_ecs_task_definition" "user_service_task" {
     portMappings = [
       {
         containerPort = 5004,
-        hostPort      = 5004,
+        hostPort      = 5004, # alb will route to this
         protocol      = "tcp"
       }
     ]
@@ -74,6 +74,13 @@ resource "aws_ecs_service" "user_service_ecs_service" {
   network_configuration {
     subnets         = [var.public_subnet_id]
     security_groups = [aws_security_group.user_service_sg.id]
+  }
+
+  depends_on = [var.user_service_listener]
+  load_balancer {
+    target_group_arn = var.user_service_tg_arn
+    container_name   = "user-service-container"
+    container_port   = 5004
   }
 
   tags = {

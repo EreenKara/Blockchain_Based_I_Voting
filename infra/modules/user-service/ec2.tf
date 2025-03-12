@@ -6,7 +6,7 @@ resource "aws_iam_instance_profile" "ecs_instance_profile" {
 resource "aws_launch_template" "user_service" {
   depends_on = [var.postgre_db_instance]
 
-  name                   = "user-service-ec2-launch-template"
+  name                   = "user-service-lt"
   image_id               = var.ecs_ami_id
   instance_type          = var.instance_type
   vpc_security_group_ids = [aws_security_group.user_service_sg.id]

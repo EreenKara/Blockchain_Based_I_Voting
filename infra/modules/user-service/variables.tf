@@ -12,6 +12,8 @@ variable "user_service_image_uri" {}
 variable "ecs_ami_id" {}
 variable "instance_type" {}
 
+variable "user_service_listener" {}
+variable "user_service_tg_arn" {}
 
 variable "postgre_db_instance" {}
 variable "db_host" {}

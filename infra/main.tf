@@ -55,11 +55,13 @@ module "user_service" {
 
   vpc_id           = module.network.vpc_id
   vpc_cidr         = module.network.vpc_cidr
-  public_subnet_id = module.network.public_subnet_id
+  public_subnet_id = module.network.public_subnet1_id
 
   aws_region             = var.aws_region
   instance_type          = var.instance_type
   user_service_image_uri = var.user_service_image_uri
+  user_service_listener  = module.network.user_service_listener
+  user_service_tg_arn    = module.network.user_service_tg_arn
 
   ecs_cluster_id   = local.ecs_cluster_id
   ecs_cluster_name = local.ecs_cluster_name

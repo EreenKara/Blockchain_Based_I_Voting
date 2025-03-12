@@ -14,8 +14,8 @@ output "az2" {
   value = var.az2
 }
 
-output "public_subnet_id" {
-  value = aws_subnet.public.id
+output "public_subnet1_id" {
+  value = aws_subnet.public1.id
 }
 
 output "private_subnet1_id" {
@@ -24,4 +24,13 @@ output "private_subnet1_id" {
 
 output "private_subnet2_id" {
   value = aws_subnet.private2.id
+}
+
+
+output "user_service_listener" {
+  value = aws_lb_listener.user_service
+}
+
+output "user_service_tg_arn" {
+  value = aws_lb_target_group.user_service.arn
 }
