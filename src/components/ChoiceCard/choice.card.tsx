@@ -58,11 +58,15 @@ const ChoiceCardComponent = ({
         },
       ]}>
       <Pressable
-        style={[styles.container, {height: height}]}
+        style={[styles.container]}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         onPress={onPress}>
-        <Text style={[CommonStyles.textStyles.title, {textAlign: 'center'}]}>
+        <Text
+          style={[
+            CommonStyles.textStyles.title,
+            {marginBottom: styleNumbers.space, textAlign: 'center'},
+          ]}>
           {title}
         </Text>
         <Image
@@ -76,7 +80,10 @@ const ChoiceCardComponent = ({
           ]}
         />
         <Text
-          style={[CommonStyles.textStyles.paragraph, {textAlign: 'center'}]}>
+          style={[
+            CommonStyles.textStyles.paragraph,
+            {marginTop: styleNumbers.spaceLittle, textAlign: 'center'},
+          ]}>
           {description}
         </Text>
       </Pressable>
@@ -96,6 +103,8 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     borderColor: Colors.getTheme().borderColor,
     ...CommonStyles.shadowStyle,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
   image: {
     width: '100%',

@@ -1,8 +1,8 @@
 import {useState, useEffect} from 'react';
-import {useCache} from './use.cache';
-import {useAppStateListener} from './use.appstate.listener';
-import {useNetworkListener} from './use.network.listener';
-import {useBackgroundFetch} from './use.background.fetch';
+import {useCache} from './Modular/use.cache';
+import {useAppStateListener} from './Modular/use.appstate.listener';
+import {useNetworkListener} from './Modular/use.network.listener';
+import {useBackgroundFetch} from './Modular/use.background.fetch';
 import {ServiceContainer} from '@services/backend/concrete/service.container';
 import {ServiceType} from '@services/backend/concrete/service.container';
 import UserService from '@services/backend/concrete/user.service';

@@ -15,7 +15,7 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
     {
       title: 'Seçim Oluştur',
       description: 'Yeni bir seçim oluşturun ve yönetin',
-      screen: 'CreateElection' as const,
+      screen: 'BlockchainOrDb' as const,
       icon: '🗳️',
     },
     {

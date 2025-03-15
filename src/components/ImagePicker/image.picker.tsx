@@ -1,5 +1,13 @@
 import React from 'react';
-import {View, Pressable, ImageBackground, Text, StyleSheet} from 'react-native';
+import {
+  View,
+  Pressable,
+  ImageBackground,
+  Text,
+  StyleSheet,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
 import CommonStyles from '@styles/common/commonStyles';
 import Colors from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
@@ -10,6 +18,7 @@ export interface ImagePickerComponentProps {
   fieldName: string;
   setFieldValue: (field: string, value: ExtendedAsset) => void;
   responsive?: boolean;
+  outStyle?: StyleProp<ViewStyle>;
 }
 
 const ImagePickerComponent: React.FC<ImagePickerComponentProps> = ({
@@ -17,6 +26,7 @@ const ImagePickerComponent: React.FC<ImagePickerComponentProps> = ({
   fieldName,
   setFieldValue,
   responsive = true,
+  outStyle,
 }) => {
   const {handleCamera} = useCamera();
 
@@ -32,6 +42,8 @@ const ImagePickerComponent: React.FC<ImagePickerComponentProps> = ({
                 height: image.containerHeight,
               }
             : null,
+
+          outStyle,
         ]}>
         <ImageBackground
           source={
@@ -53,11 +65,7 @@ const ImagePickerComponent: React.FC<ImagePickerComponentProps> = ({
           imageStyle={[styles.imageStyle, image !== null && {opacity: 1}]}>
           <View style={styles.imageOverlay}>
             <Text style={[CommonStyles.textStyles.paragraph, styles.imageText]}>
-              {responsive
-                ? image === null
-                  ? 'Seçim Resmi Ekle'
-                  : 'Resmi Değiştir'
-                : ''}
+              {image === null ? 'Seçim Resmi Ekle' : 'Resmi Değiştir'}
             </Text>
           </View>
         </ImageBackground>
@@ -71,7 +79,6 @@ export default ImagePickerComponent;
 const styles = StyleSheet.create({
   imageContainer: {
     width: '100%',
-    marginTop: styleNumbers.space * 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -80,7 +87,6 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: styleNumbers.borderRadius,
     overflow: 'hidden',
-    backgroundColor: Colors.getTheme().transition,
     borderWidth: 2,
     borderColor: Colors.getTheme().borderColor,
     borderStyle: 'dashed',
@@ -93,7 +99,7 @@ const styles = StyleSheet.create({
   },
   imageStyle: {
     opacity: 0.7,
-    resizeMode: 'cover',
+    resizeMode: 'contain',
     width: '100%',
     height: '100%',
   },

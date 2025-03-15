@@ -3,11 +3,8 @@ import ElectionService from '@services/backend/concrete/election.service';
 import {ServiceContainer} from '@services/backend/concrete/service.container';
 import {ElectionAccessViewModel} from '@viewmodels/election.access.viewmodel';
 import {useState} from 'react';
-import GroupViewModel from '@viewmodels/group.viewmodel';
-import LightUserViewModel from '@viewmodels/light.user.viewmodel';
 
-const useElectionAccess = () => {
-  const [electionId, setElectionId] = useState<string | null>(null);
+const useElectionAccess = (electionId: string | null) => {
   const [electionAccess, setElectionAccess] = useState<ElectionAccessViewModel>(
     {} as ElectionAccessViewModel,
   );
@@ -17,7 +14,7 @@ const useElectionAccess = () => {
   const handleElectionAccessStep = async (values: ElectionAccessViewModel) => {
     if (!electionId) {
       setError('Election ID is not set.');
-      return;
+      return false;
     }
 
     const electionService = ServiceContainer.getService(
@@ -25,44 +22,27 @@ const useElectionAccess = () => {
     ) as ElectionService;
     try {
       setSubmitting(true);
-
+      let electAccess: ElectionAccessViewModel = {};
       if (values.accessType === 'public') {
-        setElectionAccess({
+        electAccess = {
           accessType: 'public',
           city: values.city,
           district: values.district,
-        });
-        await electionService.putElectionAccess(electionId, electionAccess);
+        };
       } else if (values.accessType === 'private') {
-        setElectionAccess({
+        electAccess = {
           accessType: 'private',
           groups: values.groups,
           users: values.users,
-        });
-        await electionService.putElectionAccess(electionId, electionAccess);
+        };
       }
+      await electionService.putElectionAccess(electionId, electAccess);
+      setElectionAccess(electAccess);
+      setSubmitting(false);
+      return true;
     } catch (error: any) {
       setError(error.message);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleAddGroup = (newGroup: GroupViewModel) => {
-    if (electionAccess.accessType === 'private') {
-      setElectionAccess({
-        ...electionAccess,
-        groups: [...(electionAccess.groups || []), newGroup],
-      });
-    }
-  };
-
-  const handleAddUser = (newUser: LightUserViewModel) => {
-    if (electionAccess.accessType === 'private') {
-      setElectionAccess({
-        ...electionAccess,
-        users: [...(electionAccess.users || []), newUser],
-      });
+      return false;
     }
   };
 
@@ -70,10 +50,7 @@ const useElectionAccess = () => {
     electionAccess,
     submitting,
     error,
-    setElectionId,
     handleElectionAccessStep,
-    handleAddGroup,
-    handleAddUser,
   };
 };
 

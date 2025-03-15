@@ -6,30 +6,32 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
 import Colors from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
-type Props = NativeStackScreenProps<HomeStackParamList, 'CreateElection'>;
+type Props = NativeStackScreenProps<HomeStackParamList, 'DefaultCustom'>;
 
-const CreateElectionScreen: React.FC<Props> = ({navigation}) => {
+const DefaultCustomScreen: React.FC<Props> = ({navigation}) => {
   return (
     <View style={styles.container}>
       <View style={styles.transparentContainer}>
         <ChoiceCardComponent
-          title="Veri Tabanı ile"
-          description="Seçim Açıklaması"
-          image={require('@assets/images/db_image.png')}
-          onPress={() => navigation.navigate('DefaultCustom')}
+          title="Default"
+          description="Herkesin kullandığı otomatik ayarlar"
+          image={require('@assets/images/default-settings.png')}
+          onPress={() => navigation.navigate('ElectionChoices')}
+          tintColor={Colors.getTheme().icon}
         />
         <ChoiceCardComponent
-          title="Blockchain ile"
-          description="Seçim Açıklaması"
-          image={require('@assets/images/blockchain_image.png')}
-          onPress={() => navigation.navigate('DefaultCustom')}
+          title="Custom"
+          description="Teknik ayarları yönetin"
+          image={require('@assets/images/custom_settings.png')}
+          onPress={() => navigation.navigate('ElectionChoices')}
+          tintColor={Colors.getTheme().icon}
         />
       </View>
     </View>
   );
 };
 
-export default CreateElectionScreen;
+export default DefaultCustomScreen;
 
 const styles = StyleSheet.create({
   container: {

@@ -3,6 +3,8 @@ import {IElectionService} from '../abstract/election.service.interface';
 import BaseBackendService from './base.backend.sevice';
 import {ElectionViewModel} from '@viewmodels/election.viewmodel';
 import {ElectionAccessViewModel} from '@viewmodels/election.access.viewmodel';
+import {CandidateViewModel} from '@viewmodels/candidate.viewmodel';
+import {ElectionChoiceViewModel} from '@viewmodels/election.choice.viewmodel';
 
 export class ElectionService
   extends BaseBackendService
@@ -65,6 +67,24 @@ export class ElectionService
     await this.api.put<ElectionViewModel>(
       `${this.endpoint}/${electionId}`,
       electionAccess,
+    );
+  }
+  public async putElectionCandidates(
+    electionId: string,
+    candidates: CandidateViewModel[],
+  ): Promise<void> {
+    await this.api.put<CandidateViewModel[]>(
+      `${this.endpoint}/${electionId}/candidates`,
+      candidates,
+    );
+  }
+  public async putElectionChoices(
+    electionId: string,
+    choices: ElectionChoiceViewModel[],
+  ): Promise<void> {
+    await this.api.put<ElectionChoiceViewModel[]>(
+      `${this.endpoint}/${electionId}/choices`,
+      choices,
     );
   }
 }

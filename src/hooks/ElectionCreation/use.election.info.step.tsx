@@ -1,3 +1,4 @@
+import {PreventRemoveContext} from '@react-navigation/native';
 import {FormValues} from '@screens/home/ElectionInfo';
 import ElectionService from '@services/backend/concrete/election.service';
 import {ServiceContainer} from '@services/backend/concrete/service.container';
@@ -9,6 +10,7 @@ const useElectionInfoStep = () => {
   const [election, setElection] = useState<ElectionViewModel | null>(null);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [dbType, setDbType] = useState<'database' | 'blockchain' | null>(null);
 
   const handleElectionInfoStep = async (values: FormValues) => {
     const electionService = ServiceContainer.getService(
@@ -16,7 +18,7 @@ const useElectionInfoStep = () => {
     ) as ElectionService;
     try {
       setSubmitting(true);
-      setElection({
+      let election: ElectionViewModel = {
         id: '',
         name: values.title,
         description: values.description,
@@ -24,20 +26,38 @@ const useElectionInfoStep = () => {
         endDate: values.endDate.toISOString(),
         image: values.image?.base64 || '',
         color: values.color,
-      });
-      if (election) {
-        const response = await electionService.postElectionInfo(election);
-        election.id = response.id;
+        dbType:
+          dbType ??
+          (() => {
+            throw new Error('Db type is required');
+          })(),
+      };
+      const response = await electionService.postElectionInfo(election);
+      if (response) {
+        setElection(response);
+        setSubmitting(false);
+        setError(null);
+        return true;
+      } else {
+        setSubmitting(false);
+        setError('Election creation failed. Some fields are not valid.');
+        return false;
       }
     } catch (error: any) {
+      setError(error.message);
       setSubmitting(false);
-      setElection(null);
-    } finally {
-      setSubmitting(false);
+      return false;
     }
   };
 
-  return {election, handleElectionInfoStep, submitting, error};
+  return {
+    election,
+    handleElectionInfoStep,
+    dbType,
+    setDbType,
+    submitting,
+    error,
+  };
 };
 
 export default useElectionInfoStep;

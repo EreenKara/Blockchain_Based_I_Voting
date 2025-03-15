@@ -1,13 +1,12 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {Picker} from '@react-native-picker/picker';
-import {FormValues} from '@screens/home/ElectionInfo';
 import styleNumbers from '@styles/common/style.numbers';
 import Colors from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 
 interface AddressPickerComponentProps {
-  values: FormValues;
+  values: {city: string; district: string};
   setFieldValue: (field: string, value: any) => void;
 }
 

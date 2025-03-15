@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, Button} from 'react-native';
 import {Snackbar} from 'react-native-paper';
 import TextInputComponent from '@components/TextInput/text.input';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -12,8 +12,8 @@ import styles from './index.style';
 // Components
 import StartToEndDateComponent from '@icomponents/StartToEndDate/start.to.end.date';
 import ImagePickerComponent from '@icomponents/ImagePicker/image.picker';
-import AddressPickerComponent from '@icomponents/AddressPicker/address.picker';
 import {ExtendedAsset} from '@hooks/useCamera';
+import {useElectionCreationContext} from '@contexts/election.creation.context';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'ElectionInfo'>;
 
@@ -27,20 +27,25 @@ export interface FormValues {
 }
 
 const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
+  const {handleElectionInfoStep, submitting, errors} =
+    useElectionCreationContext();
+
   const [message, setMessage] = useState('');
   const [visible, setVisible] = useState(false);
+
   const showMessage = (message: string) => {
     setMessage(message);
     setVisible(true);
   };
 
-  const handleSubmit = (values: FormValues) => {
-    console.log(values);
-    setMessage('Başarılı, bir sonraki ekrana yönlendiriliyorsunuz...');
-    setVisible(true);
-    setTimeout(() => {
-      navigation.navigate('ElectionInfo');
-    }, 2000);
+  const handleSubmit = async (values: FormValues) => {
+    const resultBool = await handleElectionInfoStep(values);
+    showMessage(
+      errors.info || 'Başarılı, bir sonraki ekrana yönlendiriliyorsunuz...',
+    );
+    if (resultBool) {
+      navigation.navigate('PublicOrPrivate');
+    }
   };
 
   const initialValues: FormValues = {
@@ -58,7 +63,7 @@ const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
         <Text style={styles.title}>Seçim Bilgileri</Text>
       </View>
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-        {({values, handleSubmit, handleChange, setFieldValue}) => {
+        {({values, handleChange, setFieldValue}) => {
           return (
             <KeyboardAwareScrollView
               style={styles.formContainer}
@@ -95,11 +100,17 @@ const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
                 fieldName="image"
                 setFieldValue={setFieldValue}
               />
-
+              <Button
+                title="Go to Election Info"
+                onPress={() =>
+                  navigation.navigate('ElectionAccess', {accessType: 'private'})
+                }
+              />
               <ButtonComponent
-                title="Seçim Oluştur"
-                onPress={() => handleSubmit()}
+                title="Kaydet ve Erişilebilirlik Sayfasına Git"
+                onPress={() => handleSubmit(values)}
                 style={styles.submitButton}
+                disabled={submitting.info}
               />
             </KeyboardAwareScrollView>
           );

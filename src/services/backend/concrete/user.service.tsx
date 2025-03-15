@@ -7,6 +7,7 @@ import UserViewModel from '@viewmodels/user.viewmodel';
 import {AddressViewModel} from '@viewmodels/address.viewmodel';
 import GroupViewModel from '@viewmodels/group.viewmodel';
 import {BackendError} from './backend.error';
+import LightUserViewModel from '@viewmodels/light.user.viewmodel';
 
 export class UserService extends BaseBackendService implements IUserService {
   constructor() {
@@ -95,6 +96,12 @@ export class UserService extends BaseBackendService implements IUserService {
   ): Promise<AddressViewModel> {
     const response = await this.api.get<AddressViewModel>(
       `${this.endpoint}/user/${userId}/address/${addressId}`,
+    );
+    return response.data;
+  }
+  public async getUsers(): Promise<LightUserViewModel[]> {
+    const response = await this.api.get<LightUserViewModel[]>(
+      `${this.endpoint}/users`,
     );
     return response.data;
   }

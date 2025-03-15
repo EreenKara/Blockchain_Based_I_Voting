@@ -1,5 +1,4 @@
-import {hasSubscribers} from 'diagnostics_channel';
-import Yup, {object, string, number, date, ref} from 'yup';
+import {object, string, number, date, ref} from 'yup';
 
 const nameValidation = string().required();
 const surnameValidation = string().required();
@@ -76,6 +75,8 @@ const phoneValidation = string()
   .matches(/^[0-9]{10}$/, 'Geçersiz telefon numarası');
 const userNameValidation = string().required('Kullanıcı adı gereklidir');
 
+const passwordLoginValidation = string().required('Şifre gereklidir');
+
 const registerUserSchema = object({
   username: userNameValidation,
   name: nameValidation,
@@ -91,7 +92,7 @@ const bosSchema = object({});
 
 const loginUserSchema = object({
   emailOrIdentity: emailValidation,
-  password: passwordValidation,
+  password: passwordLoginValidation,
 });
 
 export {registerUserSchema, loginUserSchema, bosSchema};

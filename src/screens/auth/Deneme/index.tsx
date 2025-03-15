@@ -7,7 +7,12 @@ import SearchBarModalComponent from '@components/SearchBarModal/search.bar.modal
 const DenemeScreen = () => {
   return (
     <View style={styles.container}>
-      <SearchBarModalComponent title="Araştır" handleSearch={() => {}} />
+      <SearchBarModalComponent
+        title="Araştır"
+        searchBarTitle="Grup için kullanıcı ara"
+        modalTitle="Kişi seç"
+        handleSearch={() => {}}
+      />
     </View>
   );
 };

@@ -1,5 +1,5 @@
 export {default as HomeScreen} from '@screens/home/Home/index';
-export {default as CreateElectionScreen} from '@screens/home/CreateElection/index';
+export {default as BlockchainOrDbScreen} from '@screens/home/CreateElection/blockchain.or.db';
 export {default as ElectionInfoScreen} from '@screens/home/ElectionInfo/index';
 export {default as BeCandidateScreen} from '@screens/home/BeCandidate/index.tsx';
 export {default as ElectionsScreen} from '@screens/home/Elections/index';

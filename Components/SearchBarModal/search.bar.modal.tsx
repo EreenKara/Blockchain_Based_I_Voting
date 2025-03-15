@@ -10,20 +10,20 @@ import {
   ViewStyle,
 } from 'react-native';
 import React, {useState} from 'react';
-import CenteredModalComponent from '@components/Modal/CenteredModal/centered.modal';
-import ButtonComponent from '@components/Button/Button';
-import TextInputComponent from '@components/TextInput/text.input';
 import Colors from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
 import SearchBarComponent from '@components/SearchBar/search.bar';
+import FullModalComponent from '@components/Modal/FullModal/full.modal';
 
 interface SearchBarModalComponentProps {
   handleSearch: () => void;
   title?: string;
   modalTitle?: string;
+  searchBarTitle?: string;
   style?: StyleProp<ViewStyle>;
   iconTitleStyle?: StyleProp<TextStyle>;
+  content?: React.ReactNode;
 }
 
 const SearchBarModalComponent: React.FC<SearchBarModalComponentProps> = ({
@@ -31,7 +31,9 @@ const SearchBarModalComponent: React.FC<SearchBarModalComponentProps> = ({
   title = '',
   iconTitleStyle,
   modalTitle = 'Search',
+  searchBarTitle = '',
   handleSearch,
+  content,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -51,19 +53,21 @@ const SearchBarModalComponent: React.FC<SearchBarModalComponentProps> = ({
           style={styles.searchIcon}
         />
       </TouchableOpacity>
-      <CenteredModalComponent
+      <FullModalComponent
         isOpen={isOpen}
-        withInput={true}
         onClose={() => setIsOpen(false)}
+        title={modalTitle}
         style={{
           width: '100%',
           height: 160,
         }}>
         <SearchBarComponent
-          modalTitle={modalTitle}
+          modalTitle={searchBarTitle}
+          titleStyle={{color: Colors.getTheme().cardText}}
           handleSearch={handleSearch}
         />
-      </CenteredModalComponent>
+        {content}
+      </FullModalComponent>
     </View>
   );
 };

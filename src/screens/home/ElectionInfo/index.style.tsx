@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     paddingBottom: styleNumbers.space * 2,
+    flex: 1,
   },
   inputContainer: {
     marginTop: styleNumbers.space * 2,
@@ -33,6 +34,11 @@ const styles = StyleSheet.create({
 
   submitButton: {
     marginTop: styleNumbers.space,
+    elevation: 0,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
 
   addressContainer: {

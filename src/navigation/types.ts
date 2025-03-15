@@ -23,13 +23,17 @@ export type MainTabParamList = {
 
 export type HomeStackParamList = {
   HomeMain: undefined;
-  CreateElection: undefined;
-  ElectionInfo: undefined;
+  BlockchainOrDb: undefined;
+  PublicOrPrivate: undefined;
+  DefaultCustom: undefined;
+  ElectionInfo: {dbType: 'database' | 'blockchain'};
+  ElectionAccess: {accessType: 'public' | 'private'};
+  ElectionCandidates: undefined;
+  ElectionChoices: undefined;
   ListElections: {type: ElectionType};
   BeCandidate: undefined;
   Elections: undefined;
   SpecificElection: {election: ElectionViewModel};
-  DefaultCustom: undefined;
 };
 
 export type ProfileStackParamList = {

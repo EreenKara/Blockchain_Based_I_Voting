@@ -3,6 +3,7 @@ import {
   StyleProp,
   StyleSheet,
   Text,
+  TextStyle,
   View,
   ViewStyle,
 } from 'react-native';
@@ -17,6 +18,9 @@ interface SearchBarComponentProps {
   placeholder?: string;
   handleSearch: () => void;
   inputStyle?: StyleProp<ViewStyle>;
+  value?: string;
+  setValue?: (text: string) => void;
+  titleStyle?: StyleProp<TextStyle>;
 }
 const SearchIcon = () => {
   return (
@@ -31,10 +35,13 @@ const SearchBarComponent: React.FC<SearchBarComponentProps> = ({
   modalTitle = '',
   handleSearch,
   inputStyle,
+  value,
+  setValue,
+  titleStyle,
 }) => {
   return (
     <View style={styles.searchContainer}>
-      <Text style={[CommonStyles.textStyles.title, styles.text]}>
+      <Text style={[CommonStyles.textStyles.title, styles.text, titleStyle]}>
         {modalTitle}
       </Text>
       <TextInputComponent
@@ -42,6 +49,8 @@ const SearchBarComponent: React.FC<SearchBarComponentProps> = ({
         viewStyle={[inputStyle]}
         onPress={handleSearch}
         leftIcon={<SearchIcon />}
+        value={value}
+        onChangeText={setValue}
       />
     </View>
   );
@@ -56,7 +65,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: styleNumbers.borderRadius,
     paddingHorizontal: styleNumbers.space * 2,
-    marginBottom: styleNumbers.space * 2,
   },
   text: {
     paddingRight: styleNumbers.space / 2,

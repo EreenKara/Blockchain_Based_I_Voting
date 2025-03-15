@@ -9,6 +9,7 @@ interface BaseElectionViewModel {
   startDate: string;
   endDate: string;
   color: string;
+  dbType: 'database' | 'blockchain';
 }
 
 export type ElectionViewModel = BaseElectionViewModel;
