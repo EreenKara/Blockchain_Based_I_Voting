@@ -2,7 +2,7 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {ProfileStackParamList} from './types';
 import Colors from '@styles/common/colors';
-import NavBarTitle from '@shared/navbar_title';
+import NavBarTitle from '@screens/shared/navbar_title';
 import ProfileScreen from '@screens/profile/Profile';
 import SettingsScreen from '@screens/profile/Settings';
 import PaymentScreen from '@screens/profile/Payment';

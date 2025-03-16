@@ -16,7 +16,7 @@ interface ColorsSchema {
   mapSelectedFill: string;
   mapSelectedStroke: string;
   creditCard: string;
-
+  warning: string;
   error: string;
   errorButton: string;
   borderColor: string;
@@ -42,6 +42,7 @@ const light: ColorsSchema = {
   creditCard: '#D1E1F0',
   error: 'red', // hata renkleri
   errorButton: '#891515', // hata renkleri
+  warning: '#D2C537',
   borderColor: '#056161',
   indicator: '#0a7ea4', // herhangi tutmaç, garip button gibi etkileşime girilebilen öğenin içerisindeki kısım. Switch'in kafası örneğin.
   icon: '#345C6F',
@@ -64,7 +65,7 @@ const dark: ColorsSchema = {
   mapSelectedFill: '#056161',
   mapSelectedStroke: 'white',
   creditCard: '#D1E1F0',
-
+  warning: '#DDD169',
   error: 'red',
   errorButton: '#891515',
   borderColor: '#fff',

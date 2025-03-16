@@ -18,6 +18,10 @@ const useElectionInfoStep = () => {
     ) as ElectionService;
     try {
       setSubmitting(true);
+
+      setError(null);
+
+      setSubmitting(true);
       let election: ElectionViewModel = {
         id: '',
         name: values.title,
@@ -36,7 +40,6 @@ const useElectionInfoStep = () => {
       if (response) {
         setElection(response);
         setSubmitting(false);
-        setError(null);
         return true;
       } else {
         setSubmitting(false);
@@ -49,6 +52,12 @@ const useElectionInfoStep = () => {
       return false;
     }
   };
+  const reset = () => {
+    setElection(null);
+    setDbType(null);
+    setError(null);
+    setSubmitting(false);
+  };
 
   return {
     election,
@@ -57,6 +66,7 @@ const useElectionInfoStep = () => {
     setDbType,
     submitting,
     error,
+    reset,
   };
 };
 

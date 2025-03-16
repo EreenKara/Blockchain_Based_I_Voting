@@ -7,11 +7,13 @@ import {RootStackParamList} from '@navigation/types';
 import AuthNavigator from '@navigation/AuthNavigator';
 import MainNavigator from '@navigation/MainNavigator';
 import CommonStyles from '@styles/common/commonStyles';
-import ActivityIndicatorComponent from '@shared/activity.indicator';
-import ErrorScreenComponent from '@shared/error.screen';
+import ActivityIndicatorComponent from '@screens/shared/activity.indicator';
+import ErrorScreenComponent from '@screens/shared/error.screen';
 import {AuthProvider, ElectionCreationProvider} from '@contexts/index';
 import {UserProfileProvider} from '@contexts/index';
 import {SearchProvider} from '@contexts/index';
+import ErrorScreen from '@screens/shared/Error/error.screen';
+import SuccessScreen from '@screens/shared/Success/success.screen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -38,6 +40,8 @@ const App = () => {
                   screenOptions={{headerShown: false}}>
                   <Stack.Screen name="Auth" component={AuthNavigator} />
                   <Stack.Screen name="Main" component={MainNavigator} />
+                  <Stack.Screen name="Error" component={ErrorScreen} />
+                  <Stack.Screen name="Success" component={SuccessScreen} />
                 </Stack.Navigator>
               </NavigationContainer>
             </PaperProvider>

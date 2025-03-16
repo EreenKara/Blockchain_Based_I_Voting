@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import RadioButtonComponent from '@components/RadioButton/radio.button';
-
+import styleNumbers from '@styles/common/style.numbers';
+import CommonStyles from '@styles/common/commonStyles';
+import Colors from '@styles/common/colors';
 interface OptionGroupProps {
   title: string;
   options: string[];
@@ -25,26 +27,37 @@ const OptionGroup: React.FC<OptionGroupProps> = ({
   return (
     <View style={styles.container}>
       <Text style={styles.groupTitle}>{title}</Text>
-      {options.map(option => (
-        <RadioButtonComponent
-          key={option}
-          label={option}
-          selected={selectedOption === option}
-          onPress={() => handlePress(option)}
-        />
-      ))}
+      <View style={styles.optionsContainer}>
+        {options.map(option => (
+          <RadioButtonComponent
+            key={option}
+            label={option}
+            selected={selectedOption === option}
+            onPress={() => handlePress(option)}
+          />
+        ))}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 12,
+    flex: 1,
+    marginVertical: styleNumbers.space,
   },
   groupTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
+    ...CommonStyles.textStyles.subtitle,
+    textAlign: 'center',
+    marginBottom: styleNumbers.space,
+  },
+  optionsContainer: {
+    backgroundColor: Colors.getTheme().transition,
+    flexWrap: 'wrap',
+    padding: styleNumbers.space,
+    borderWidth: 1,
+    borderColor: Colors.getTheme().button,
+    borderRadius: styleNumbers.borderRadius,
   },
 });
 

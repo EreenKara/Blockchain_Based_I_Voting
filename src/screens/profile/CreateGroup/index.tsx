@@ -197,13 +197,12 @@ const CreateGroupScreen = () => {
   return (
     <>
       <View style={styles.container}>
-        <SearchBarComponent modalTitle="" handleSearch={() => {}} />
+        <SearchBarComponent modalTitle="Kişi Arayın" handleSearch={() => {}} />
         <View style={styles.listContainer}>
           <VirtualizedListComponent
             data={users}
             renderItem={renderUserItem}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.listContainer}
           />
         </View>
         <View style={styles.createGroupButton}>

@@ -7,12 +7,12 @@ import {useNavigation} from '@react-navigation/native';
 import Colors from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import ActivityIndicatorComponent from '@shared/activity.indicator';
+import ActivityIndicatorComponent from '@screens/shared/activity.indicator';
 import MenuItemComponent from '@icomponents/MenuItem/menu.item';
 import {useUserProfileContext} from '@contexts/user.profile.context';
 import AvatarHeaderComponent from '@icomponents/AvatarHeader/avatar.header';
 import {ElectionType} from '@enums/election.type';
-import ErrorScreenComponent from '@shared/error.screen';
+import ErrorScreenComponent from '@screens/shared/error.screen';
 type ScreenProps = NativeStackScreenProps<ProfileStackParamList, 'ProfileMain'>;
 type RootProps = NativeStackNavigationProp<RootStackParamList>;
 

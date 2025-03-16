@@ -36,11 +36,18 @@ const useElectionCandidate = (electionId: string | null) => {
     }
   };
 
+  const reset = () => {
+    setCandidates([]);
+    setSubmitting(false);
+    setError(null);
+  };
+
   return {
     candidates,
     submitting,
     error,
     handleElectionCandidateStep,
+    reset,
   };
 };
 

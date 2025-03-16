@@ -1,3 +1,4 @@
+import Colors from '@styles/common/colors';
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 
@@ -33,19 +34,19 @@ const styles = StyleSheet.create({
     width: 20,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: '#444',
+    borderColor: Colors.getTheme().button,
     marginRight: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
   selectedRadio: {
-    borderColor: '#007AFF',
+    borderColor: Colors.getTheme().button,
   },
   radioInnerCircle: {
     height: 10,
     width: 10,
     borderRadius: 5,
-    backgroundColor: '#007AFF',
+    backgroundColor: Colors.getTheme().button,
   },
   label: {
     fontSize: 16,

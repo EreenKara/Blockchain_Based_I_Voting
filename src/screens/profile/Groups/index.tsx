@@ -6,8 +6,8 @@ import MenuItemComponent from '@icomponents/MenuItem/menu.item';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ProfileStackParamList} from '@navigation/types';
 import ButtonComponent from '@components/Button/Button';
-import ErrorComponent from '@shared/error.screen';
-import ActivityIndicatorComponent from '@shared/activity.indicator';
+import ErrorComponent from '@screens/shared/error.screen';
+import ActivityIndicatorComponent from '@screens/shared/activity.indicator';
 import VirtualizedListComponent from '@components/List/virtualized.list';
 import GroupViewModel from '@viewmodels/group.viewmodel';
 import {useUserProfileContext} from '@contexts/user.profile.context';
@@ -74,7 +74,9 @@ const GroupsScreen: React.FC<GroupsProps> = ({navigation}) => {
       <View style={styles.createGroupButton}>
         <ButtonComponent
           title="Grup Oluştur"
-          onPress={() => {}}
+          onPress={() => {
+            navigation.navigate('CreateGroup');
+          }}
           style={styles.createGroupButton}
         />
       </View>

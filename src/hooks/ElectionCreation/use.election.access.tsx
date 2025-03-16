@@ -46,11 +46,18 @@ const useElectionAccess = (electionId: string | null) => {
     }
   };
 
+  const reset = () => {
+    setElectionAccess({} as ElectionAccessViewModel);
+    setSubmitting(false);
+    setError(null);
+  };
+
   return {
     electionAccess,
     submitting,
     error,
     handleElectionAccessStep,
+    reset,
   };
 };
 

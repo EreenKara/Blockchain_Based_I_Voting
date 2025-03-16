@@ -18,7 +18,7 @@ import {ProfileStackParamList} from '@navigation/types';
 import MenuItemComponent from '@icomponents/MenuItem/menu.item';
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import {useUserProfileContext} from '@contexts/user.profile.context';
-import ErrorScreenComponent from '@shared/error.screen';
+import ErrorScreenComponent from '@screens/shared/error.screen';
 import useGroup from '@hooks/use.group';
 type GroupProps = NativeStackScreenProps<ProfileStackParamList, 'Group'>;
 

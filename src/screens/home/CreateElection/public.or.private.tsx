@@ -17,9 +17,7 @@ const PublicOrPrivateScreen: React.FC<Props> = ({navigation}) => {
         <Text>Election not found</Text>
         <Button
           title="Go to Election Info"
-          onPress={() =>
-            navigation.navigate('ElectionAccess', {accessType: 'public'})
-          }
+          onPress={() => navigation.navigate('BlockchainOrDb')}
         />
       </View>
     );

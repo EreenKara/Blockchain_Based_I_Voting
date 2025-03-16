@@ -42,7 +42,7 @@ const ElectionCandidatesScreen: React.FC<Props> = ({navigation}) => {
       {
         id: '',
         name: '',
-        color: '',
+        color: '#000000',
         votes: 0,
         image: '',
       },

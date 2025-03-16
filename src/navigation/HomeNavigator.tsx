@@ -1,5 +1,8 @@
 import React from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {
+  createNativeStackNavigator,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
 import {HomeStackParamList} from './types';
 import {HomeScreen} from '@screens/home/index';
 import BlockchainOrDbScreen from '@screens/home/CreateElection/blockchain.or.db';
@@ -8,16 +11,20 @@ import {BeCandidateScreen} from '@screens/home/index';
 import {ElectionsScreen} from '@screens/home/index';
 import {SpecificElectionScreen} from '@screens/home/index';
 import Colors from '@styles/common/colors';
-import NavBarTitle from '@shared/navbar_title';
+import NavBarTitle from '@screens/shared/navbar_title';
 import DefaultCustomScreen from '@screens/home/CreateElection/default.or.custom';
 import ListElectionsScreen from '@screens/shared/ListElections';
 import ElectionAccessScreen from '@screens/home/ElectionAccess';
 import PublicOrPrivateScreen from '@screens/home/CreateElection/public.or.private';
 import ElectionCandidatesScreen from '@screens/home/ElectionCandidates';
 import ElectionChoicesScreen from '@screens/home/ElectionChoices';
+import ButtonComponent from '@components/Button/Button';
+import DiscardButtonComponent from '@screens/shared/discard.buttont';
+import {useElectionCreationContext} from '@contexts/index';
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 
 const HomeNavigator: React.FC = () => {
+  const {resetElectionCreation} = useElectionCreationContext();
   return (
     <Stack.Navigator
       screenOptions={{
@@ -34,34 +41,130 @@ const HomeNavigator: React.FC = () => {
         options={{title: 'Ana Sayfa'}}
       />
       <Stack.Screen
-        name="BlockchainOrDb"
-        component={BlockchainOrDbScreen}
-        options={{title: 'Seçim Oluştur'}}
-      />
-      <Stack.Screen
         name="ElectionCandidates"
         component={ElectionCandidatesScreen}
-        options={{title: 'Adaylar'}}
+        options={navigation => ({
+          title: 'Adaylar',
+          headerRight: () => (
+            <DiscardButtonComponent
+              onPress={() => {
+                resetElectionCreation();
+                navigation.navigation.reset({
+                  index: 0,
+                  routes: [{name: 'HomeMain'}],
+                });
+              }}
+            />
+          ),
+        })}
       />
       <Stack.Screen
         name="ElectionChoices"
         component={ElectionChoicesScreen}
-        options={{title: 'Seçim Seçenekleri'}}
-      />
-      <Stack.Screen
-        name="PublicOrPrivate"
-        component={PublicOrPrivateScreen}
-        options={{title: 'Seçim Erişim Bilgileri'}}
+        options={navigation => ({
+          title: 'Seçim Seçenekleri',
+          headerRight: () => (
+            <DiscardButtonComponent
+              onPress={() => {
+                resetElectionCreation();
+                navigation.navigation.reset({
+                  index: 0,
+                  routes: [{name: 'HomeMain'}],
+                });
+              }}
+            />
+          ),
+        })}
       />
       <Stack.Screen
         name="ElectionInfo"
         component={ElectionInfoScreen}
-        options={{title: 'Seçim Bilgileri'}}
+        options={navigation => ({
+          title: 'Seçim Bilgileri',
+          headerRight: () => (
+            <DiscardButtonComponent
+              onPress={() => {
+                resetElectionCreation();
+                navigation.navigation.reset({
+                  index: 0,
+                  routes: [{name: 'HomeMain'}],
+                });
+              }}
+            />
+          ),
+        })}
       />
       <Stack.Screen
         name="ElectionAccess"
         component={ElectionAccessScreen}
-        options={{title: 'Seçim Erişim Bilgileri'}}
+        options={navigation => ({
+          title: 'Seçim Erişim Bilgileri',
+          headerRight: () => (
+            <DiscardButtonComponent
+              onPress={() => {
+                resetElectionCreation();
+                navigation.navigation.reset({
+                  index: 0,
+                  routes: [{name: 'HomeMain'}],
+                });
+              }}
+            />
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="BlockchainOrDb"
+        component={BlockchainOrDbScreen}
+        options={navigation => ({
+          title: 'Blockchain Or Database',
+          headerRight: () => (
+            <DiscardButtonComponent
+              onPress={() => {
+                resetElectionCreation();
+                navigation.navigation.reset({
+                  index: 0,
+                  routes: [{name: 'HomeMain'}],
+                });
+              }}
+            />
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="PublicOrPrivate"
+        component={PublicOrPrivateScreen}
+        options={navigation => ({
+          title: 'Public Or Private',
+          headerRight: () => (
+            <DiscardButtonComponent
+              onPress={() => {
+                resetElectionCreation();
+                navigation.navigation.reset({
+                  index: 0,
+                  routes: [{name: 'HomeMain'}],
+                });
+              }}
+            />
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="DefaultCustom"
+        component={DefaultCustomScreen}
+        options={navigation => ({
+          title: 'Varsayılan veya Özel',
+          headerRight: () => (
+            <DiscardButtonComponent
+              onPress={() => {
+                resetElectionCreation();
+                navigation.navigation.reset({
+                  index: 0,
+                  routes: [{name: 'HomeMain'}],
+                });
+              }}
+            />
+          ),
+        })}
       />
       <Stack.Screen
         name="Elections"
@@ -82,11 +185,6 @@ const HomeNavigator: React.FC = () => {
         name="BeCandidate"
         component={BeCandidateScreen}
         options={{title: 'Aday Ol'}}
-      />
-      <Stack.Screen
-        name="DefaultCustom"
-        component={DefaultCustomScreen}
-        options={{title: 'Varsayılan veya Özel'}}
       />
     </Stack.Navigator>
   );

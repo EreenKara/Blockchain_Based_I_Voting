@@ -7,38 +7,54 @@ import styleNumbers from '@styles/common/style.numbers';
 import CommonStyles from '@styles/common/commonStyles';
 import Colors from '@styles/common/colors';
 import ButtonComponent from '@components/Button/Button';
+import {
+  useAuthContext,
+  useElectionCreationContext,
+  useUserProfileContext,
+} from '@contexts/index';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'HomeMain'>;
 
 const HomeScreen: React.FC<Props> = ({navigation}) => {
-  const menuItems = [
-    {
-      title: 'Seçim Oluştur',
-      description: 'Yeni bir seçim oluşturun ve yönetin',
-      screen: 'BlockchainOrDb' as const,
-      icon: '🗳️',
-    },
-    {
-      title: 'Seçimler',
-      description: 'İstediğiniz bir seçimi görüntüleyin',
-      screen: 'Elections' as const,
-      icon: '📅',
-    },
-    {
-      title: 'Aday Ol',
-      description: 'Seçimlere aday olarak katılın',
-      screen: 'BeCandidate' as const,
-      icon: '👤',
-    },
-  ];
+  const {token} = useAuthContext();
+  const {step} = useElectionCreationContext();
+  let menuItems;
+  if (token === null) {
+    menuItems = [
+      {
+        title: 'Seçimler',
+        description: 'İstediğiniz bir seçimi görüntüleyin',
+        screen: 'Elections' as const,
+        icon: '📅',
+      },
+    ];
+  } else {
+    menuItems = [
+      {
+        title: 'Seçim Oluştur',
+        description: 'Yeni bir seçim oluşturun ve yönetin',
+        screen: 'BlockchainOrDb' as const,
+        icon: '🗳️',
+      },
+      {
+        title: 'Seçimler',
+        description: 'İstediğiniz bir seçimi görüntüleyin',
+        screen: 'Elections' as const,
+        icon: '📅',
+      },
+      {
+        title: 'Aday Ol',
+        description: 'Seçimlere aday olarak katılın',
+        screen: 'BeCandidate' as const,
+        icon: '👤',
+      },
+    ];
+  }
 
   return (
     <View style={[styles.container]}>
       {menuItems.map((item, index) => (
-        <Card
-          key={index}
-          style={[styles.card]}
-          onPress={() => navigation.navigate(item.screen)}>
+        <Card key={index} style={[styles.card]}>
           <Card.Content>
             <Title
               style={[
@@ -58,7 +74,26 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
           <Card.Actions>
             <ButtonComponent
               title="İncele"
-              onPress={() => navigation.navigate(item.screen)}
+              onPress={() => {
+                if (item.screen === 'BlockchainOrDb') {
+                  switch (step) {
+                    case 1:
+                      navigation.navigate('BlockchainOrDb');
+                      break;
+                    case 2:
+                      navigation.navigate('PublicOrPrivate');
+                      break;
+                    case 3:
+                      navigation.navigate('ElectionCandidates');
+                      break;
+                    case 4:
+                      navigation.navigate('DefaultCustom');
+                      break;
+                    default:
+                      navigation.navigate('BlockchainOrDb');
+                  }
+                } else navigation.navigate(item.screen);
+              }}
             />
           </Card.Actions>
         </Card>

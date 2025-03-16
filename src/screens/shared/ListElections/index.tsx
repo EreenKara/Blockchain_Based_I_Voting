@@ -5,7 +5,7 @@ import {Text} from 'react-native-paper';
 import {useFocusEffect} from '@react-navigation/native';
 import Colors from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
-import ActivityIndicatorComponent from '@shared/activity.indicator';
+import ActivityIndicatorComponent from '@screens/shared/activity.indicator';
 import ElectionCardComponent from '@icomponents/ElectionCard/election.card';
 import {HomeStackParamList, ProfileStackParamList} from '@navigation/types';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';

@@ -17,7 +17,7 @@ interface ElectionCreationContextType {
   dbType: 'database' | 'blockchain' | null;
   setDbType: (dbType: 'database' | 'blockchain' | null) => void;
   electionId: string | null;
-
+  step: number;
   submitting: {
     info: boolean;
     access: boolean;
@@ -44,6 +44,7 @@ interface ElectionCreationContextType {
   handleElectionChoiceStep: (
     values: ElectionChoiceViewModel[],
   ) => Promise<boolean>;
+  resetElectionCreation: () => void;
 }
 
 const ElectionCreationContext = createContext<
@@ -55,7 +56,7 @@ export const ElectionCreationProvider: React.FC<{
 }> = ({children}) => {
   // Tek bir electionId
   const [electionId, setElectionId] = useState<string | null>(null);
-  const [step, setStep] = useState<number>(0);
+  const [step, setStep] = useState<number>(1);
 
   // 1) Info adımı
   const {
@@ -65,6 +66,7 @@ export const ElectionCreationProvider: React.FC<{
     handleElectionInfoStep: originalHandleElectionInfoStep,
     setDbType,
     dbType,
+    reset: resetInfo,
   } = useElectionInfoStep();
 
   // 2) Access adımı
@@ -74,6 +76,7 @@ export const ElectionCreationProvider: React.FC<{
     error: accessError,
     submitting: accessSubmitting,
     handleElectionAccessStep: originalHandleElectionAccessStep,
+    reset: resetAccess,
   } = useElectionAccess(electionId);
 
   // 3) Candidate adımı
@@ -82,6 +85,7 @@ export const ElectionCreationProvider: React.FC<{
     submitting: candidateSubmitting,
     error: candidateError,
     handleElectionCandidateStep: originalHandleElectionCandidateStep,
+    reset: resetCandidate,
   } = useElectionCandidate(electionId);
 
   // 4) Choice adımı
@@ -90,6 +94,7 @@ export const ElectionCreationProvider: React.FC<{
     submitting: choiceSubmitting,
     error: choiceError,
     handleElectionChoiceStep: originalHandleElectionChoiceStep,
+    reset: resetChoice,
   } = useElectionChoices(electionId);
 
   // --------------------------------------
@@ -128,6 +133,15 @@ export const ElectionCreationProvider: React.FC<{
     return success;
   };
 
+  const resetElectionCreation = () => {
+    resetInfo();
+    resetAccess();
+    resetCandidate();
+    resetChoice();
+    setStep(0);
+    setElectionId(null);
+  };
+
   // --------------------------------------
   // Error & Submitting
   // --------------------------------------
@@ -158,12 +172,14 @@ export const ElectionCreationProvider: React.FC<{
         dbType,
         setDbType,
         electionId,
+        step,
         submitting,
         errors,
         handleElectionInfoStep,
         handleElectionAccessStep,
         handleElectionCandidateStep,
         handleElectionChoiceStep,
+        resetElectionCreation,
       }}>
       {children}
     </ElectionCreationContext.Provider>

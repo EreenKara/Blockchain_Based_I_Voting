@@ -234,7 +234,9 @@ useEffect(() => {
                 </View>
                 <View style={styles.userListContainer}>
                   {users.length <= 0 ? (
-                    <Text style={styles.subtitle}>Kullanıcı bulunamadı</Text>
+                    <Text style={styles.subtitle}>
+                      Hiçbir kullanıcı seçilmedi
+                    </Text>
                   ) : (
                     users
                       .filter(user =>

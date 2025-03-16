@@ -5,6 +5,16 @@ import GroupViewModel from '@viewmodels/group.viewmodel';
 export type RootStackParamList = {
   Auth: undefined;
   Main: undefined;
+  Error: {
+    error: string;
+    fromScreen: string;
+    toScreen: 'Auth' | 'Main';
+  };
+  Success: {
+    success: string;
+    fromScreen: string;
+    toScreen: 'Auth' | 'Main';
+  };
 };
 
 export type AuthStackParamList = {
@@ -34,6 +44,7 @@ export type HomeStackParamList = {
   BeCandidate: undefined;
   Elections: undefined;
   SpecificElection: {election: ElectionViewModel};
+  Success: undefined;
 };
 
 export type ProfileStackParamList = {

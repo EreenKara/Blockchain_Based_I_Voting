@@ -5,7 +5,7 @@ import {SpecificElectionScreenProps} from '@screens/type';
 import PieChartComponent from '@components/PieChart/pie.chart';
 import CommonStyles from '@styles/common/commonStyles';
 import {CandidateViewModel} from '@viewmodels/candidate.viewmodel';
-import ActivityIndicatorComponent from '@shared/activity.indicator';
+import ActivityIndicatorComponent from '@screens/shared/activity.indicator';
 import {Dimensions} from 'react-native';
 import {ProgressView} from '@react-native-community/progress-view';
 import ChartLegendComponent from '@components/ChartLegend/chart.legend.style';

@@ -11,7 +11,7 @@ import TextInputComponent from '@components/TextInput/text.input';
 import ButtonComponent from '@components/Button/Button';
 import styles from './index.style';
 import {bosSchema, loginUserSchema} from '@utility/validations';
-import ActivityIndicatorComponent from '@shared/activity.indicator';
+import ActivityIndicatorComponent from '@screens/shared/activity.indicator';
 import {useAuth} from '@hooks/use.auth';
 import {useNavigation} from '@react-navigation/native';
 type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
@@ -34,10 +34,12 @@ const LoginScreen: React.FC<Props> = ({navigation}) => {
     password: string;
     rememberMe: boolean;
   }) => {
-    console.log('handleLogin', values);
     const result = await submitLogin(values);
     if (result === true) {
-      homeNavigation.navigate('Main');
+      homeNavigation.reset({
+        index: 0,
+        routes: [{name: 'Main'}],
+      });
     }
   };
 

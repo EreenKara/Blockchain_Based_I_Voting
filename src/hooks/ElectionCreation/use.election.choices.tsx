@@ -12,8 +12,8 @@ const useElectionChoices = (electionId: string | null) => {
 
   // Aday ekleme/güncelleme işlemini yürüten fonksiyon
   const handleElectionChoiceStep = async (
-    newChoices: ElectionChoiceViewModel[],
-  ) => {
+    choices: ElectionChoiceViewModel[],
+  ): Promise<boolean> => {
     if (!electionId) {
       setError('Election ID is not set.');
       return false;
@@ -26,8 +26,8 @@ const useElectionChoices = (electionId: string | null) => {
     try {
       setSubmitting(true);
       // Örnek: putElectionCandidates gibi bir fonksiyon ile API'ya gönderin
-      await electionService.putElectionChoices(electionId, newChoices);
-      setChoices(newChoices);
+      await electionService.putElectionChoices(electionId, choices);
+      setChoices(choices);
       setSubmitting(false);
       return true;
     } catch (error: any) {
@@ -37,11 +37,18 @@ const useElectionChoices = (electionId: string | null) => {
     }
   };
 
+  const reset = () => {
+    setChoices([]);
+    setSubmitting(false);
+    setError(null);
+  };
+
   return {
     choices,
     submitting,
     error,
     handleElectionChoiceStep,
+    reset,
   };
 };
 

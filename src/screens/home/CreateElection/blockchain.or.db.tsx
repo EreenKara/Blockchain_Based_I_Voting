@@ -15,7 +15,7 @@ const BlockchainOrDbScreen: React.FC<Props> = ({navigation}) => {
     <View style={styles.container}>
       <View style={styles.transparentContainer}>
         <ChoiceCardComponent
-          title="Veri Tabanı "
+          title="Veri Tabanı"
           description="Veri tabanında tutulan seçimler"
           image={require('@assets/images/db_image.png')}
           onPress={() => {

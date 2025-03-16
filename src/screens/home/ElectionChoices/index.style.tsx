@@ -1,16 +1,35 @@
+import Colors from '@styles/common/colors';
+import CommonStyles from '@styles/common/commonStyles';
+import styleNumbers from '@styles/common/style.numbers';
 import {StyleSheet} from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.getTheme().background,
   },
   header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginVertical: 16,
+    ...CommonStyles.textStyles.subtitle,
+    marginVertical: styleNumbers.space,
     textAlign: 'center',
+  },
+  optionsContainer: {
+    width: '70%',
+    flexDirection: 'row',
+    paddingHorizontal: styleNumbers.space,
+    flexWrap: 'wrap',
+  },
+  button: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  snackbar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
 });
 
