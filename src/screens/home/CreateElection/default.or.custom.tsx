@@ -4,11 +4,13 @@ import ChoiceCardComponent from '@icomponents/ChoiceCard/choice.card';
 import {ElectionInfoScreen} from '@screens/home';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
+import {useStyles} from '@hooks/Modular/use.styles';
 type Props = NativeStackScreenProps<HomeStackParamList, 'DefaultCustom'>;
 
 const DefaultCustomScreen: React.FC<Props> = ({navigation}) => {
+  const styles = useStyles(createStyles);
   return (
     <View style={styles.container}>
       <View style={styles.transparentContainer}>
@@ -33,14 +35,15 @@ const DefaultCustomScreen: React.FC<Props> = ({navigation}) => {
 
 export default DefaultCustomScreen;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.getTheme().background,
-  },
-  transparentContainer: {
-    flex: 1,
-    backgroundColor: Colors.getTheme().transparentColor,
-    padding: styleNumbers.space,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    transparentContainer: {
+      flex: 1,
+      backgroundColor: colors.transparentColor,
+      padding: styleNumbers.space,
+    },
+  });

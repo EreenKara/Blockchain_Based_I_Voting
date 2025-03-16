@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Text} from 'react-native-paper';
 import {useFocusEffect} from '@react-navigation/native';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import ActivityIndicatorComponent from '@screens/shared/activity.indicator';
 import ElectionCardComponent from '@icomponents/ElectionCard/election.card';
@@ -14,6 +14,7 @@ import getElectionTexts from './text.screen.type';
 import {useGetElectionsFunction} from '../../../hooks/election.hook';
 import LightElectionViewModel from '@viewmodels/light.election.viewmodel';
 import {useElection} from '@hooks/use.election';
+import {useStyles} from '@hooks/Modular/use.styles';
 type ListElectionsScreenProps = NativeStackScreenProps<
   HomeStackParamList | ProfileStackParamList,
   'ListElections'
@@ -23,6 +24,7 @@ const ListElectionsScreen: React.FC<ListElectionsScreenProps> = ({
   route,
   navigation,
 }) => {
+  const styles = useStyles(createStyles);
   const {type} = route.params;
   const {title, description, errorTitle} = getElectionTexts(type);
   const {elections, loading, fetchElections} = useElection(type);
@@ -68,11 +70,12 @@ const ListElectionsScreen: React.FC<ListElectionsScreenProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    ...CommonStyles.viewStyles.container,
-    backgroundColor: Colors.getTheme().background,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    container: {
+      ...CommonStyles.viewStyles.container,
+      backgroundColor: colors.background,
+    },
+  });
 
 export default ListElectionsScreen;

@@ -1,7 +1,6 @@
 import {View} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {styles} from './index.style';
 import MapAnimationComponent from '@components/TurkeyMap/MapAnimation';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import BottomSheetComponent from '@components/BottomSheet/BottomSheet';
@@ -13,10 +12,13 @@ import {HomeStackParamList} from '@navigation/types';
 import {useSearchContext} from '@contexts/search.context';
 import {useElection} from '@hooks/use.election';
 import {ElectionType} from '@enums/election.type';
+import {useStyles} from '@hooks/Modular/use.styles';
+import createStyles from './index.style';
 
 type ScreenProps = NativeStackScreenProps<HomeStackParamList>;
 
 const ElectionsScreen: React.FC<ElectionsScreenProps> = () => {
+  const styles = useStyles(createStyles);
   const [index, setIndex] = useState<number>(-1);
   const navigation = useNavigation<ScreenProps>();
   const {elections, loading, fetchElections} = useElection(

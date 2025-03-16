@@ -8,3 +8,4 @@ export {
   ElectionCreationProvider,
   useElectionCreationContext,
 } from './election.creation.context';
+export {ThemeProvider, useThemeColors} from './theme.provider';

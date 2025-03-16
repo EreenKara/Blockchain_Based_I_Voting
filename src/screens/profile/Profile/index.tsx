@@ -4,7 +4,7 @@ import {useAuthContext} from '@contexts/index';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ProfileStackParamList, RootStackParamList} from '@navigation/types';
 import {useNavigation} from '@react-navigation/native';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import ActivityIndicatorComponent from '@screens/shared/activity.indicator';
@@ -13,10 +13,12 @@ import {useUserProfileContext} from '@contexts/user.profile.context';
 import AvatarHeaderComponent from '@icomponents/AvatarHeader/avatar.header';
 import {ElectionType} from '@enums/election.type';
 import ErrorScreenComponent from '@screens/shared/error.screen';
+import {useStyles} from '@hooks/Modular/use.styles';
 type ScreenProps = NativeStackScreenProps<ProfileStackParamList, 'ProfileMain'>;
 type RootProps = NativeStackNavigationProp<RootStackParamList>;
 
 const ProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
+  const styles = useStyles(createStyles);
   const rootNavigation = useNavigation<RootProps>();
   const {logout} = useAuthContext();
   const {user, fetchUser, loading, error} = useUserProfileContext();
@@ -163,25 +165,26 @@ const ProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.getTheme().background,
-    paddingHorizontal: styleNumbers.space * 2,
-  },
-  centerContent: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  menuGroup: {
-    marginTop: styleNumbers.space,
-    paddingHorizontal: styleNumbers.space,
-    backgroundColor: Colors.getTheme().transition,
-    padding: styleNumbers.space * 2,
-    borderRadius: styleNumbers.borderRadius * 2,
-    borderWidth: 1,
-    borderColor: Colors.getTheme().transparentColor,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+      paddingHorizontal: styleNumbers.space * 2,
+    },
+    centerContent: {
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    menuGroup: {
+      marginTop: styleNumbers.space,
+      paddingHorizontal: styleNumbers.space,
+      backgroundColor: Colors.getTheme().transition,
+      padding: styleNumbers.space * 2,
+      borderRadius: styleNumbers.borderRadius * 2,
+      borderWidth: 1,
+      borderColor: colors.transparentColor,
+    },
+  });
 
 export default ProfileScreen;

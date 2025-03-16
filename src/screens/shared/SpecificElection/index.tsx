@@ -13,6 +13,8 @@ import CandidateItemComponent from '@icomponents/CandidateItem/candidate.item';
 import Colors from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
 import {useSearchContext} from '@contexts/search.context';
+import {useStyles} from '@hooks/Modular/use.styles';
+import createStyles from './index.style';
 const windowHeight = Dimensions.get('window').height;
 
 const SpecificElectionScreen: React.FC<SpecificElectionScreenProps> = ({
@@ -23,6 +25,7 @@ const SpecificElectionScreen: React.FC<SpecificElectionScreenProps> = ({
   const [electionData, setElectionData] = useState<any>(null);
   const {search} = useSearchContext();
   const [candidates, setCandidates] = useState<CandidateViewModel[]>([]);
+  const styles = useStyles(createStyles);
   const loadElectionData = async () => {
     setLoading(true);
     const mockData = [

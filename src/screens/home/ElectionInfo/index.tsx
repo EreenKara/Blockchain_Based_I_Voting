@@ -7,8 +7,8 @@ import {HomeStackParamList} from '@navigation/types';
 import {Formik} from 'formik';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import ButtonComponent from '@components/Button/Button';
-import styles from './index.style';
-
+import {useStyles} from '@hooks/Modular/use.styles';
+import createStyles from './index.style';
 // Components
 import StartToEndDateComponent from '@icomponents/StartToEndDate/start.to.end.date';
 import ImagePickerComponent from '@icomponents/ImagePicker/image.picker';
@@ -27,6 +27,7 @@ export interface FormValues {
 }
 
 const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
+  const styles = useStyles(createStyles);
   const {handleElectionInfoStep, submitting, errors} =
     useElectionCreationContext();
 

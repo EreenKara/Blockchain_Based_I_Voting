@@ -1,7 +1,8 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import ButtonComponent from '@components/Button/Button';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
+import {useStyles} from '@hooks/Modular/use.styles';
 
 interface DiscardButtonComponentProps {
   onPress: () => void;
@@ -10,6 +11,7 @@ interface DiscardButtonComponentProps {
 const DiscardButtonComponent: React.FC<DiscardButtonComponentProps> = ({
   onPress,
 }) => {
+  const styles = useStyles(createStyles);
   return (
     <ButtonComponent style={styles.button} title="İptal Et" onPress={onPress} />
   );
@@ -17,8 +19,9 @@ const DiscardButtonComponent: React.FC<DiscardButtonComponentProps> = ({
 
 export default DiscardButtonComponent;
 
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: Colors.getTheme().errorButton,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    button: {
+      backgroundColor: colors.errorButton,
+    },
+  });

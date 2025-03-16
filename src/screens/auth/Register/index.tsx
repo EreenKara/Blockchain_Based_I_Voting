@@ -6,14 +6,16 @@ import {Formik} from 'formik';
 import {AuthStackParamList} from '@navigation/types';
 import TextInputComponent from '@components/TextInput/text.input';
 import ButtonComponent from '@components/Button/Button';
-import styles from './index.style';
 import {registerUserSchema} from '@utility/validations';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {RegisterViewModel} from '@viewmodels/register.viewmodel';
 import {useAuth} from '@hooks/use.auth';
+import {useStyles} from '@hooks/Modular/use.styles';
+import createStyles from './index.style';
 type Props = NativeStackScreenProps<AuthStackParamList, 'Register'>;
 
 const RegisterScreen: React.FC<Props> = ({navigation}) => {
+  const styles = useStyles(createStyles);
   const {submitRegister, visible, message, setVisible, submitError} =
     useAuth(false);
 

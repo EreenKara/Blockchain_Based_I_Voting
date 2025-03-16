@@ -9,16 +9,18 @@ import {Formik} from 'formik';
 import {AuthStackParamList, RootStackParamList} from '@navigation/types';
 import TextInputComponent from '@components/TextInput/text.input';
 import ButtonComponent from '@components/Button/Button';
-import styles from './index.style';
 import {bosSchema, loginUserSchema} from '@utility/validations';
 import ActivityIndicatorComponent from '@screens/shared/activity.indicator';
 import {useAuth} from '@hooks/use.auth';
 import {useNavigation} from '@react-navigation/native';
+import {useStyles} from '@hooks/Modular/use.styles';
+import createStyles from './index.style';
 type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 type RootProps = NativeStackNavigationProp<RootStackParamList>;
 
 const LoginScreen: React.FC<Props> = ({navigation}) => {
   const homeNavigation = useNavigation<RootProps>();
+  const styles = useStyles(createStyles);
   const {
     loading,
     visible,
@@ -119,7 +121,7 @@ const LoginScreen: React.FC<Props> = ({navigation}) => {
             />
             <Button
               labelStyle={styles.buttonLabel}
-              onPress={() => navigation.navigate('Register')}
+              onPress={() => navigation.navigate('ForgotPassword')}
               style={styles.button}>
               Şifremi Unuttum
             </Button>

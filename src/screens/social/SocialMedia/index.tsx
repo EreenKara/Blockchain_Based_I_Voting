@@ -2,9 +2,9 @@ import React, {useState} from 'react';
 import {View, StyleSheet, FlatList} from 'react-native';
 import {Card, Text, Avatar, IconButton} from 'react-native-paper';
 import styleNumbers from '@styles/common/style.numbers';
-import Colors from '@styles/common/colors';
+import {ColorsSchema} from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
-
+import {useStyles} from '@hooks/Modular/use.styles';
 interface Candidate {
   id: string;
   name: string;
@@ -31,6 +31,7 @@ interface Post {
 }
 
 const SocialMediaScreen: React.FC = () => {
+  const styles = useStyles(createStyles);
   const demoCandidate: Candidate = {
     id: '1',
     name: 'John Doe',
@@ -138,36 +139,37 @@ const SocialMediaScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.getTheme().background,
-  },
-  storiesList: {
-    padding: styleNumbers.space,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.getTheme().borderColor,
-  },
-  storyContainer: {
-    alignItems: 'center',
-    marginHorizontal: styleNumbers.space,
-  },
-  storyAvatar: {
-    borderWidth: 2,
-    borderColor: Colors.getTheme().button,
-  },
-  storyUsername: {
-    ...CommonStyles.textStyles.title,
-    marginTop: styleNumbers.space / 2,
-  },
-  postCard: {
-    marginVertical: styleNumbers.space,
-    backgroundColor: Colors.getTheme().transition,
-    ...CommonStyles.shadowStyle,
-  },
-  postContainer: {
-    padding: styleNumbers.space * 2,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    storiesList: {
+      padding: styleNumbers.space,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.borderColor,
+    },
+    storyContainer: {
+      alignItems: 'center',
+      marginHorizontal: styleNumbers.space,
+    },
+    storyAvatar: {
+      borderWidth: 2,
+      borderColor: colors.button,
+    },
+    storyUsername: {
+      ...CommonStyles.textStyles.title,
+      marginTop: styleNumbers.space / 2,
+    },
+    postCard: {
+      marginVertical: styleNumbers.space,
+      backgroundColor: colors.transition,
+      ...CommonStyles.shadowStyle,
+    },
+    postContainer: {
+      padding: styleNumbers.space * 2,
+    },
+  });
 
 export default SocialMediaScreen;

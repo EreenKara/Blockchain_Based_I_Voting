@@ -1,10 +1,12 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
 import MenuItemComponent from '@icomponents/MenuItem/menu.item';
+import {useStyles} from '@hooks/Modular/use.styles';
 
 const AddressInformationScreen = () => {
+  const styles = useStyles(createStyles);
   return (
     <View style={styles.container}>
       <MenuItemComponent
@@ -21,11 +23,12 @@ const AddressInformationScreen = () => {
 
 export default AddressInformationScreen;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.getTheme().background,
-    paddingHorizontal: styleNumbers.space * 2,
-    paddingVertical: styleNumbers.space * 3,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+      paddingHorizontal: styleNumbers.space * 2,
+      paddingVertical: styleNumbers.space * 3,
+    },
+  });

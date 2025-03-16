@@ -9,7 +9,6 @@ import {
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
-import styles from './index.style';
 import {Formik, FormikProps} from 'formik';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import AddressPickerComponent from '@icomponents/AddressPicker/address.picker';
@@ -25,9 +24,12 @@ import SearchBarComponent from '@components/SearchBar/search.bar';
 import MenuItemComponent from '@icomponents/MenuItem/menu.item';
 import useUsers from '@hooks/use.users';
 import SearchBarModalComponent from '@components/SearchBarModal/search.bar.modal';
+import {useStyles} from '@hooks/Modular/use.styles';
+import createStyles from './index.style';
 type Props = NativeStackScreenProps<HomeStackParamList, 'ElectionAccess'>;
 
 const ElectionAccessScreen: React.FC<Props> = ({navigation, route}) => {
+  const styles = useStyles(createStyles);
   const {accessType} = route.params;
   const {user} = useUserProfileContext();
   const [visible, setVisible] = useState(false);

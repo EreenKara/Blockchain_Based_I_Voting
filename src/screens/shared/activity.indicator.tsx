@@ -4,9 +4,10 @@ import {
   View,
   ActivityIndicator as RNActivityIndicator,
 } from 'react-native';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
+import {useStyles} from '@hooks/Modular/use.styles';
 interface ActivityIndicatorProps {
   size?: 'small' | 'large';
   color?: string;
@@ -18,6 +19,7 @@ const ActivityIndicatorComponent: React.FC<ActivityIndicatorProps> = ({
   color = Colors.getTheme().button,
   fullScreen = false,
 }) => {
+  const styles = useStyles(createStyles);
   return (
     <View style={[styles.container, fullScreen && styles.fullScreen]}>
       <RNActivityIndicator size={size} color={color} />
@@ -25,16 +27,17 @@ const ActivityIndicatorComponent: React.FC<ActivityIndicatorProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    ...CommonStyles.viewStyles.centerContainer,
-    padding: styleNumbers.space,
-  },
-  fullScreen: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: Colors.getTheme().background,
-    zIndex: 999,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    container: {
+      ...CommonStyles.viewStyles.centerContainer,
+      padding: styleNumbers.space,
+    },
+    fullScreen: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: colors.background,
+      zIndex: 999,
+    },
+  });
 
 export default ActivityIndicatorComponent;

@@ -5,17 +5,18 @@ import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
 import styleNumbers from '@styles/common/style.numbers';
 import CommonStyles from '@styles/common/commonStyles';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import ButtonComponent from '@components/Button/Button';
 import {
   useAuthContext,
   useElectionCreationContext,
   useUserProfileContext,
 } from '@contexts/index';
-
+import {useStyles} from '@hooks/Modular/use.styles';
 type Props = NativeStackScreenProps<HomeStackParamList, 'HomeMain'>;
 
 const HomeScreen: React.FC<Props> = ({navigation}) => {
+  const styles = useStyles(createStyles);
   const {token} = useAuthContext();
   const {step} = useElectionCreationContext();
   let menuItems;
@@ -102,16 +103,17 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: styleNumbers.space,
-    backgroundColor: Colors.getTheme().background,
-  },
-  card: {
-    ...CommonStyles.viewStyles.card,
-    marginBottom: styleNumbers.space,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: styleNumbers.space,
+      backgroundColor: colors.background,
+    },
+    card: {
+      ...CommonStyles.viewStyles.card,
+      marginBottom: styleNumbers.space,
+    },
+  });
 
 export default HomeScreen;

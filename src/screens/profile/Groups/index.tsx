@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React, {useEffect} from 'react';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
 import MenuItemComponent from '@icomponents/MenuItem/menu.item';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -12,10 +12,11 @@ import VirtualizedListComponent from '@components/List/virtualized.list';
 import GroupViewModel from '@viewmodels/group.viewmodel';
 import {useUserProfileContext} from '@contexts/user.profile.context';
 import CommonStyles from '@styles/common/commonStyles';
-
+import {useStyles} from '@hooks/Modular/use.styles';
 type GroupsProps = NativeStackScreenProps<ProfileStackParamList, 'Groups'>;
 
 const GroupsScreen: React.FC<GroupsProps> = ({navigation}) => {
+  const styles = useStyles(createStyles);
   const {
     user,
     groups,
@@ -86,24 +87,25 @@ const GroupsScreen: React.FC<GroupsProps> = ({navigation}) => {
 
 export default GroupsScreen;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.getTheme().background,
-    paddingHorizontal: styleNumbers.space * 2,
-    paddingVertical: styleNumbers.space * 3,
-  },
-  listContainer: {
-    flex: 1,
-    width: '100%',
-    paddingVertical: styleNumbers.space,
-  },
-  createGroupButton: {
-    marginTop: styleNumbers.space,
-  },
-  emptyText: {
-    ...CommonStyles.textStyles.paragraph,
-    color: Colors.getTheme().text,
-    textAlign: 'center',
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+      paddingHorizontal: styleNumbers.space * 2,
+      paddingVertical: styleNumbers.space * 3,
+    },
+    listContainer: {
+      flex: 1,
+      width: '100%',
+      paddingVertical: styleNumbers.space,
+    },
+    createGroupButton: {
+      marginTop: styleNumbers.space,
+    },
+    emptyText: {
+      ...CommonStyles.textStyles.paragraph,
+      color: colors.text,
+      textAlign: 'center',
+    },
+  });

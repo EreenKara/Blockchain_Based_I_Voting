@@ -4,12 +4,14 @@ import ChoiceCardComponent from '@icomponents/ChoiceCard/choice.card';
 import {ElectionInfoScreen} from '@screens/home';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
 import {useElectionCreationContext} from '@contexts/election.creation.context';
+import {useStyles} from '@hooks/Modular/use.styles';
 type Props = NativeStackScreenProps<HomeStackParamList, 'PublicOrPrivate'>;
 
 const PublicOrPrivateScreen: React.FC<Props> = ({navigation}) => {
+  const styles = useStyles(createStyles);
   const {election} = useElectionCreationContext();
   if (!election) {
     return (
@@ -51,14 +53,15 @@ const PublicOrPrivateScreen: React.FC<Props> = ({navigation}) => {
 
 export default PublicOrPrivateScreen;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.getTheme().background,
-  },
-  transparentContainer: {
-    flex: 1,
-    backgroundColor: Colors.getTheme().transparentColor,
-    padding: styleNumbers.space,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    transparentContainer: {
+      flex: 1,
+      backgroundColor: colors.transparentColor,
+      padding: styleNumbers.space,
+    },
+  });

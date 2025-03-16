@@ -5,13 +5,14 @@ import {
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 import {HomeStackParamList, RootStackParamList} from '@navigation/types';
-import styles from './index.style';
 import OptionGroup from '@components/OptionGroup/option.group';
 import {useElectionCreationContext} from '@contexts/election.creation.context';
 import {ElectionChoiceViewModel} from '@viewmodels/election.choice.viewmodel';
 import ButtonComponent from '@components/Button/Button';
 import {useNavigation} from '@react-navigation/native';
 import {Snackbar} from 'react-native-paper';
+import {useStyles} from '@hooks/Modular/use.styles';
+import createStyles from './index.style';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'ElectionChoices'>;
 
@@ -70,6 +71,7 @@ const initialGroups: Group[] = [
 const ElectionChoicesScreen: React.FC<Props> = ({navigation}) => {
   const rootNavigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const styles = useStyles(createStyles);
   const {handleElectionChoiceStep, submitting, errors} =
     useElectionCreationContext();
   const [groups] = useState<Group[]>(initialGroups);

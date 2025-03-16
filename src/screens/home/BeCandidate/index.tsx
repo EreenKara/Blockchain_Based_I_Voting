@@ -10,14 +10,16 @@ import {
 } from 'react-native-paper';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
 import CommonStyles from '@styles/common/commonStyles';
 import TextInputComponent from '@components/TextInput/text.input';
 import ButtonComponent from '@components/Button/Button';
+import {useStyles} from '@hooks/Modular/use.styles';
 type Props = NativeStackScreenProps<HomeStackParamList, 'BeCandidate'>;
 
 const BeCandidateScreen: React.FC<Props> = ({navigation}) => {
+  const styles = useStyles(createStyles);
   const [biography, setBiography] = useState('');
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState('');
@@ -67,28 +69,29 @@ const BeCandidateScreen: React.FC<Props> = ({navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.getTheme().background,
-  },
-  infoCard: {
-    margin: styleNumbers.spaceLarge,
-    marginBottom: styleNumbers.spaceLarge,
-  },
-  input: {
-    margin: styleNumbers.spaceLarge,
-    backgroundColor: Colors.getTheme().background,
-  },
-  button: {
-    margin: styleNumbers.spaceLarge,
-  },
-  snackbar: {
-    position: 'absolute',
-    bottom: 0,
-  },
-  viewTextInput: {
-    marginTop: styleNumbers.spaceLarge,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    infoCard: {
+      margin: styleNumbers.spaceLarge,
+      marginBottom: styleNumbers.spaceLarge,
+    },
+    input: {
+      margin: styleNumbers.spaceLarge,
+      backgroundColor: Colors.getTheme().background,
+    },
+    button: {
+      margin: styleNumbers.spaceLarge,
+    },
+    snackbar: {
+      position: 'absolute',
+      bottom: 0,
+    },
+    viewTextInput: {
+      marginTop: styleNumbers.spaceLarge,
+    },
+  });
 export default BeCandidateScreen;

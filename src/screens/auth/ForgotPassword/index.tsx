@@ -5,11 +5,13 @@ import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AuthStackParamList} from '@navigation/types';
 import styleNumbers from '@styles/common/style.numbers';
 import CommonStyles from '@styles/common/commonStyles';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import TextInputComponent from '@components/TextInput/text.input';
+import {useStyles} from '@hooks/Modular/use.styles';
 type Props = NativeStackScreenProps<AuthStackParamList, 'ForgotPassword'>;
 
 const ForgotPasswordScreen: React.FC<Props> = ({navigation}) => {
+  const styles = useStyles(createStyles);
   const [email, setEmail] = useState('');
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState('');
@@ -81,29 +83,30 @@ const ForgotPasswordScreen: React.FC<Props> = ({navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    ...CommonStyles.viewStyles.container,
-    padding: styleNumbers.space,
-  },
-  description: {
-    ...CommonStyles.textStyles.paragraph,
-    marginBottom: styleNumbers.space,
-    color: Colors.getTheme().text,
-  },
-  input: {
-    marginBottom: styleNumbers.spaceLittle,
-  },
-  button: {
-    marginTop: styleNumbers.spaceLittle,
-  },
-  snackbar: {
-    position: 'absolute',
-    bottom: 0,
-  },
-  viewTextInput: {
-    marginTop: styleNumbers.space * 3,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    container: {
+      ...CommonStyles.viewStyles.container,
+      padding: styleNumbers.space,
+    },
+    description: {
+      ...CommonStyles.textStyles.paragraph,
+      marginBottom: styleNumbers.space,
+      color: colors.text,
+    },
+    input: {
+      marginBottom: styleNumbers.spaceLittle,
+    },
+    button: {
+      marginTop: styleNumbers.spaceLittle,
+    },
+    snackbar: {
+      position: 'absolute',
+      bottom: 0,
+    },
+    viewTextInput: {
+      marginTop: styleNumbers.space * 3,
+    },
+  });
 
 export default ForgotPasswordScreen;

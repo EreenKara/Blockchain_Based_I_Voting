@@ -12,16 +12,17 @@ import {
 import {Text} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ProfileStackParamList} from '@navigation/types';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
 import TextInputComponent from '@components/TextInput/text.input';
 import ButtonComponent from '@components/Button/Button';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-
+import {useStyles} from '@hooks/Modular/use.styles';
 type Props = NativeStackScreenProps<ProfileStackParamList, 'AddCard'>;
 
 const AddCardScreen: React.FC<Props> = ({navigation}) => {
+  const styles = useStyles(createStyles);
   const [cardHolder, setCardHolder] = useState('');
   const [cardNumber, setCardNumber] = useState('');
   const [expireDate, setExpireDate] = useState('');
@@ -135,92 +136,93 @@ const AddCardScreen: React.FC<Props> = ({navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.getTheme().background,
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
-  header: {
-    padding: styleNumbers.space * 2,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: styleNumbers.space * 3,
-    backgroundColor: Colors.getTheme().transition,
-  },
-  creditCard: {
-    width: '100%',
-    height: 300,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  creditCardImage: {
-    width: '100%',
-    resizeMode: 'contain',
-    height: '100%',
-  },
-  closeButton: {
-    fontSize: styleNumbers.textSize * 2,
-    marginRight: styleNumbers.space * 2,
-    color: Colors.getTheme().text,
-  },
-  title: {
-    flex: 1,
-    textAlign: 'center',
-    marginRight: styleNumbers.space * 4,
-  },
-  form: {
-    flex: 1,
-    alignContent: 'center',
-    justifyContent: 'center',
-    marginTop: styleNumbers.space * 2,
-    marginBottom: styleNumbers.space * 2,
-  },
-  inputContainer: {
-    padding: styleNumbers.space * 2,
-    width: '100%',
-    marginBottom: styleNumbers.space * 2,
-  },
-  label: {
-    ...CommonStyles.textStyles.paragraph,
-    marginBottom: styleNumbers.space,
-    color: Colors.getTheme().text,
-  },
-  inputView: {
-    borderWidth: 0,
-    borderRadius: styleNumbers.borderRadius * 0.2,
-  },
-  input: {
-    fontSize: styleNumbers.textSize * 1.3,
-    borderRadius: styleNumbers.borderRadius * 0.2,
-    backgroundColor: Colors.getTheme().creditCard,
-    height: 70,
-  },
-  row: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  button: {
-    marginTop: 'auto',
-    marginBottom: styleNumbers.space * 2,
-  },
-  continueButton: {
-    borderWidth: 2,
-    borderColor: Colors.getTheme().borderColor,
-    backgroundColor: Colors.getTheme().button,
-    borderRadius: styleNumbers.borderRadius,
-    paddingVertical: styleNumbers.space * 2,
-    marginBottom: styleNumbers.space * 2,
-    width: '60%',
-    alignSelf: 'center',
-  },
-  continueButtonText: {
-    ...CommonStyles.textStyles.subtitle,
-    color: Colors.getTheme().cardText,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    scrollContent: {
+      flexGrow: 1,
+    },
+    header: {
+      padding: styleNumbers.space * 2,
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: styleNumbers.space * 3,
+      backgroundColor: colors.transition,
+    },
+    creditCard: {
+      width: '100%',
+      height: 300,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    creditCardImage: {
+      width: '100%',
+      resizeMode: 'contain',
+      height: '100%',
+    },
+    closeButton: {
+      fontSize: styleNumbers.textSize * 2,
+      marginRight: styleNumbers.space * 2,
+      color: colors.text,
+    },
+    title: {
+      flex: 1,
+      textAlign: 'center',
+      marginRight: styleNumbers.space * 4,
+    },
+    form: {
+      flex: 1,
+      alignContent: 'center',
+      justifyContent: 'center',
+      marginTop: styleNumbers.space * 2,
+      marginBottom: styleNumbers.space * 2,
+    },
+    inputContainer: {
+      padding: styleNumbers.space * 2,
+      width: '100%',
+      marginBottom: styleNumbers.space * 2,
+    },
+    label: {
+      ...CommonStyles.textStyles.paragraph,
+      marginBottom: styleNumbers.space,
+      color: colors.text,
+    },
+    inputView: {
+      borderWidth: 0,
+      borderRadius: styleNumbers.borderRadius * 0.2,
+    },
+    input: {
+      fontSize: styleNumbers.textSize * 1.3,
+      borderRadius: styleNumbers.borderRadius * 0.2,
+      backgroundColor: colors.creditCard,
+      height: 70,
+    },
+    row: {
+      width: '100%',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    button: {
+      marginTop: 'auto',
+      marginBottom: styleNumbers.space * 2,
+    },
+    continueButton: {
+      borderWidth: 2,
+      borderColor: colors.borderColor,
+      backgroundColor: colors.button,
+      borderRadius: styleNumbers.borderRadius,
+      paddingVertical: styleNumbers.space * 2,
+      marginBottom: styleNumbers.space * 2,
+      width: '60%',
+      alignSelf: 'center',
+    },
+    continueButtonText: {
+      ...CommonStyles.textStyles.subtitle,
+      color: colors.cardText,
+    },
+  });
 
 export default AddCardScreen;

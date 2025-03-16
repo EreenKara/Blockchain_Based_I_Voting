@@ -1,6 +1,6 @@
 import {Appearance, ColorSchemeName} from 'react-native';
 
-interface ColorsSchema {
+export interface ColorsSchema {
   button: string;
   background: string;
   cardButton: string;

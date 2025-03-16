@@ -2,17 +2,21 @@ import React, {useState, useRef} from 'react';
 import {StyleSheet, Text, View, TextInput, SafeAreaView} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AuthStackParamList} from '@navigation/types';
-import styles from './index.style';
+import createStyles from './index.style';
 import CommonStyles from '@styles/common/commonStyles';
 import ButtonComponent from '@components/Button/Button';
 import {Snackbar} from 'react-native-paper';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 import {useAuth} from '@hooks/use.auth';
+import {useThemeColors} from '@contexts/index';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'EmailConfirm'>;
 
 const EmailConfirmScreen: React.FC<Props> = ({navigation, route}) => {
+  const {colors} = useThemeColors();
+  const styles = createStyles(colors);
+
   const {emailOrIdentity} = route.params;
   const [code, setCode] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState('');
