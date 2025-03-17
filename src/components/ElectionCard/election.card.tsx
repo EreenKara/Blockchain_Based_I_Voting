@@ -1,12 +1,13 @@
 import React, {useState} from 'react';
 import {View, Text, SafeAreaView, ListRenderItem} from 'react-native';
 import ElectionCardItemComponent from '../ElectionCardItem/election.card.item';
-import {electionCardStyles as styles} from './election.card.style';
+import createStyles from './election.card.style';
 import VirtualizedListComponent from '@components/List/virtualized.list';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
 import LightElectionViewModel from '@viewmodels/light.election.viewmodel';
+import {useStyles} from '@hooks/Modular/use.styles';
 type ElectionNavigationProp = NativeStackNavigationProp<HomeStackParamList>;
 
 const sampleItems: LightElectionViewModel[] = [
@@ -41,6 +42,7 @@ const ElectionCardComponent: React.FC<ElectionCardComponentProps> = ({
   renderItem,
   items = sampleItems,
 }) => {
+  const styles = useStyles(createStyles);
   const navigation = useNavigation<ElectionNavigationProp>();
 
   const defaultRenderItem = ({item}: {item: LightElectionViewModel}) => (

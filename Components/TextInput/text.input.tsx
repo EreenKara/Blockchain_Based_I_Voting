@@ -8,7 +8,8 @@ import {
   TextProps,
   TouchableOpacity,
 } from 'react-native';
-import {textInputStyles as styles} from './text.input.style';
+import {useStyles} from '@hooks/Modular/use.styles';
+import createStyles from './text.input.style';
 import Colors from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
 
@@ -39,6 +40,7 @@ const TextInputComponent: React.FC<TextInputComponentProps> = ({
   multiline = false,
   ...restProps
 }) => {
+  const styles = useStyles(createStyles);
   const [isFocused, setIsFocused] = useState(false);
 
   return (

@@ -12,7 +12,8 @@ import BottomSheet, {
   BottomSheetProps,
 } from '@gorhom/bottom-sheet';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import Colors from '../../styles/common/colors';
+import Colors, {ColorsSchema} from '../../styles/common/colors';
+import {useStyles} from '@hooks/Modular/use.styles';
 
 interface BottomSheetComponentProps {
   index: number;
@@ -29,6 +30,8 @@ const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
   children,
   style,
 }) => {
+  const styles = useStyles(createStyles);
+
   const bottomSheetRef = useRef<React.ElementRef<typeof BottomSheet>>(null);
   // variables
   const snapPointsLocal = useMemo(
@@ -65,24 +68,25 @@ const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
 
 export default BottomSheetComponent;
 
-const styles = StyleSheet.create({
-  contentContainer: {
-    flex: 1,
-    backgroundColor: Colors.getTheme().transition,
-    paddingTop: 0,
-    alignItems: 'center',
-  },
-  handle: {
-    backgroundColor: Colors.getTheme().button,
-    height: 30,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-  },
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    contentContainer: {
+      flex: 1,
+      backgroundColor: colors.transition,
+      paddingTop: 0,
+      alignItems: 'center',
+    },
+    handle: {
+      backgroundColor: colors.button,
+      height: 30,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+    },
 
-  handleIndicator: {
-    backgroundColor: Colors.getTheme().indicator,
-    width: 40,
-    height: 5,
-    borderRadius: 2.5,
-  },
-});
+    handleIndicator: {
+      backgroundColor: colors.indicator,
+      width: 40,
+      height: 5,
+      borderRadius: 2.5,
+    },
+  });

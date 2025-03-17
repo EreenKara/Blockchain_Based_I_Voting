@@ -6,8 +6,6 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import BottomSheetComponent from '@components/BottomSheet/BottomSheet';
 import HistoryCardComponent from '@icomponents/HistoryCard/history.card';
 import ElectionCardComponent from '@icomponents/ElectionCard/election.card';
-import {useNavigation} from '@react-navigation/native';
-import {ElectionsScreenProps} from '@screens/type';
 import {HomeStackParamList} from '@navigation/types';
 import {useSearchContext} from '@contexts/search.context';
 import {useElection} from '@hooks/use.election';
@@ -15,12 +13,14 @@ import {ElectionType} from '@enums/election.type';
 import {useStyles} from '@hooks/Modular/use.styles';
 import createStyles from './index.style';
 
-type ScreenProps = NativeStackScreenProps<HomeStackParamList>;
+type ElectionsScreenProps = NativeStackScreenProps<
+  HomeStackParamList,
+  'Elections'
+>;
 
 const ElectionsScreen: React.FC<ElectionsScreenProps> = () => {
   const styles = useStyles(createStyles);
   const [index, setIndex] = useState<number>(-1);
-  const navigation = useNavigation<ScreenProps>();
   const {elections, loading, fetchElections} = useElection(
     ElectionType.Popular,
   );

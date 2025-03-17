@@ -6,7 +6,8 @@ import {
   ListRenderItemInfo,
 } from 'react-native';
 import Animated, {FadeIn, BounceIn} from 'react-native-reanimated';
-import styles from './virtualized.list.style';
+import {useStyles} from '@hooks/Modular/use.styles';
+import createStyles from './virtualized.list.style';
 
 type VirtualizedListComponentProps = Omit<
   VirtualizedListProps<string>,
@@ -21,6 +22,7 @@ const VirtualizedListComponent: React.FC<VirtualizedListComponentProps> = ({
   renderItem,
   ...virtualizedListProps
 }) => {
+  const styles = useStyles(createStyles);
   const getItem = (_data: any[], index: number) => data[index];
   const getItemCount = (_data: any[]) => data.length;
 

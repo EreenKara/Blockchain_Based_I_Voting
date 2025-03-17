@@ -29,6 +29,9 @@ const createStyles = (colors: ColorsSchema) =>
       marginTop: styleNumbers.space * 2,
       marginBottom: styleNumbers.space * 2,
     },
+    footerContainer: {
+      marginTop: 'auto', // Bu satır eklendi
+    },
   });
 
 export default createStyles;

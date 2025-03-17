@@ -3,7 +3,9 @@ import {View, Text, StyleSheet} from 'react-native';
 import RadioButtonComponent from '@components/RadioButton/radio.button';
 import styleNumbers from '@styles/common/style.numbers';
 import CommonStyles from '@styles/common/commonStyles';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
+import {useStyles} from '@hooks/Modular/use.styles';
+
 interface OptionGroupProps {
   title: string;
   options: string[];
@@ -15,6 +17,7 @@ const OptionGroup: React.FC<OptionGroupProps> = ({
   options,
   onOptionSelect,
 }) => {
+  const styles = useStyles(createStyles);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
   const handlePress = (option: string) => {
@@ -41,24 +44,25 @@ const OptionGroup: React.FC<OptionGroupProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginVertical: styleNumbers.space,
-  },
-  groupTitle: {
-    ...CommonStyles.textStyles.subtitle,
-    textAlign: 'center',
-    marginBottom: styleNumbers.space,
-  },
-  optionsContainer: {
-    backgroundColor: Colors.getTheme().transition,
-    flexWrap: 'wrap',
-    padding: styleNumbers.space,
-    borderWidth: 1,
-    borderColor: Colors.getTheme().button,
-    borderRadius: styleNumbers.borderRadius,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      marginVertical: styleNumbers.space,
+    },
+    groupTitle: {
+      ...CommonStyles.textStyles.subtitle,
+      textAlign: 'center',
+      marginBottom: styleNumbers.space,
+    },
+    optionsContainer: {
+      backgroundColor: colors.transition,
+      flexWrap: 'wrap',
+      padding: styleNumbers.space,
+      borderWidth: 1,
+      borderColor: colors.button,
+      borderRadius: styleNumbers.borderRadius,
+    },
+  });
 
 export default OptionGroup;

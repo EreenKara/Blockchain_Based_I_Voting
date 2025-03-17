@@ -11,7 +11,8 @@ import {
   View,
 } from 'react-native';
 import {Avatar} from 'react-native-paper';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
+import {useStyles} from '@hooks/Modular/use.styles';
 
 interface MenuItemComponentProps {
   iconComponent?: React.ReactNode;
@@ -40,6 +41,8 @@ export const MenuItemComponent: React.FC<MenuItemComponentProps> = ({
   touchable = true,
   onPress = () => {},
 }) => {
+  const styles = useStyles(createStyles);
+
   const item = (
     <>
       {iconComponent && iconComponent}
@@ -108,27 +111,28 @@ export const MenuItemComponent: React.FC<MenuItemComponentProps> = ({
 
 export default MenuItemComponent;
 
-const styles = StyleSheet.create({
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: styleNumbers.space * 1.5,
-    padding: styleNumbers.space * 2,
-  },
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    menuItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: styleNumbers.space * 1.5,
+      padding: styleNumbers.space * 2,
+    },
 
-  menuTextContainer: {
-    flex: 1,
-  },
-  menuIcon: {
-    width: 32,
-    height: 32,
-    marginRight: styleNumbers.space * 2,
-  },
-  menuText: {
-    flex: 1,
-  },
-  arrowIcon: {
-    width: 15,
-    height: 15,
-  },
-});
+    menuTextContainer: {
+      flex: 1,
+    },
+    menuIcon: {
+      width: 32,
+      height: 32,
+      marginRight: styleNumbers.space * 2,
+    },
+    menuText: {
+      flex: 1,
+    },
+    arrowIcon: {
+      width: 15,
+      height: 15,
+    },
+  });

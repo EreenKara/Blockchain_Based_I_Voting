@@ -3,7 +3,8 @@ import React, {useEffect, useRef} from 'react';
 import CommonStyles from '@styles/common/commonStyles';
 import {CandidateViewModel} from '@viewmodels/candidate.viewmodel';
 import styleNumbers from '@styles/common/style.numbers';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
+import {useStyles} from '@hooks/Modular/use.styles';
 
 interface ChartLegendComponentProps {
   candidates: CandidateViewModel[];
@@ -12,6 +13,7 @@ interface ChartLegendComponentProps {
 const ChartLegendComponent: React.FC<ChartLegendComponentProps> = ({
   candidates,
 }) => {
+  const styles = useStyles(createStyles);
   const fadeAnims = useRef(candidates.map(() => new Animated.Value(0))).current;
   const slideAnims = useRef(
     candidates.map(() => new Animated.Value(-50)),
@@ -68,26 +70,27 @@ const ChartLegendComponent: React.FC<ChartLegendComponentProps> = ({
 
 export default ChartLegendComponent;
 
-const styles = StyleSheet.create({
-  pieChartLegend: {
-    width: '100%',
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: styleNumbers.space,
-    backgroundColor: Colors.getTheme().transition,
-    ...CommonStyles.shadowStyle,
-  },
-  legendItem: {
-    margin: styleNumbers.space,
-    marginRight: styleNumbers.space * 5,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: styleNumbers.space,
-  },
-  colorBox: {
-    height: 30,
-    width: 30,
-    borderRadius: styleNumbers.borderRadius * 0.5,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    pieChartLegend: {
+      width: '100%',
+      flexWrap: 'wrap',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      padding: styleNumbers.space,
+      backgroundColor: colors.transition,
+      ...CommonStyles.shadowStyle,
+    },
+    legendItem: {
+      margin: styleNumbers.space,
+      marginRight: styleNumbers.space * 5,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: styleNumbers.space,
+    },
+    colorBox: {
+      height: 30,
+      width: 30,
+      borderRadius: styleNumbers.borderRadius * 0.5,
+    },
+  });

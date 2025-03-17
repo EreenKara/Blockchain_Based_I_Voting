@@ -7,7 +7,6 @@ const createStyles = (colors: ColorsSchema) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      padding: styleNumbers.space * 2,
       justifyContent: 'center',
       backgroundColor: colors.background,
     },
@@ -20,13 +19,18 @@ const createStyles = (colors: ColorsSchema) =>
       textAlign: 'center',
     },
     formContainer: {
-      marginTop: styleNumbers.space * 4,
-      padding: styleNumbers.space,
+      flex: 1,
       backgroundColor: colors.background,
+      padding: styleNumbers.space * 3,
     },
     scrollContainer: {
       paddingBottom: styleNumbers.space * 2,
-      flex: 1,
+    },
+    imagePicker: {
+      marginTop: styleNumbers.space * 2,
+      height: 300,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     inputContainer: {
       marginTop: styleNumbers.space * 2,
@@ -36,10 +40,8 @@ const createStyles = (colors: ColorsSchema) =>
     submitButton: {
       marginTop: styleNumbers.space,
       elevation: 0,
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
+      width: '100%',
+      alignSelf: 'flex-end',
     },
 
     addressContainer: {

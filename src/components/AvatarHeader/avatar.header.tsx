@@ -3,10 +3,11 @@ import React, {useState} from 'react';
 import {Avatar} from 'react-native-paper';
 import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import NotificationViewModel from '@viewmodels/notification.viewmodel';
 import NotificationBellComponent from '@icomponents/NotificationBell/notification.bell';
 import LightUserViewModel from '@viewmodels/light.user.viewmodel';
+import {useStyles} from '@hooks/Modular/use.styles';
 interface AvatarHeaderComponentProps {
   user?: LightUserViewModel;
   notifications: NotificationViewModel[];
@@ -16,6 +17,7 @@ const AvatarHeaderComponent = ({
   user,
   notifications,
 }: AvatarHeaderComponentProps) => {
+  const styles = useStyles(createStyles);
   return (
     <View style={styles.header}>
       <Avatar.Image
@@ -42,20 +44,21 @@ const AvatarHeaderComponent = ({
 
 export default AvatarHeaderComponent;
 
-const styles = StyleSheet.create({
-  header: {
-    padding: styleNumbers.space * 2,
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.getTheme().borderColor,
-  },
-  headerText: {
-    marginLeft: styleNumbers.space * 2,
-  },
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    header: {
+      padding: styleNumbers.space * 2,
+      flexDirection: 'row',
+      alignItems: 'center',
+      borderBottomWidth: 1,
+      borderBottomColor: colors.borderColor,
+    },
+    headerText: {
+      marginLeft: styleNumbers.space * 2,
+    },
 
-  avatar: {
-    zIndex: 1,
-    backgroundColor: Colors.getTheme().icon,
-  },
-});
+    avatar: {
+      zIndex: 1,
+      backgroundColor: colors.icon,
+    },
+  });

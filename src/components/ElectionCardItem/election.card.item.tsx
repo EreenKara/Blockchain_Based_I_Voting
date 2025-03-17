@@ -1,11 +1,12 @@
 import React from 'react';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 import Colors from '@styles/common/colors';
-import {electionCardItemStyles as styles} from './election.card.item.style';
+import createStyles from './election.card.item.style';
 import styleNumbers from '@styles/common/style.numbers';
 import ButtonComponent from '@components/Button/Button';
 import ProgressBarComponent from '@components/ProgressBar/progress.bar';
 import LightElectionViewModel from '@viewmodels/light.election.viewmodel';
+import {useStyles} from '@hooks/Modular/use.styles';
 interface ElectionCardItemProps {
   election: LightElectionViewModel;
   navigatePress: () => void;
@@ -16,6 +17,7 @@ const ElectionCardItemComponent: React.FC<ElectionCardItemProps> = ({
   navigatePress,
   buttonTitle = 'Seçime Git',
 }) => {
+  const styles = useStyles(createStyles);
   return (
     <View style={styles.container}>
       {/* Sol taraf - Resim */}

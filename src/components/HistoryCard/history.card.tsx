@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet, ViewStyle} from 'react-native';
 import {Card, Title, Paragraph, Button} from 'react-native-paper';
 import CommonStyles from '@styles/common/commonStyles';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import ButtonComponent from '@components/Button/Button';
 import styleNumbers from '@styles/common/style.numbers';
 import {useNavigation} from '@react-navigation/native';
@@ -10,6 +10,7 @@ import {HomeStackParamList} from '@navigation/types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useSearchContext} from '@contexts/search.context';
 import {ElectionType} from '@enums/election.type';
+import {useStyles} from '@hooks/Modular/use.styles';
 const menuItems = [
   {
     title: 'Gelecek Seçimler',
@@ -43,6 +44,8 @@ type ElectionNavigationProp = NativeStackNavigationProp<
 >;
 
 const HistoryCardComponent: React.FC<HistoryCardComponentProps> = ({style}) => {
+  const styles = useStyles(createStyles);
+
   const {search} = useSearchContext();
   const navigation = useNavigation<ElectionNavigationProp>();
   return (
@@ -86,16 +89,17 @@ const HistoryCardComponent: React.FC<HistoryCardComponentProps> = ({style}) => {
 
 export default HistoryCardComponent;
 
-const styles = StyleSheet.create({
-  container: {
-    ...CommonStyles.viewStyles.container,
-    width: '100%',
-    backgroundColor: Colors.getTheme().transition,
-  },
-  card: {
-    ...CommonStyles.viewStyles.card,
-    marginBottom: styleNumbers.spaceLarge,
-    ...CommonStyles.shadowStyle,
-    backgroundColor: Colors.getTheme().cardBackground,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    container: {
+      ...CommonStyles.viewStyles.container,
+      width: '100%',
+      backgroundColor: colors.transition,
+    },
+    card: {
+      ...CommonStyles.viewStyles.card,
+      marginBottom: styleNumbers.spaceLarge,
+      ...CommonStyles.shadowStyle,
+      backgroundColor: colors.cardBackground,
+    },
+  });

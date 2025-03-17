@@ -20,7 +20,6 @@ import useGroups from '@hooks/use.groups';
 import {useUserProfileContext} from '@contexts/user.profile.context';
 import ExtendedListPickerComponent from '@icomponents/ExtendedListPicker';
 import {Snackbar} from 'react-native-paper';
-import SearchBarComponent from '@components/SearchBar/search.bar';
 import MenuItemComponent from '@icomponents/MenuItem/menu.item';
 import useUsers from '@hooks/use.users';
 import SearchBarModalComponent from '@components/SearchBarModal/search.bar.modal';
@@ -69,7 +68,7 @@ const ElectionAccessScreen: React.FC<Props> = ({navigation, route}) => {
         {({values, handleChange, setFieldValue}) => {
           return (
             <KeyboardAwareScrollView
-              contentContainerStyle={styles.formContainer}>
+              contentContainerStyle={styles.addressContainer}>
               <AddressPickerComponent
                 values={values}
                 setFieldValue={setFieldValue}
@@ -121,6 +120,21 @@ const ElectionAccessScreen: React.FC<Props> = ({navigation, route}) => {
           {
             id: '3',
             name: 'test3',
+            users: [],
+          },
+          {
+            id: '4',
+            name: 'test4',
+            users: [],
+          },
+          {
+            id: '5',
+            name: 'test5',
+            users: [],
+          },
+          {
+            id: '6',
+            name: 'test6',
             users: [],
           },
         ]);
@@ -177,40 +191,33 @@ useEffect(() => {
                 <Text style={styles.headerText}>Grup Seçimi</Text>
               </View>
               <View style={styles.groups}>
-                <FlatList
-                  data={Array.from({length: pickerNumber})}
-                  keyExtractor={(_, index) => index.toString()}
-                  renderItem={({index}) => {
-                    let data = Array.from(handledGroups);
-                    if (values.groups[index]) {
-                      if (
-                        !data.find(
-                          group => group.id === values.groups[index].id,
-                        )
-                      ) {
-                        data.push(values.groups[index]);
-                      }
+                {Array.from({length: pickerNumber}).map((_, index) => {
+                  let data = Array.from(handledGroups);
+                  if (values.groups[index]) {
+                    if (
+                      !data.find(group => group.id === values.groups[index].id)
+                    ) {
+                      data.push(values.groups[index]);
                     }
+                  }
 
-                    return (
-                      <ExtendedListPickerComponent
-                        style={styles.picker}
-                        key={index}
-                        data={data}
-                        selectedData={values.groups[index]}
-                        setSelectedData={data =>
-                          setFieldValue(`groups[${index}]`, data)
-                        }
-                        onNonSelect={onNonSelect}
-                        onSelect={onSelect}
-                        title={`${
-                          values.groups[index]?.name || 'Pick a Group'
-                        }`}
-                        icon={require('@assets/images/group-people.png')}
-                      />
-                    );
-                  }}
-                />
+                  return (
+                    <ExtendedListPickerComponent
+                      listStyle={styles.pickerListStyle}
+                      style={styles.picker}
+                      key={index}
+                      data={data}
+                      selectedData={values.groups[index]}
+                      setSelectedData={data =>
+                        setFieldValue(`groups[${index}]`, data)
+                      }
+                      onNonSelect={onNonSelect}
+                      onSelect={onSelect}
+                      title={`${values.groups[index]?.name || 'Pick a Group'}`}
+                      icon={require('@assets/images/group-people.png')}
+                    />
+                  );
+                })}
               </View>
               <ButtonComponent
                 style={styles.button}
@@ -265,10 +272,11 @@ useEffect(() => {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={{flexGrow: 1}}>
       {form}
       <View style={styles.footerContainer}>
         <ButtonComponent
+          style={styles.button}
           title="Seçim Oluştur"
           onPress={() => {
             if (formikRef.current) {
@@ -279,6 +287,7 @@ useEffect(() => {
         />
 
         <ButtonComponent
+          style={styles.button}
           title="To candidates page"
           onPress={() => {
             navigation.navigate('ElectionCandidates');
@@ -286,6 +295,7 @@ useEffect(() => {
           disabled={submitting.access}
         />
       </View>
+
       <Snackbar
         visible={visible}
         onDismiss={() => setVisible(false)}
@@ -293,7 +303,7 @@ useEffect(() => {
         style={styles.snackbar}>
         {message}
       </Snackbar>
-    </View>
+    </ScrollView>
   );
 };
 

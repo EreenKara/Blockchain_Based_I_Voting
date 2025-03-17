@@ -32,7 +32,10 @@ const ProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
 
   const handleLogout = () => {
     logout();
-    rootNavigation.navigate('Auth');
+    rootNavigation.reset({
+      index: 0,
+      routes: [{name: 'Auth'}],
+    });
   };
 
   if (loading) {

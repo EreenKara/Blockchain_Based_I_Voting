@@ -10,9 +10,10 @@ import {
 } from 'react-native';
 import React from 'react';
 import styleNumbers from '@styles/common/style.numbers';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {useStyles} from '@hooks/Modular/use.styles';
 
 interface CenteredModalComponentProps {
   isOpen: boolean;
@@ -30,6 +31,7 @@ const CenteredModalComponent: React.FC<CenteredModalComponentProps> = ({
   onClose,
   ...rest
 }) => {
+  const styles = useStyles(createStyles);
   const content = withInput ? (
     <TouchableWithoutFeedback onPress={onClose}>
       <View style={styles.modalContainer}>
@@ -68,23 +70,24 @@ const CenteredModalComponent: React.FC<CenteredModalComponentProps> = ({
 export default CenteredModalComponent;
 const {width, height} = Dimensions.get('window');
 
-const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    backgroundColor: Colors.getTheme().transparentColor,
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  modalContent: {
-    backgroundColor: Colors.getTheme().cardBackground,
-    padding: styleNumbers.space * 2,
-    marginHorizontal: styleNumbers.space * 2,
-    width: width * 0.9,
-    height: height * 0.35,
-    alignItems: 'center',
-    borderRadius: styleNumbers.borderRadius,
-    ...CommonStyles.shadowStyle,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    modalContainer: {
+      flex: 1,
+      backgroundColor: colors.transparentColor,
+      width: '100%',
+      height: '100%',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    modalContent: {
+      backgroundColor: colors.cardBackground,
+      padding: styleNumbers.space * 2,
+      marginHorizontal: styleNumbers.space * 2,
+      width: width * 0.9,
+      height: height * 0.35,
+      alignItems: 'center',
+      borderRadius: styleNumbers.borderRadius,
+      ...CommonStyles.shadowStyle,
+    },
+  });

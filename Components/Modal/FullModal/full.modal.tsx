@@ -14,10 +14,11 @@ import {
 } from 'react-native';
 import React from 'react';
 import styleNumbers from '@styles/common/style.numbers';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Text} from 'react-native-paper';
+import {useStyles} from '@hooks/Modular/use.styles';
 
 interface FullModalComponentProps {
   isOpen: boolean;
@@ -36,6 +37,7 @@ const FullModalComponent: React.FC<FullModalComponentProps> = ({
   onClose,
   ...rest
 }) => {
+  const styles = useStyles(createStyles);
   const content = (
     <SafeAreaView style={[styles.modal, style]}>
       <View style={styles.navbar}>
@@ -77,40 +79,41 @@ const FullModalComponent: React.FC<FullModalComponentProps> = ({
 };
 
 export default FullModalComponent;
-const styles = StyleSheet.create({
-  modal: {
-    flex: 1,
-    backgroundColor: Colors.getTheme().cardBackground,
-    marginTop: StatusBar.currentHeight,
-  },
-  modalContent: {
-    padding: styleNumbers.space * 2,
-  },
-  closeButton: {
-    position: 'relative',
-    width: 50,
-    height: 50,
-    marginHorizontal: styleNumbers.space,
-  },
-  closeIcon: {
-    width: 50,
-    height: 50,
-    tintColor: Colors.getTheme().errorButton,
-  },
-  navbar: {
-    width: '100%',
-    backgroundColor: Colors.getTheme().cardText,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: styleNumbers.space * 2,
-  },
-  title: {
-    textAlign: 'center',
-    color: Colors.getTheme().cardBackground,
-    fontSize: styleNumbers.textSize * 2,
-  },
-  titleContainer: {
-    flex: 1,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    modal: {
+      flex: 1,
+      backgroundColor: colors.cardBackground,
+      marginTop: StatusBar.currentHeight,
+    },
+    modalContent: {
+      padding: styleNumbers.space * 2,
+    },
+    closeButton: {
+      position: 'relative',
+      width: 50,
+      height: 50,
+      marginHorizontal: styleNumbers.space,
+    },
+    closeIcon: {
+      width: 50,
+      height: 50,
+      tintColor: colors.errorButton,
+    },
+    navbar: {
+      width: '100%',
+      backgroundColor: colors.cardText,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: styleNumbers.space * 2,
+    },
+    title: {
+      textAlign: 'center',
+      color: colors.cardBackground,
+      fontSize: styleNumbers.textSize * 2,
+    },
+    titleContainer: {
+      flex: 1,
+    },
+  });

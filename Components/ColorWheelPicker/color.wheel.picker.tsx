@@ -6,7 +6,13 @@ import {
   GestureResponderEvent,
   PanResponderGestureState,
 } from 'react-native';
-import {Canvas, Circle, SweepGradient, vec} from '@shopify/react-native-skia';
+import {
+  Canvas,
+  Circle,
+  Shadow,
+  SweepGradient,
+  vec,
+} from '@shopify/react-native-skia';
 
 /** Basit (Hue tabanlı) HSV -> RGB fonksiyonu. */
 function hsvToHex(h: number, s: number = 1, v: number = 1) {
@@ -92,11 +98,14 @@ const ColorWheelPicker: React.FC<ColorWheelPickerProps> = ({
   const pointerY = centerY + dist * Math.sin(angle);
 
   return (
-    <View style={{width: size, height: size}}>
+    <View style={{width: size, height: size + 20}}>
       {/* Tüm çizim işlemi Skia Canvas'ta */}
-      <Canvas style={StyleSheet.absoluteFill}>
+      <Canvas style={[StyleSheet.absoluteFill]}>
         {/* Renk çarkı */}
+
         <Circle c={vec(centerX, centerY)} r={radius}>
+          <Shadow dx={0} dy={20} blur={5} color="rgba(0, 0, 0, 0.1)" />
+
           <SweepGradient
             c={vec(centerX, centerY)}
             colors={[

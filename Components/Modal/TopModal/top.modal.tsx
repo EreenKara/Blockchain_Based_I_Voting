@@ -1,8 +1,8 @@
 import React, {useEffect} from 'react';
 import {View, Text, ViewStyle} from 'react-native';
 import Toast from 'react-native-toast-message';
-import {topModalStyles as styles} from './top.modal.style';
-import Colors from '@styles/common/colors';
+import createStyles from './top.modal.style';
+import {useStyles} from '@hooks/Modular/use.styles';
 
 interface TopModalComponentProps {
   isOpen: boolean;
@@ -21,6 +21,7 @@ const TopModalComponent: React.FC<TopModalComponentProps> = ({
   message = 'Bilgilendirme',
   description = '',
 }) => {
+  const styles = useStyles(createStyles);
   useEffect(() => {
     if (isOpen) {
       Toast.show({

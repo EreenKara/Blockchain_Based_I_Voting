@@ -8,10 +8,11 @@ import {
 } from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Pie, PolarChart} from 'victory-native';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
 import {CandidateViewModel} from '@viewmodels/candidate.viewmodel';
+import {useStyles} from '@hooks/Modular/use.styles';
 
 interface PieChartComponentProps {
   chartSize?: number;
@@ -20,13 +21,14 @@ interface PieChartComponentProps {
 const PieChartComponent: React.FC<PieChartComponentProps> = ({
   chartSize = 350,
   data = [
-    new CandidateViewModel('1', 'A', '#FF6B6B', 35),
-    new CandidateViewModel('2', 'B', '#4ECDC4', 25),
-    new CandidateViewModel('3', 'C', '#45B7D1', 20),
-    new CandidateViewModel('4', 'D', '#96CEB4', 10),
-    new CandidateViewModel('5', 'F', '#ffffff', 10),
+    {name: '1', color: '#FF6B6B', votes: 35},
+    {name: '2', color: '#4ECDC4', votes: 25},
+    {name: '3', color: '#45B7D1', votes: 20},
+    {name: '4', color: '#96CEB4', votes: 10},
+    {name: '5', color: '#ffffff', votes: 10},
   ],
 }) => {
+  const styles = useStyles(createStyles);
   const scaleAnimation = useRef(new RNAnimated.Value(0.6)).current;
   const fadeAnimation = useRef(new RNAnimated.Value(0)).current;
   useEffect(() => {
@@ -83,11 +85,12 @@ const PieChartComponent: React.FC<PieChartComponentProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: Colors.getTheme().transition,
-    padding: styleNumbers.space,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: colors.transition,
+      padding: styleNumbers.space,
+    },
+  });
 
 export default PieChartComponent;

@@ -99,6 +99,10 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
           </Card.Actions>
         </Card>
       ))}
+      <ButtonComponent
+        title="Vote"
+        onPress={() => navigation.navigate('Vote')}
+      />
     </View>
   );
 };

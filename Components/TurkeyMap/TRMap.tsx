@@ -3,6 +3,7 @@ import React, {useState} from 'react';
 import Svg, {G, Path} from 'react-native-svg';
 import TRMap from './TRMap.json';
 import Colors from '@styles/common/colors';
+import {useThemeColors} from '@contexts/theme.provider';
 
 interface Sehir {
   id: number;
@@ -26,7 +27,7 @@ interface TRMapComponentProps {
 
 const TRMapComponent = ({onPress}: TRMapComponentProps): JSX.Element => {
   const [selectedSehir, setSelectedSehir] = useState<number | null>(null);
-
+  const {colors} = useThemeColors();
   const handleClick = (id: number, sehir: string): void => {
     setSelectedSehir(id);
     onPress(sehir);
@@ -40,22 +41,20 @@ const TRMapComponent = ({onPress}: TRMapComponentProps): JSX.Element => {
       height="150%"
       viewBox={`0 -150 1000 1000`}
       preserveAspectRatio="xMidYMid meet"
-      fill={Colors.getTheme().mapFill}
-      stroke={Colors.getTheme().mapStroke}
+      fill={colors.mapFill}
+      stroke={colors.mapStroke}
       strokeWidth={mapData.strokeWidth}>
       {mapData.sehirler.map(sehir => (
         <G
           key={sehir.id}
           onPress={() => handleClick(sehir.id, sehir.sehir)}
           fill={
-            selectedSehir === sehir.id
-              ? Colors.getTheme().mapSelectedFill
-              : Colors.getTheme().mapFill
+            selectedSehir === sehir.id ? colors.mapSelectedFill : colors.mapFill
           }
           stroke={
             selectedSehir === sehir.id
-              ? Colors.getTheme().mapSelectedStroke
-              : Colors.getTheme().mapStroke
+              ? colors.mapSelectedStroke
+              : colors.mapStroke
           }
           strokeWidth={
             selectedSehir === sehir.id

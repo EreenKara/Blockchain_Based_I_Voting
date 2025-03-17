@@ -16,6 +16,7 @@ import SpecificElectionScreen from '@screens/shared/SpecificElection';
 import CreateGroupScreen from '@screens/profile/CreateGroup';
 import GroupScreen from '@screens/profile/Group';
 import {ListElectionsScreen} from '@screens/home';
+import ElectionResultScreen from '@screens/shared/ElectionResult';
 const Stack = createNativeStackNavigator<ProfileStackParamList>();
 
 const ProfileNavigator: React.FC = () => {
@@ -96,6 +97,11 @@ const ProfileNavigator: React.FC = () => {
         name="SpecificElection"
         component={SpecificElectionScreen}
         options={{title: 'Seçim'}}
+      />
+      <Stack.Screen
+        name="ElectionResult"
+        component={ElectionResultScreen}
+        options={{title: 'Seçim Sonucu'}}
       />
     </Stack.Navigator>
   );

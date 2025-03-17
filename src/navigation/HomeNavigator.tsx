@@ -18,9 +18,10 @@ import ElectionAccessScreen from '@screens/home/ElectionAccess';
 import PublicOrPrivateScreen from '@screens/home/CreateElection/public.or.private';
 import ElectionCandidatesScreen from '@screens/home/ElectionCandidates';
 import ElectionChoicesScreen from '@screens/home/ElectionChoices';
-import ButtonComponent from '@components/Button/Button';
 import DiscardButtonComponent from '@screens/shared/discard.buttont';
 import {useElectionCreationContext} from '@contexts/index';
+import ElectionResultScreen from '@screens/shared/ElectionResult';
+import VoteScreen from '@screens/home/Vote';
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 
 const HomeNavigator: React.FC = () => {
@@ -185,6 +186,16 @@ const HomeNavigator: React.FC = () => {
         name="BeCandidate"
         component={BeCandidateScreen}
         options={{title: 'Aday Ol'}}
+      />
+      <Stack.Screen
+        name="ElectionResult"
+        component={ElectionResultScreen}
+        options={{title: 'Seçim Sonucu'}}
+      />
+      <Stack.Screen
+        name="Vote"
+        component={VoteScreen}
+        options={{title: 'Oy Ver'}}
       />
     </Stack.Navigator>
   );

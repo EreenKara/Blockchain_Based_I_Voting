@@ -18,6 +18,7 @@ import UserViewModel from '@viewmodels/user.viewmodel';
 import ButtonComponent from '@components/Button/Button';
 import {GestureHandlerRootView, ScrollView} from 'react-native-gesture-handler';
 import {useStyles} from '@hooks/Modular/use.styles';
+import AvatarHeaderComponent from '@icomponents/AvatarHeader/avatar.header';
 const initialUsers: UserViewModel[] = [
   {
     id: '1',
@@ -171,6 +172,7 @@ const CreateGroupScreen = () => {
 
     return (
       <View style={styles.userItem}>
+        <AvatarHeaderComponent user={item} notifications={[]} />
         <Image
           source={
             item.image ? item.image : require('@assets/images/no-avatar.png')

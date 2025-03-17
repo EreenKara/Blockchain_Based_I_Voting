@@ -1,7 +1,6 @@
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import styles from './index.style';
-import {SpecificElectionScreenProps} from '@screens/type';
 import PieChartComponent from '@components/PieChart/pie.chart';
 import CommonStyles from '@styles/common/commonStyles';
 import {CandidateViewModel} from '@viewmodels/candidate.viewmodel';
@@ -15,8 +14,15 @@ import styleNumbers from '@styles/common/style.numbers';
 import {useSearchContext} from '@contexts/search.context';
 import {useStyles} from '@hooks/Modular/use.styles';
 import createStyles from './index.style';
+import {HomeStackParamList, ProfileStackParamList} from '@navigation/types';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+
 const windowHeight = Dimensions.get('window').height;
 
+type SpecificElectionScreenProps = NativeStackScreenProps<
+  HomeStackParamList | ProfileStackParamList,
+  'SpecificElection'
+>;
 const SpecificElectionScreen: React.FC<SpecificElectionScreenProps> = ({
   route,
 }) => {

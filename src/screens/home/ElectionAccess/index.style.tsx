@@ -8,19 +8,13 @@ const createStyles = (colors: ColorsSchema) =>
     container: {
       ...CommonStyles.viewStyles.container,
       padding: styleNumbers.space * 2,
-      flex: 1,
     },
     headerContainer: {
       marginTop: styleNumbers.space,
-      position: 'relative',
-      top: 0,
-      left: 0,
-      right: 0,
-      zIndex: 1000,
     },
-    formContainer: {
+
+    addressContainer: {
       ...CommonStyles.viewStyles.container,
-      flex: 1,
       flexDirection: 'column',
       justifyContent: 'center',
     },
@@ -35,13 +29,8 @@ const createStyles = (colors: ColorsSchema) =>
       marginBottom: styleNumbers.space,
     },
     footerContainer: {
-      ...CommonStyles.viewStyles.container,
-      flex: 1,
-      zIndex: 1000,
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
+      marginTop: 'auto',
+      width: '100%',
     },
     groups: {
       padding: styleNumbers.space,
@@ -60,6 +49,7 @@ const createStyles = (colors: ColorsSchema) =>
     },
     userListContainer: {
       minHeight: 100,
+      maxHeight: 350,
     },
     snackbar: {
       position: 'absolute',
@@ -73,6 +63,9 @@ const createStyles = (colors: ColorsSchema) =>
       borderWidth: 1,
       borderColor: colors.borderColor,
       borderRadius: styleNumbers.borderRadius,
+    },
+    pickerListStyle: {
+      maxHeight: 250,
     },
     button: {
       marginTop: styleNumbers.space,

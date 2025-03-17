@@ -87,6 +87,12 @@ export class ElectionService
       choices,
     );
   }
+  public async giveVote(
+    electionId: string,
+    candidateId: string,
+  ): Promise<void> {
+    await this.api.post(`${this.endpoint}/${electionId}/vote`, {candidateId});
+  }
 }
 
 export default ElectionService;

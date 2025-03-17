@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View, Image, Animated, Easing} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import CandidateViewModel from '@viewmodels/candidate.viewmodel';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
 import TextInputComponent from '@components/TextInput/text.input';
@@ -10,7 +10,7 @@ import {ExtendedAsset} from '@hooks/useCamera';
 import SearchBarModalComponent from '@components/SearchBarModal/search.bar.modal';
 import ColorWheelPicker from '@components/ColorWheelPicker/color.wheel.picker';
 import ColorPicker from '@components/ColorPicker/color.picker';
-
+import {useStyles} from '@hooks/Modular/use.styles';
 interface CandidateInputItemComponentProps {
   candidate: CandidateViewModel;
   setCandidate: (candidate: CandidateViewModel) => void;
@@ -19,6 +19,7 @@ interface CandidateInputItemComponentProps {
 const CandidateInputItemComponent: React.FC<
   CandidateInputItemComponentProps
 > = ({candidate, setCandidate}) => {
+  const styles = useStyles(createStyles);
   const [image, setImage] = useState<ExtendedAsset | null>(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(-100)).current;
@@ -103,53 +104,54 @@ const CandidateInputItemComponent: React.FC<
 
 export default CandidateInputItemComponent;
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    flexDirection: 'column',
-    flexWrap: 'wrap',
-    borderRadius: styleNumbers.borderRadius,
-    marginVertical: styleNumbers.space,
-  },
-  imageContainer: {
-    width: '100%',
-    borderRadius: styleNumbers.borderRadius,
-    overflow: 'hidden',
-  },
-  image: {
-    height: 300,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  infoContainer: {
-    marginTop: styleNumbers.space * 2,
-    padding: styleNumbers.space,
-    width: '100%',
-    gap: styleNumbers.space * 2,
-    borderRadius: styleNumbers.borderRadius,
-  },
-  infoItem: {
-    marginTop: styleNumbers.space * 2,
-  },
-  colorPicker: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    overflow: 'hidden',
-    marginTop: styleNumbers.space * 2,
-  },
-  colorPickerInfo: {
-    justifyContent: 'center',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: styleNumbers.space,
-  },
-  searchBar: {
-    width: '100%',
-    borderWidth: 1,
-    backgroundColor: Colors.getTheme().transition,
-    borderColor: Colors.getTheme().borderColor,
-    borderRadius: styleNumbers.borderRadius,
-    padding: styleNumbers.space,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    container: {
+      width: '100%',
+      flexDirection: 'column',
+      flexWrap: 'wrap',
+      borderRadius: styleNumbers.borderRadius,
+      marginVertical: styleNumbers.space,
+    },
+    imageContainer: {
+      width: '100%',
+      borderRadius: styleNumbers.borderRadius,
+      overflow: 'hidden',
+    },
+    image: {
+      height: 300,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    infoContainer: {
+      marginTop: styleNumbers.space * 2,
+      padding: styleNumbers.space,
+      width: '100%',
+      gap: styleNumbers.space * 2,
+      borderRadius: styleNumbers.borderRadius,
+    },
+    infoItem: {
+      marginTop: styleNumbers.space * 2,
+    },
+    colorPicker: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: '100%',
+      overflow: 'hidden',
+      marginTop: styleNumbers.space * 2,
+    },
+    colorPickerInfo: {
+      justifyContent: 'center',
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: styleNumbers.space,
+    },
+    searchBar: {
+      width: '100%',
+      borderWidth: 1,
+      backgroundColor: colors.transition,
+      borderColor: colors.borderColor,
+      borderRadius: styleNumbers.borderRadius,
+      padding: styleNumbers.space,
+    },
+  });

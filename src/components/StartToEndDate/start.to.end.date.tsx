@@ -11,6 +11,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import ButtonComponent from '@components/Button/Button';
 import {handleDateTimeChange} from '@hooks/handleDateTimeChange';
 import styleNumbers from '@styles/common/style.numbers';
+import {ColorsSchema} from '@styles/common/colors';
+import {useStyles} from '@hooks/Modular/use.styles';
 interface StartToEndDateComponentProps {
   values: {
     startDate: Date;
@@ -27,6 +29,7 @@ const StartToEndDateComponent: React.FC<StartToEndDateComponentProps> = ({
   showMessage,
   containerStyle,
 }) => {
+  const styles = useStyles(createStyles);
   const [showStartDate, setShowStartDate] = useState(false);
   const [showEndDate, setShowEndDate] = useState(false);
   const [showStartTime, setShowStartTime] = useState(false);
@@ -154,25 +157,26 @@ const StartToEndDateComponent: React.FC<StartToEndDateComponentProps> = ({
 
 export default StartToEndDateComponent;
 
-const styles = StyleSheet.create({
-  dateContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: styleNumbers.space,
-  },
-  dateLabel: {
-    flex: 1,
-    fontSize: styleNumbers.textSize,
-  },
-  dateTimeButtons: {
-    flex: 2,
-    flexDirection: 'row',
-    gap: styleNumbers.spaceLittle,
-  },
-  dateButton: {
-    flex: 2,
-  },
-  timeButton: {
-    flex: 1,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    dateContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: styleNumbers.space,
+    },
+    dateLabel: {
+      flex: 1,
+      fontSize: styleNumbers.textSize,
+    },
+    dateTimeButtons: {
+      flex: 2,
+      flexDirection: 'row',
+      gap: styleNumbers.spaceLittle,
+    },
+    dateButton: {
+      flex: 2,
+    },
+    timeButton: {
+      flex: 1,
+    },
+  });

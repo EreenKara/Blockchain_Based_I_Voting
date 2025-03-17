@@ -51,7 +51,9 @@ const ElectionCandidatesScreen: React.FC<Props> = ({navigation}) => {
     ]);
   }, []);
   return (
-    <KeyboardAwareScrollView style={styles.container}>
+    <KeyboardAwareScrollView
+      style={styles.container}
+      contentContainerStyle={{flexGrow: 1}}>
       <View style={styles.headerContainer}>
         <Text style={[CommonStyles.textStyles.title, styles.headerText]}>
           Aday Seçimi
@@ -85,16 +87,18 @@ const ElectionCandidatesScreen: React.FC<Props> = ({navigation}) => {
           />
         );
       })}
-      <ButtonComponent
-        style={styles.addCandidateButton}
-        title="Aday Ekle"
-        onPress={addCandidate}
-      />
-      <ButtonComponent
-        style={styles.button}
-        title="To Choices"
-        onPress={handleSubmit}
-      />
+      <View style={styles.footerContainer}>
+        <ButtonComponent
+          style={styles.addCandidateButton}
+          title="Aday Ekle"
+          onPress={addCandidate}
+        />
+        <ButtonComponent
+          style={styles.button}
+          title="To Choices"
+          onPress={handleSubmit}
+        />
+      </View>
     </KeyboardAwareScrollView>
   );
 };

@@ -2,7 +2,8 @@ import {StyleSheet, Text, View, Image} from 'react-native';
 import React, {useState} from 'react';
 import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
+import {useStyles} from '@hooks/Modular/use.styles';
 
 interface NotificationItemComponentProps {
   image: string;
@@ -19,6 +20,7 @@ const NotificationItemComponent = ({
   notificationCount,
   time,
 }: NotificationItemComponentProps) => {
+  const styles = useStyles(createStyles);
   return (
     <View style={styles.container}>
       <Image
@@ -50,66 +52,66 @@ const NotificationItemComponent = ({
 
 export default NotificationItemComponent;
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    borderRadius: 8,
-    marginVertical: 5,
-    backgroundColor: Colors.getTheme().cardButton,
-    ...CommonStyles.shadowStyle,
-  },
-  image: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-  },
-  detailsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: styleNumbers.spaceLittle,
-    flex: 1,
-    marginLeft: 10,
-  },
-  text: {
-    color: Colors.getTheme().cardText,
-  },
-  title: {
-    fontWeight: 'bold',
-  },
-  description: {
-    color: '#666',
-  },
-  source: {
-    fontSize: 12,
-    color: '#999',
-  },
-  count: {
-    fontSize: 12,
-    color: '#999',
-  },
-  time: {
-    fontSize: 12,
-    color: '#999',
-  },
-  smallLogo: {
-    tintColor: Colors.getTheme().cardText,
-
-    width: 25,
-    height: 18,
-    marginLeft: 10,
-  },
-  downArrow: {
-    tintColor: Colors.getTheme().cardText,
-    width: 20,
-    height: 20,
-    marginLeft: 10,
-  },
-  dot: {
-    tintColor: Colors.getTheme().cardText,
-    width: 5,
-    height: 5,
-    marginTop: 8,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 10,
+      borderRadius: 8,
+      marginVertical: 5,
+      backgroundColor: colors.cardButton,
+      ...CommonStyles.shadowStyle,
+    },
+    image: {
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+    },
+    detailsContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: styleNumbers.spaceLittle,
+      flex: 1,
+      marginLeft: 10,
+    },
+    text: {
+      color: colors.cardText,
+    },
+    title: {
+      fontWeight: 'bold',
+    },
+    description: {
+      color: '#666',
+    },
+    source: {
+      fontSize: 12,
+      color: '#999',
+    },
+    count: {
+      fontSize: 12,
+      color: '#999',
+    },
+    time: {
+      fontSize: 12,
+      color: '#999',
+    },
+    smallLogo: {
+      tintColor: colors.cardText,
+      width: 25,
+      height: 18,
+      marginLeft: 10,
+    },
+    downArrow: {
+      tintColor: colors.cardText,
+      width: 20,
+      height: 20,
+      marginLeft: 10,
+    },
+    dot: {
+      tintColor: colors.cardText,
+      width: 5,
+      height: 5,
+      marginTop: 8,
+    },
+  });

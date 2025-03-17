@@ -1,6 +1,7 @@
 import {ElectionType} from '@enums/election.type';
 import {ElectionViewModel} from '@viewmodels/election.viewmodel';
 import GroupViewModel from '@viewmodels/group.viewmodel';
+import LightElectionViewModel from '@viewmodels/light.election.viewmodel';
 
 export type RootStackParamList = {
   Auth: undefined;
@@ -43,8 +44,10 @@ export type HomeStackParamList = {
   ListElections: {type: ElectionType};
   BeCandidate: undefined;
   Elections: undefined;
-  SpecificElection: {election: ElectionViewModel};
+  SpecificElection: {election: LightElectionViewModel};
   Success: undefined;
+  ElectionResult: {election: LightElectionViewModel};
+  Vote: undefined;
 };
 
 export type ProfileStackParamList = {
@@ -61,5 +64,6 @@ export type ProfileStackParamList = {
   CastedVotes: undefined;
   CandidateElections: undefined;
   AddressInformation: undefined;
-  SpecificElection: {election: ElectionViewModel};
+  SpecificElection: {election: LightElectionViewModel};
+  ElectionResult: {election: LightElectionViewModel};
 };

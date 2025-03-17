@@ -13,12 +13,13 @@ import {
 } from 'react-native';
 import React, {useState, forwardRef, useImperativeHandle} from 'react';
 import styleNumbers from '@styles/common/style.numbers';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import ButtonComponent from '@components/Button/Button';
 import CommonStyles from '@styles/common/commonStyles';
 import MenuItemComponent from '@icomponents/MenuItem/menu.item';
 import GroupViewModel from '@viewmodels/group.viewmodel';
 import VirtualizedListComponent from '@components/List/virtualized.list';
+import {useStyles} from '@hooks/Modular/use.styles';
 
 interface ExtendedPickerComponentProps {
   content: React.ReactNode;
@@ -33,6 +34,8 @@ const ExtendedPickerComponent = forwardRef<
   ChildRef,
   ExtendedPickerComponentProps
 >(({content, title, icon, style}, ref) => {
+  const styles = useStyles(createStyles);
+
   const [isOpen, setIsOpen] = useState(false);
   useImperativeHandle(ref, () => ({
     handleToggle: () => setIsOpen(prev => !prev),
@@ -64,44 +67,40 @@ const ExtendedPickerComponent = forwardRef<
       />
     );
   }
-  return (
-    <View style={[styles.container, style]}>
-      <View>{shrinkContent}</View>
-    </View>
-  );
+  return <View style={[styles.container, style]}>{shrinkContent}</View>;
 });
 
 export default ExtendedPickerComponent;
 
-const styles = StyleSheet.create({
-  container: {
-    padding: styleNumbers.space * 2,
-    borderColor: Colors.getTheme().cardBackground,
-  },
-  groupTitle: {
-    ...CommonStyles.textStyles.subtitle,
-    textAlign: 'center',
-    position: 'relative',
-    right: 30,
-    marginBottom: styleNumbers.space,
-  },
-  button: {
-    alignSelf: 'center',
-    width: '60%',
-    height: 20,
-    zIndex: -100,
-    overflow: 'hidden',
-    position: 'relative',
-    top: 10,
-
-    backgroundColor: Colors.getTheme().button,
-    borderRadius: styleNumbers.borderRadius,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonImage: {
-    width: 20,
-    height: 20,
-    tintColor: Colors.getTheme().cardText,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    container: {
+      padding: styleNumbers.space * 2,
+      borderColor: colors.cardBackground,
+    },
+    groupTitle: {
+      ...CommonStyles.textStyles.subtitle,
+      textAlign: 'center',
+      position: 'relative',
+      right: 30,
+      marginBottom: styleNumbers.space,
+    },
+    button: {
+      alignSelf: 'center',
+      width: '60%',
+      height: 20,
+      zIndex: -100,
+      overflow: 'hidden',
+      position: 'relative',
+      top: 10,
+      backgroundColor: colors.button,
+      borderRadius: styleNumbers.borderRadius,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    buttonImage: {
+      width: 20,
+      height: 20,
+      tintColor: colors.cardText,
+    },
+  });

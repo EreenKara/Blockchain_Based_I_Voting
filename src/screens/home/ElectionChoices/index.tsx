@@ -127,15 +127,17 @@ const ElectionChoicesScreen: React.FC<Props> = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      {groups.map(group => (
-        <View key={group.name} style={styles.optionsContainer}>
-          <OptionGroup
-            title={`${group.name} Seçenekleri`}
-            options={group.options.map(choice => choice.name)}
-            onOptionSelect={handleOptionSelected}
-          />
-        </View>
-      ))}
+      <View style={styles.optionsContainer}>
+        {groups.map(group => (
+          <View key={group.name} style={styles.optionContainer}>
+            <OptionGroup
+              title={`${group.name} Seçenekleri`}
+              options={group.options.map(choice => choice.name)}
+              onOptionSelect={handleOptionSelected}
+            />
+          </View>
+        ))}
+      </View>
       <ButtonComponent
         style={styles.button}
         title="Submit"

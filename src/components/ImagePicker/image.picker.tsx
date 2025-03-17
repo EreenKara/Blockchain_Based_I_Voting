@@ -9,9 +9,10 @@ import {
   ViewStyle,
 } from 'react-native';
 import CommonStyles from '@styles/common/commonStyles';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
 import {ExtendedAsset, useCamera} from '@hooks/useCamera';
+import {useStyles} from '@hooks/Modular/use.styles';
 
 export interface ImagePickerComponentProps {
   image: ExtendedAsset | null;
@@ -28,6 +29,8 @@ const ImagePickerComponent: React.FC<ImagePickerComponentProps> = ({
   responsive = true,
   outStyle,
 }) => {
+  const styles = useStyles(createStyles);
+
   const {handleCamera} = useCamera();
 
   return (
@@ -76,41 +79,42 @@ const ImagePickerComponent: React.FC<ImagePickerComponentProps> = ({
 
 export default ImagePickerComponent;
 
-const styles = StyleSheet.create({
-  imageContainer: {
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  imagePickerContainer: {
-    width: '100%',
-    height: 200,
-    borderRadius: styleNumbers.borderRadius,
-    overflow: 'hidden',
-    borderWidth: 2,
-    borderColor: Colors.getTheme().borderColor,
-    borderStyle: 'dashed',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  imageStyle: {
-    opacity: 0.7,
-    resizeMode: 'contain',
-    width: '100%',
-    height: '100%',
-  },
-  imageOverlay: {
-    backgroundColor: Colors.getTheme().transparentColor,
-    padding: styleNumbers.space,
-    borderRadius: styleNumbers.borderRadius,
-    alignItems: 'center',
-  },
-  imageText: {
-    color: Colors.getTheme().text,
-    textAlign: 'center',
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    imageContainer: {
+      width: '100%',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    imagePickerContainer: {
+      width: '100%',
+      height: 200,
+      borderRadius: styleNumbers.borderRadius,
+      overflow: 'hidden',
+      borderWidth: 2,
+      borderColor: colors.borderColor,
+      borderStyle: 'dashed',
+    },
+    image: {
+      width: '100%',
+      height: '100%',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    imageStyle: {
+      opacity: 0.7,
+      resizeMode: 'contain',
+      width: '100%',
+      height: '100%',
+    },
+    imageOverlay: {
+      backgroundColor: colors.transparentColor,
+      padding: styleNumbers.space,
+      borderRadius: styleNumbers.borderRadius,
+      alignItems: 'center',
+    },
+    imageText: {
+      color: colors.text,
+      textAlign: 'center',
+    },
+  });

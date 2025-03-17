@@ -3,9 +3,10 @@ import React, {useState} from 'react';
 import NotificationViewModel from '@viewmodels/notification.viewmodel';
 import CenteredModalComponent from '@components/Modal/CenteredModal/centered.modal';
 import NotificationItemComponent from '@icomponents/NotificationItem/notification.item';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
 import CommonStyles from '@styles/common/commonStyles';
+import {useStyles} from '@hooks/Modular/use.styles';
 interface NotificationBellComponentProps {
   notifications: NotificationViewModel[];
 }
@@ -13,6 +14,8 @@ interface NotificationBellComponentProps {
 const NotificationBellComponent = ({
   notifications,
 }: NotificationBellComponentProps) => {
+  const styles = useStyles(createStyles);
+
   const [isOpen, setIsOpen] = useState(false);
   return (
     <>
@@ -47,28 +50,29 @@ const NotificationBellComponent = ({
 
 export default NotificationBellComponent;
 
-const styles = StyleSheet.create({
-  headerRight: {
-    marginLeft: 'auto',
-  },
-  bellIcon: {
-    tintColor: Colors.getTheme().icon,
-    width: styleNumbers.iconSize * 1.5,
-    height: styleNumbers.iconSize * 1.5,
-  },
-  badgeContainer: {
-    zIndex: -1,
-    position: 'absolute',
-    top: -5,
-    right: -5,
-    borderWidth: 2,
-    borderColor: Colors.getTheme().error,
-    backgroundColor: Colors.getTheme().transition,
-    borderRadius: styleNumbers.borderRadius,
-    padding: styleNumbers.space * 0.2,
-  },
-  badgeText: {
-    ...CommonStyles.textStyles.subtitle,
-    color: Colors.getTheme().text,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    headerRight: {
+      marginLeft: 'auto',
+    },
+    bellIcon: {
+      tintColor: colors.icon,
+      width: styleNumbers.iconSize * 1.5,
+      height: styleNumbers.iconSize * 1.5,
+    },
+    badgeContainer: {
+      zIndex: -1,
+      position: 'absolute',
+      top: -5,
+      right: -5,
+      borderWidth: 2,
+      borderColor: colors.error,
+      backgroundColor: colors.transition,
+      borderRadius: styleNumbers.borderRadius,
+      padding: styleNumbers.space * 0.2,
+    },
+    badgeText: {
+      ...CommonStyles.textStyles.subtitle,
+      color: colors.text,
+    },
+  });

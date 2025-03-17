@@ -9,13 +9,9 @@ import {
 } from 'react-native';
 import React, {useRef} from 'react';
 import CommonStyles from '@styles/common/commonStyles';
-import Colors from '@styles/common/colors';
+import {ColorsSchema} from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
-import {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from 'react-native-reanimated';
+import {useStyles} from '@hooks/Modular/use.styles';
 interface ChoiceCardComponentProps {
   title: string;
   image: any;
@@ -33,6 +29,7 @@ const ChoiceCardComponent = ({
   tintColor,
   height = windowWidth * 0.8,
 }: ChoiceCardComponentProps) => {
+  const styles = useStyles(createStyles);
   const scaleValue = useRef(new Animated.Value(1)).current;
   const handlePressIn = () => {
     Animated.spring(scaleValue, {
@@ -94,20 +91,21 @@ const ChoiceCardComponent = ({
 export default ChoiceCardComponent;
 const windowWidth = Dimensions.get('window').width;
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: Colors.getTheme().background,
-    padding: styleNumbers.space,
-    borderRadius: styleNumbers.borderRadius,
-    margin: styleNumbers.space,
-    borderWidth: 4,
-    borderColor: Colors.getTheme().borderColor,
-    ...CommonStyles.shadowStyle,
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-  },
-  image: {
-    width: '100%',
-    resizeMode: 'contain',
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: colors.background,
+      padding: styleNumbers.space,
+      borderRadius: styleNumbers.borderRadius,
+      margin: styleNumbers.space,
+      borderWidth: 4,
+      borderColor: colors.borderColor,
+      ...CommonStyles.shadowStyle,
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+    },
+    image: {
+      width: '100%',
+      resizeMode: 'contain',
+    },
+  });

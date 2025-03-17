@@ -1,10 +1,10 @@
 import {StyleSheet, Text, View, Image, Animated, Easing} from 'react-native';
 import React, {useEffect, useRef} from 'react';
 import CandidateViewModel from '@viewmodels/candidate.viewmodel';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
-
+import {useStyles} from '@hooks/Modular/use.styles';
 interface CandidateItemComponentProps {
   candidate: CandidateViewModel;
 }
@@ -12,6 +12,7 @@ interface CandidateItemComponentProps {
 const CandidateItemComponent: React.FC<CandidateItemComponentProps> = ({
   candidate,
 }) => {
+  const styles = useStyles(createStyles);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(-100)).current;
 
@@ -62,33 +63,34 @@ const CandidateItemComponent: React.FC<CandidateItemComponentProps> = ({
 
 export default CandidateItemComponent;
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    backgroundColor: Colors.getTheme().background,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    ...CommonStyles.shadowStyle,
-    borderRadius: styleNumbers.borderRadius,
-    marginVertical: styleNumbers.space,
-  },
-  imageContainer: {
-    width: '65%',
-    marginRight: styleNumbers.space * 2,
-    backgroundColor: Colors.getTheme().transition,
-    ...CommonStyles.shadowStyle,
-    borderRadius: styleNumbers.borderRadius,
-    overflow: 'hidden',
-  },
-  image: {
-    height: 300,
-  },
-  infoContainer: {
-    padding: styleNumbers.space,
-    width: '30%',
-    backgroundColor: Colors.getTheme().transition,
-    gap: styleNumbers.space * 2,
-    ...CommonStyles.shadowStyle,
-    borderRadius: styleNumbers.borderRadius,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    container: {
+      width: '100%',
+      backgroundColor: colors.background,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      ...CommonStyles.shadowStyle,
+      borderRadius: styleNumbers.borderRadius,
+      marginVertical: styleNumbers.space,
+    },
+    imageContainer: {
+      width: '65%',
+      marginRight: styleNumbers.space * 2,
+      backgroundColor: colors.transition,
+      ...CommonStyles.shadowStyle,
+      borderRadius: styleNumbers.borderRadius,
+      overflow: 'hidden',
+    },
+    image: {
+      height: 300,
+    },
+    infoContainer: {
+      padding: styleNumbers.space,
+      width: '30%',
+      backgroundColor: colors.transition,
+      gap: styleNumbers.space * 2,
+      ...CommonStyles.shadowStyle,
+      borderRadius: styleNumbers.borderRadius,
+    },
+  });

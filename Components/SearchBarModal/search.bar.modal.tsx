@@ -10,11 +10,12 @@ import {
   ViewStyle,
 } from 'react-native';
 import React, {useState} from 'react';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
 import SearchBarComponent from '@components/SearchBar/search.bar';
 import FullModalComponent from '@components/Modal/FullModal/full.modal';
+import {useStyles} from '@hooks/Modular/use.styles';
 
 interface SearchBarModalComponentProps {
   handleSearch: () => void;
@@ -35,8 +36,8 @@ const SearchBarModalComponent: React.FC<SearchBarModalComponentProps> = ({
   handleSearch,
   content,
 }) => {
+  const styles = useStyles(createStyles);
   const [isOpen, setIsOpen] = useState(false);
-
   return (
     <View style={[styles.container, style]}>
       <TouchableOpacity style={styles.iconView} onPress={() => setIsOpen(true)}>
@@ -74,16 +75,17 @@ const SearchBarModalComponent: React.FC<SearchBarModalComponentProps> = ({
 
 export default SearchBarModalComponent;
 
-const styles = StyleSheet.create({
-  container: {},
-  searchIcon: {
-    width: 20,
-    height: 20,
-  },
-  iconView: {
-    flexDirection: 'row',
-  },
-  text: {
-    paddingRight: styleNumbers.space / 2,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    container: {},
+    searchIcon: {
+      width: 20,
+      height: 20,
+    },
+    iconView: {
+      flexDirection: 'row',
+    },
+    text: {
+      paddingRight: styleNumbers.space / 2,
+    },
+  });

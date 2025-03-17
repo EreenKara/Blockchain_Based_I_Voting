@@ -14,11 +14,16 @@ const createStyles = (colors: ColorsSchema) =>
       marginVertical: styleNumbers.space,
       textAlign: 'center',
     },
-    optionsContainer: {
+    optionContainer: {
       width: '70%',
       flexDirection: 'row',
       paddingHorizontal: styleNumbers.space,
       flexWrap: 'wrap',
+    },
+    optionsContainer: {
+      padding: styleNumbers.space,
+      alignItems: 'center',
+      flex: 1,
     },
     button: {
       position: 'absolute',

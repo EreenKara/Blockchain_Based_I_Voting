@@ -59,16 +59,16 @@ const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAwareScrollView
+      style={styles.formContainer}
+      contentContainerStyle={[styles.scrollContainer]}>
       <View>
         <Text style={styles.title}>Seçim Bilgileri</Text>
       </View>
       <Formik initialValues={initialValues} onSubmit={handleSubmit}>
         {({values, handleChange, setFieldValue}) => {
           return (
-            <KeyboardAwareScrollView
-              style={styles.formContainer}
-              contentContainerStyle={[styles.scrollContainer]}>
+            <>
               <View style={styles.inputContainer}>
                 <TextInputComponent
                   label="Seçim Başlığı"
@@ -97,9 +97,11 @@ const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
               />
 
               <ImagePickerComponent
+                outStyle={styles.imagePicker}
                 image={values.image}
                 fieldName="image"
                 setFieldValue={setFieldValue}
+                responsive={false}
               />
               <Button
                 title="Go to Election Info"
@@ -113,10 +115,11 @@ const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
                 style={styles.submitButton}
                 disabled={submitting.info}
               />
-            </KeyboardAwareScrollView>
+            </>
           );
         }}
       </Formik>
+
       <Snackbar
         style={styles.snackbar}
         visible={visible}
@@ -124,7 +127,7 @@ const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
         duration={3000}>
         {message}
       </Snackbar>
-    </View>
+    </KeyboardAwareScrollView>
   );
 };
 

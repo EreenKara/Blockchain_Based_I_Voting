@@ -8,11 +8,11 @@ import {
   ViewStyle,
 } from 'react-native';
 import React from 'react';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
 import TextInputComponent from '@components/TextInput/text.input';
-
+import {useStyles} from '@hooks/Modular/use.styles';
 interface SearchBarComponentProps {
   modalTitle?: string;
   placeholder?: string;
@@ -23,6 +23,7 @@ interface SearchBarComponentProps {
   titleStyle?: StyleProp<TextStyle>;
 }
 const SearchIcon = () => {
+  const styles = useStyles(createStyles);
   return (
     <Image
       source={require('@assets/images/search-icon.png')}
@@ -39,6 +40,7 @@ const SearchBarComponent: React.FC<SearchBarComponentProps> = ({
   setValue,
   titleStyle,
 }) => {
+  const styles = useStyles(createStyles);
   return (
     <View style={styles.searchContainer}>
       <Text style={[CommonStyles.textStyles.title, styles.text, titleStyle]}>
@@ -58,19 +60,20 @@ const SearchBarComponent: React.FC<SearchBarComponentProps> = ({
 
 export default SearchBarComponent;
 
-const styles = StyleSheet.create({
-  searchContainer: {
-    flexDirection: 'column',
-    width: '100%',
-    alignItems: 'center',
-    borderRadius: styleNumbers.borderRadius,
-    paddingHorizontal: styleNumbers.space * 2,
-  },
-  text: {
-    paddingRight: styleNumbers.space / 2,
-  },
-  searchIcon: {
-    width: 20,
-    height: 20,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    searchContainer: {
+      flexDirection: 'column',
+      width: '100%',
+      alignItems: 'center',
+      borderRadius: styleNumbers.borderRadius,
+      paddingHorizontal: styleNumbers.space * 2,
+    },
+    text: {
+      paddingRight: styleNumbers.space / 2,
+    },
+    searchIcon: {
+      width: 20,
+      height: 20,
+    },
+  });

@@ -2,8 +2,9 @@ import {StyleSheet, Text, View} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {Picker} from '@react-native-picker/picker';
 import styleNumbers from '@styles/common/style.numbers';
-import Colors from '@styles/common/colors';
+import Colors, {ColorsSchema} from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
+import {useStyles} from '@hooks/Modular/use.styles';
 
 interface AddressPickerComponentProps {
   values: {city: string; district: string};
@@ -30,6 +31,7 @@ const AddressPickerComponent = ({
   values,
   setFieldValue,
 }: AddressPickerComponentProps) => {
+  const styles = useStyles(createStyles);
   const [availableDistricts, setAvailableDistricts] = useState<string[]>([]);
 
   useEffect(() => {
@@ -109,28 +111,29 @@ const AddressPickerComponent = ({
 
 export default AddressPickerComponent;
 
-const styles = StyleSheet.create({
-  addressContainer: {
-    flexDirection: 'column',
-    gap: styleNumbers.space,
-    marginBottom: styleNumbers.space * 3,
-  },
-  pickerContainer: {
-    marginTop: styleNumbers.space * 2,
-  },
-  label: {
-    marginBottom: styleNumbers.spaceLittle,
-    color: Colors.getTheme().text,
-    fontSize: styleNumbers.textSize * 0.9,
-  },
-  pickerWrapper: {
-    borderWidth: styleNumbers.borderWidth,
-    borderColor: Colors.getTheme().borderColor,
-    borderRadius: styleNumbers.borderRadius,
-    backgroundColor: Colors.getTheme().background,
-    ...CommonStyles.shadowStyle,
-  },
-  picker: {
-    color: Colors.getTheme().text,
-  },
-});
+const createStyles = (colors: ColorsSchema) =>
+  StyleSheet.create({
+    addressContainer: {
+      flexDirection: 'column',
+      gap: styleNumbers.space,
+      marginBottom: styleNumbers.space * 3,
+    },
+    pickerContainer: {
+      marginTop: styleNumbers.space * 2,
+    },
+    label: {
+      marginBottom: styleNumbers.spaceLittle,
+      color: colors.text,
+      fontSize: styleNumbers.textSize * 0.9,
+    },
+    pickerWrapper: {
+      borderWidth: styleNumbers.borderWidth,
+      borderColor: colors.borderColor,
+      borderRadius: styleNumbers.borderRadius,
+      backgroundColor: colors.background,
+      ...CommonStyles.shadowStyle,
+    },
+    picker: {
+      color: colors.text,
+    },
+  });

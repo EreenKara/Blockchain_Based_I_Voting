@@ -8,8 +8,9 @@ import {
   View,
   StyleProp,
 } from 'react-native';
-import {buttonStyles as styles} from './Button.style';
+import {createStyles} from './Button.style';
 import Colors from '@styles/common/colors';
+import {useStyles} from '@hooks/Modular/use.styles';
 
 interface ButtonProps extends TouchableOpacityProps {
   title: string;
@@ -31,6 +32,8 @@ const ButtonComponent: React.FC<ButtonProps> = ({
   leftIcon,
   ...props
 }) => {
+  const styles = useStyles(createStyles);
+
   const getButtonStyle = () => {
     switch (variant) {
       case 'outline':
