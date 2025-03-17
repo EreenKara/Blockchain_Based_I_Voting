@@ -74,7 +74,7 @@ const GroupsScreen: React.FC<GroupsProps> = ({navigation}) => {
       </View>
       <View style={styles.createGroupButton}>
         <ButtonComponent
-          title="Grup Oluştur"
+          title="Yeni Grup Oluştur"
           onPress={() => {
             navigation.navigate('CreateGroup');
           }}

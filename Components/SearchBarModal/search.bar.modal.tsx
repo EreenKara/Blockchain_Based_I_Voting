@@ -1,21 +1,20 @@
 import {
   Image,
-  Pressable,
-  StyleProp,
-  StyleSheet,
+  Modal,
   Text,
-  TextStyle,
   TouchableOpacity,
   View,
+  StyleProp,
+  StyleSheet,
+  TextStyle,
   ViewStyle,
 } from 'react-native';
 import React, {useState} from 'react';
-import Colors, {ColorsSchema} from '@styles/common/colors';
+import {ColorsSchema} from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
-import styleNumbers from '@styles/common/style.numbers';
 import SearchBarComponent from '@components/SearchBar/search.bar';
-import FullModalComponent from '@components/Modal/FullModal/full.modal';
 import {useStyles} from '@hooks/Modular/use.styles';
+import styleNumbers from '@styles/common/style.numbers';
 
 interface SearchBarModalComponentProps {
   handleSearch: () => void;
@@ -38,6 +37,7 @@ const SearchBarModalComponent: React.FC<SearchBarModalComponentProps> = ({
 }) => {
   const styles = useStyles(createStyles);
   const [isOpen, setIsOpen] = useState(false);
+
   return (
     <View style={[styles.container, style]}>
       <TouchableOpacity style={styles.iconView} onPress={() => setIsOpen(true)}>
@@ -54,21 +54,38 @@ const SearchBarModalComponent: React.FC<SearchBarModalComponentProps> = ({
           style={styles.searchIcon}
         />
       </TouchableOpacity>
-      <FullModalComponent
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        title={modalTitle}
-        style={{
-          width: '100%',
-          height: 160,
-        }}>
-        <SearchBarComponent
-          modalTitle={searchBarTitle}
-          titleStyle={{color: Colors.getTheme().cardText}}
-          handleSearch={handleSearch}
-        />
-        {content}
-      </FullModalComponent>
+
+      {/* TAM EKRAN MODAL */}
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={isOpen}
+        onRequestClose={() => setIsOpen(false)}>
+        <View style={styles.fullScreenModal}>
+          {/* Üst Kısım: Geri Tuşu ve Başlık */}
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() => setIsOpen(false)}
+              style={styles.closeButton}>
+              <Text style={styles.closeButtonText}>Kapat</Text>
+            </TouchableOpacity>
+            <Text style={styles.modalTitle}>{modalTitle}</Text>
+            <View style={styles.blank} />
+          </View>
+
+          {/* Arama Çubuğu */}
+          <SearchBarComponent
+            modalTitle={searchBarTitle}
+            titleStyle={styles.modalTitle}
+            handleSearch={handleSearch}
+          />
+
+          {/* İçerik */}
+          <View style={styles.contentContainer}>
+            {typeof content === 'string' ? <Text>{content}</Text> : content}
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -79,13 +96,53 @@ const createStyles = (colors: ColorsSchema) =>
   StyleSheet.create({
     container: {},
     searchIcon: {
-      width: 20,
-      height: 20,
+      width: 24,
+      height: 24,
+      tintColor: colors.icon,
     },
     iconView: {
       flexDirection: 'row',
+      alignItems: 'center',
+      padding: styleNumbers.space,
+      backgroundColor: colors.background,
+      borderRadius: styleNumbers.borderRadius,
     },
     text: {
-      paddingRight: styleNumbers.space / 2,
+      ...CommonStyles.textStyles.paragraph,
+      paddingRight: styleNumbers.space,
+    },
+    fullScreenModal: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    header: {
+      paddingTop: styleNumbers.space * 3,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: styleNumbers.space,
+      paddingBottom: styleNumbers.space,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.borderColor,
+    },
+    closeButton: {
+      padding: styleNumbers.space,
+      borderRadius: styleNumbers.borderRadius,
+    },
+    closeButtonText: {
+      ...CommonStyles.textStyles.subtitle,
+    },
+    modalTitle: {
+      ...CommonStyles.textStyles.title,
+      paddingHorizontal: styleNumbers.space * 3,
+      flex: 1,
+    },
+    contentContainer: {
+      flex: 1,
+      padding: styleNumbers.space,
+    },
+    blank: {
+      backgroundColor: 'red',
+      width: styleNumbers.space * 3,
     },
   });

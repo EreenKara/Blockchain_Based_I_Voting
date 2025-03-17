@@ -8,7 +8,7 @@ import {
   VirtualizedList,
   TouchableOpacity,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import Colors, {ColorsSchema} from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
@@ -145,34 +145,35 @@ const initialUsers: UserViewModel[] = [
 /* Item id 'si bu screen de zorunlu olarak verilmeli. */
 const CreateGroupScreen = () => {
   const styles = useStyles(createStyles);
-  const [searchQuery, setSearchQuery] = useState('');
   const [users, setUsers] = useState(initialUsers);
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-
-  const handleSearch = (text: string) => {
+  const [selectedUsers, setSelectedUsers] = useState<UserViewModel[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const handleSearch = useCallback((text: string) => {
+    console.log('text', text);
     setSearchQuery(text);
-    const filteredUsers = initialUsers.filter(user =>
+    /*const filteredUsers = initialUsers.filter(user =>
       user.name?.toLowerCase().includes(text.toLowerCase()),
     );
-    setUsers(filteredUsers);
-  };
+    setUsers(filteredUsers);*/
+  }, []);
 
-  const handleUserSelect = (userId: string) => {
-    setSelectedUsers(prev => {
-      if (prev.includes(userId)) {
-        return prev.filter(id => id !== userId);
-      } else {
-        return [...prev, userId];
-      }
-    });
-  };
+  const handleUserSelect = useCallback(
+    (userId: string) => {
+      setSelectedUsers(prev => {
+        const isSelected = prev.some(user => user.id === userId);
+        return isSelected
+          ? prev.filter(user => user.id !== userId) // Kullanıcı seçiliyse, çıkar
+          : [...prev, users.find(user => user.id === userId)!]; // Kullanıcı seçili değilse, ekle
+      });
+    },
+    [users], // 🔥 `users` bağımlılık olarak eklendi
+  );
 
   const renderUserItem = ({item}: {item: UserViewModel}) => {
-    const isSelected = selectedUsers.includes(item.id || '');
+    const isSelected = selectedUsers.some(user => user.id === item.id);
 
     return (
       <View style={styles.userItem}>
-        <AvatarHeaderComponent user={item} notifications={[]} />
         <Image
           source={
             item.image ? item.image : require('@assets/images/no-avatar.png')
@@ -200,17 +201,22 @@ const CreateGroupScreen = () => {
   return (
     <>
       <View style={styles.container}>
-        <SearchBarComponent modalTitle="Kişi Arayın" handleSearch={() => {}} />
+        <SearchBarComponent
+          debounceTime={300}
+          modalTitle="Kişi Arayın"
+          handleSearch={handleSearch}
+          debounce={true}
+        />
         <View style={styles.listContainer}>
           <VirtualizedListComponent
-            data={users}
+            data={searchQuery ? users : selectedUsers}
             renderItem={renderUserItem}
             showsVerticalScrollIndicator={false}
           />
         </View>
         <View style={styles.createGroupButton}>
           <ButtonComponent
-            title="Grup Oluştur"
+            title="Seçilen Kişilerden Grup Oluştur"
             onPress={() => {}}
             style={styles.createGroupButton}
           />

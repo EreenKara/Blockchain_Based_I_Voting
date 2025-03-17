@@ -76,16 +76,7 @@ const DenemeScreen: React.FC<Props> = ({navigation}) => {
     useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
   return (
     <View style={styles.container}>
-      <ExtendedListPickerComponent
-        style={styles.picker}
-        data={datas}
-        selectedData={selectedData}
-        setSelectedData={setSelectedData}
-        title={'test'}
-        icon={require('@assets/images/group-people.png')}
-        onSelect={() => {}}
-        onNonSelect={() => {}}
-      />
+      <SearchBarModalComponent handleSearch={() => {}} />
     </View>
   );
 };
