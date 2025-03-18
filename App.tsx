@@ -15,6 +15,7 @@ import {SearchProvider} from '@contexts/index';
 import ErrorScreen from '@screens/shared/Error/error.screen';
 import SuccessScreen from '@screens/shared/Success/success.screen';
 import {ThemeProvider} from '@contexts/index';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const App = () => {
@@ -35,16 +36,18 @@ const App = () => {
           <ElectionCreationProvider>
             <SearchProvider>
               <PaperProvider>
-                <NavigationContainer>
-                  <Stack.Navigator
-                    initialRouteName="Auth"
-                    screenOptions={{headerShown: false}}>
-                    <Stack.Screen name="Auth" component={AuthNavigator} />
-                    <Stack.Screen name="Main" component={MainNavigator} />
-                    <Stack.Screen name="Error" component={ErrorScreen} />
-                    <Stack.Screen name="Success" component={SuccessScreen} />
-                  </Stack.Navigator>
-                </NavigationContainer>
+                <GestureHandlerRootView style={{flex: 1}}>
+                  <NavigationContainer>
+                    <Stack.Navigator
+                      initialRouteName="Auth"
+                      screenOptions={{headerShown: false}}>
+                      <Stack.Screen name="Auth" component={AuthNavigator} />
+                      <Stack.Screen name="Main" component={MainNavigator} />
+                      <Stack.Screen name="Error" component={ErrorScreen} />
+                      <Stack.Screen name="Success" component={SuccessScreen} />
+                    </Stack.Navigator>
+                  </NavigationContainer>
+                </GestureHandlerRootView>
               </PaperProvider>
             </SearchProvider>
           </ElectionCreationProvider>

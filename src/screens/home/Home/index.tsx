@@ -57,23 +57,16 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
       {menuItems.map((item, index) => (
         <Card key={index} style={[styles.card]}>
           <Card.Content>
-            <Title
-              style={[
-                CommonStyles.textStyles.title,
-                {color: Colors.getTheme().cardText},
-              ]}>
+            <Title style={[CommonStyles.textStyles.title, styles.text]}>
               {item.icon} {item.title}
             </Title>
-            <Paragraph
-              style={[
-                CommonStyles.textStyles.paragraph,
-                {color: Colors.getTheme().cardText},
-              ]}>
+            <Paragraph style={[CommonStyles.textStyles.paragraph, styles.text]}>
               {item.description}
             </Paragraph>
           </Card.Content>
           <Card.Actions>
             <ButtonComponent
+              style={styles.button}
               title="İncele"
               onPress={() => {
                 if (item.screen === 'BlockchainOrDb') {
@@ -117,6 +110,12 @@ const createStyles = (colors: ColorsSchema) =>
     card: {
       ...CommonStyles.viewStyles.card,
       marginBottom: styleNumbers.space,
+    },
+    text: {
+      color: colors.cardText,
+    },
+    button: {
+      backgroundColor: colors.cardButton,
     },
   });
 

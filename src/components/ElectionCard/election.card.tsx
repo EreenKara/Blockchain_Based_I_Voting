@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {View, Text, SafeAreaView, ListRenderItem} from 'react-native';
 import ElectionCardItemComponent from '../ElectionCardItem/election.card.item';
 import createStyles from './election.card.style';
-import VirtualizedListComponent from '@components/List/virtualized.list';
+import FlatListComponent from '@components/List/flat.list';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
@@ -66,7 +66,7 @@ const ElectionCardComponent: React.FC<ElectionCardComponentProps> = ({
       <View style={[styles.header]}>
         <Text style={styles.headerTitle}>{title}</Text>
       </View>
-      <VirtualizedListComponent
+      <FlatListComponent
         style={styles.listContainer}
         contentContainerStyle={styles.listContent}
         data={items}

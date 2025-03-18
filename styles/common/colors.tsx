@@ -27,7 +27,7 @@ export interface ColorsSchema {
 const light: ColorsSchema = {
   button: '#056161', // tiklanabilir ögeler ve focused olan ögelerin renkleri
   background: '#E0F7FA', // background renkleri
-  cardButton: '#15324E', // kart buton renkleri ve arka plandan ayrılan ögelerin button renkleri
+  cardButton: '#1E5F74', // kart buton renkleri ve arka plandan ayrılan ögelerin button renkleri
   cardBackground: '#334C64', // kart arka planları ve arka plandan ayrılan ögelerin renkleri
   transition: '#CBF2F6', // background ile aynı olsun istemiyorsun ama ona yakın bir renk olsun istiyorsun.
   cardText: '#BFCCCE', // kart içerisindeki text renkleri

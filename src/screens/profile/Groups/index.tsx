@@ -8,7 +8,7 @@ import {ProfileStackParamList} from '@navigation/types';
 import ButtonComponent from '@components/Button/Button';
 import ErrorComponent from '@screens/shared/error.screen';
 import ActivityIndicatorComponent from '@screens/shared/activity.indicator';
-import VirtualizedListComponent from '@components/List/virtualized.list';
+import FlatListComponent from '@components/List/flat.list';
 import GroupViewModel from '@viewmodels/group.viewmodel';
 import {useUserProfileContext} from '@contexts/user.profile.context';
 import CommonStyles from '@styles/common/commonStyles';
@@ -62,7 +62,7 @@ const GroupsScreen: React.FC<GroupsProps> = ({navigation}) => {
   return (
     <View style={styles.container}>
       <View style={styles.listContainer}>
-        <VirtualizedListComponent
+        <FlatListComponent
           data={groups}
           renderItem={renderItem}
           ListEmptyComponent={

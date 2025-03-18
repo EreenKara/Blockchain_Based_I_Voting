@@ -1,30 +1,28 @@
 import React from 'react';
 import {
-  VirtualizedList,
-  VirtualizedListProps,
   ListRenderItem,
   ListRenderItemInfo,
+  FlatList,
+  FlatListProps,
 } from 'react-native';
 import Animated, {FadeIn, BounceIn} from 'react-native-reanimated';
 import {useStyles} from '@hooks/Modular/use.styles';
-import createStyles from './virtualized.list.style';
+import createStyles from './flat.list.style';
 
-type VirtualizedListComponentProps = Omit<
-  VirtualizedListProps<string>,
-  'renderItem' | 'getItem' | 'getItemCount' | 'data'
+type FlatListComponentProps = Omit<
+  FlatListProps<string>,
+  'renderItem' | 'data'
 > & {
   data: any[];
   renderItem: ListRenderItem<any>;
 };
 
-const VirtualizedListComponent: React.FC<VirtualizedListComponentProps> = ({
+const FlatListComponent: React.FC<FlatListComponentProps> = ({
   data,
   renderItem,
-  ...virtualizedListProps
+  ...flatListProps
 }) => {
   const styles = useStyles(createStyles);
-  const getItem = (_data: any[], index: number) => data[index];
-  const getItemCount = (_data: any[]) => data.length;
 
   const myRenderItem = (listItemProps: ListRenderItemInfo<any>) => {
     const {index} = listItemProps;
@@ -37,21 +35,19 @@ const VirtualizedListComponent: React.FC<VirtualizedListComponentProps> = ({
 
   return (
     <Animated.View style={styles.container} entering={FadeIn.duration(300)}>
-      <VirtualizedList
-        {...virtualizedListProps}
+      <FlatList
         data={data}
         initialNumToRender={10}
         renderItem={myRenderItem}
         keyExtractor={(_, index) => index.toString()}
-        getItem={getItem}
-        getItemCount={getItemCount}
         showsVerticalScrollIndicator={false}
         windowSize={10}
         maxToRenderPerBatch={10}
         updateCellsBatchingPeriod={30}
+        {...flatListProps}
       />
     </Animated.View>
   );
 };
 
-export default VirtualizedListComponent;
+export default FlatListComponent;

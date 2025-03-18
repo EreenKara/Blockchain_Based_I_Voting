@@ -1,11 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  VirtualizedList,
-  ScrollView,
-  FlatList,
-} from 'react-native';
+import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
@@ -272,7 +265,10 @@ useEffect(() => {
   }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{flexGrow: 1}}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{flexGrow: 1}}
+      nestedScrollEnabled={true}>
       {form}
       <View style={styles.footerContainer}>
         <ButtonComponent

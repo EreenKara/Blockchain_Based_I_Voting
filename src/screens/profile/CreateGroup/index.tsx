@@ -1,19 +1,10 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TextInput,
-  FlatList,
-  VirtualizedList,
-  TouchableOpacity,
-} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import React, {useCallback, useState} from 'react';
 import Colors, {ColorsSchema} from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
 import SearchBarComponent from '@components/SearchBar/search.bar';
-import VirtualizedListComponent from '@components/List/virtualized.list';
+import FlatListComponent from '@components/List/flat.list';
 import UserViewModel from '@viewmodels/user.viewmodel';
 import ButtonComponent from '@components/Button/Button';
 import {GestureHandlerRootView, ScrollView} from 'react-native-gesture-handler';
@@ -208,7 +199,7 @@ const CreateGroupScreen = () => {
           debounce={true}
         />
         <View style={styles.listContainer}>
-          <VirtualizedListComponent
+          <FlatListComponent
             data={searchQuery ? users : selectedUsers}
             renderItem={renderUserItem}
             showsVerticalScrollIndicator={false}

@@ -1,11 +1,4 @@
-import {
-  StyleProp,
-  StyleSheet,
-  Text,
-  View,
-  ViewStyle,
-  VirtualizedList,
-} from 'react-native';
+import {FlatList, StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import React, {useRef} from 'react';
 import ExtendedPickerComponent, {ChildRef} from '@icomponents/ExtendedPicker';
 import MenuItemComponent from '@icomponents/MenuItem/menu.item';
@@ -57,12 +50,12 @@ const ExtendedListPickerComponent = ({
       style={style}
       ref={pickerRef}
       content={
-        <VirtualizedList
-          style={[listStyle]}
-          keyExtractor={(item: any) => item.id.toString()}
-          getItemCount={() => data.length}
-          getItem={(data, index) => data[index]}
+        <FlatList
           data={data}
+          style={{maxHeight: 300}}
+          nestedScrollEnabled={true}
+          scrollEnabled={true}
+          keyExtractor={(item: any) => item.id.toString()}
           renderItem={({item}: {item: any}) => (
             <MenuItemComponent
               icon={require('@assets/images/group-people.png')}

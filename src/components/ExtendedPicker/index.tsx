@@ -1,12 +1,7 @@
 import {
   StyleSheet,
-  Text,
   View,
-  FlatList,
   TouchableOpacity,
-  VirtualizedList,
-  Pressable,
-  Button,
   Image,
   ViewStyle,
   StyleProp,
@@ -17,8 +12,6 @@ import Colors, {ColorsSchema} from '@styles/common/colors';
 import ButtonComponent from '@components/Button/Button';
 import CommonStyles from '@styles/common/commonStyles';
 import MenuItemComponent from '@icomponents/MenuItem/menu.item';
-import GroupViewModel from '@viewmodels/group.viewmodel';
-import VirtualizedListComponent from '@components/List/virtualized.list';
 import {useStyles} from '@hooks/Modular/use.styles';
 
 interface ExtendedPickerComponentProps {
