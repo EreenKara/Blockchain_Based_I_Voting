@@ -27,4 +27,49 @@ const searchUsers = async (req, res) => {
     }
 };
 
-module.exports = { searchUsers };
+
+const fuzzySearchUsers = async (req, res) => {
+    try {
+        const { query } = req.query;
+
+        const response = await elasticClient.search({
+            index: "users",
+            body: {
+                query: {
+                    fuzzy: {
+                        "name.fuzzy": {
+                            value: query,
+                            fuzziness: "AUTO" // Otomatik hata düzeltme
+                        }
+                    }
+                }
+            }
+        });
+
+        res.status(200).json({ success: true, data: response.hits.hits });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Fuzzy search sırasında hata oluştu", error: error.message });
+    }
+};
+const autocompleteUsers = async (req, res) => {
+    try {
+        const { query } = req.query;
+
+        const response = await elasticClient.search({
+            index: "users",
+            body: {
+                query: {
+                    match_phrase_prefix: {
+                        "name.autocomplete": query // Autocomplete için özel alan
+                    }
+                }
+            }
+        });
+
+        res.status(200).json({ success: true, data: response.hits.hits });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Autocomplete sırasında hata oluştu", error: error.message });
+    }
+};
+
+module.exports = { searchUsers,fuzzySearchUsers,autocompleteUsers };
