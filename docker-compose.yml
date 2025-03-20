@@ -146,7 +146,6 @@ services:
       - option-service
       - vote-service
       - result-service
-      - email-service
     volumes:
       - ./gateway:/gateway
       - /gateway/node_modules
@@ -187,5 +186,36 @@ services:
     volumes:
       - ./image-service:/image-service
       - /image-service/node_modules
+    networks:
+      - ivote-network
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.1
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - ivote-network
+
+
+  searchbar-service:
+    build: ./searchbar-service
+    container_name: searchbar-service
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      USER_SERVICE_URL: http://user-service:5004
+    ports:
+      - "5009:5009"
+    depends_on:
+      - elasticsearch
+      - user-service
+    volumes:
+      - ./searchbar-service:/searchbar-service
+      - /searchbar-service/node_modules
     networks:
       - ivote-network

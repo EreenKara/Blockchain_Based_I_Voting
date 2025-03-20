@@ -56,9 +56,7 @@ const getGroupsWithAccessToElectionController = async (req, res) => {
     // if (!response.success) {
     //   return res.status(400).json({ message: response.message });
     // }
-    res
-      .status(200)
-      .json(response);
+    res.status(200).json(response);
   } catch (error) {
     console.error("hata:", error.message);
     res.status(500).json({

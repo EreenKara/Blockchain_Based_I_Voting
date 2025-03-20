@@ -1,19 +1,30 @@
-const { search } = require("../services/searchService");
+const elasticClient = require("../config/elasticsearch");
 
-// Arama endpoint'i
-const searchController = async (req, res) => {
-  const { query, type } = req.query;
+const searchUsers = async (req, res) => {
+    try {
+        const { query } = req.query;
+        if (!query) {
+            return res.status(400).json({ message: "Search query is required" });
+        }
 
-  if (!query || !type) {
-    return res.status(400).send({ message: "Query and type are required" });
-  }
+        // Elasticsearch'te full-text search
+        const { hits } = await elasticClient.search({
+            index: "users",
+            body: {
+                query: {
+                    match: { name: query } // Kullanıcı ismine göre arama yap
+                }
+            }
+        });
 
-  try {
-    const results = await search(query, type);
-    return res.status(200).json(results);
-  } catch (error) {
-    return res.status(500).send({ message: "Internal Server Error" });
-  }
+        res.json({
+            success: true,
+            data: hits.hits.map(hit => hit._source)
+        });
+    } catch (error) {
+        console.error("❌ Arama hatası:", error.message);
+        res.status(500).json({ message: "An error occurred while searching users" });
+    }
 };
 
-module.exports = { searchController };
+module.exports = { searchUsers };

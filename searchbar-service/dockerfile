@@ -1,0 +1,12 @@
+FROM node:18-alpine
+
+WORKDIR /searchbar-service
+
+COPY package.json package-lock.json ./
+RUN npm install
+
+COPY . .
+
+CMD ["npx", "nodemon", "--legacy-watch", "src/app.js"]
+
+EXPOSE 5009

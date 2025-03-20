@@ -1,15 +1,17 @@
 const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
 const searchRoutes = require("./routes/searchRoutes");
-const sequelize = require("./config/database");
-require("dotenv").config();
 
+dotenv.config();
 const app = express();
+
+app.use(cors());
 app.use(express.json());
+app.use("/api/search", searchRoutes);
 
-app.use("/api/searchs", searchRoutes);
+const PORT = process.env.PORT || 5009;
 
-sequelize.sync().then(() => {
-  console.log("Database connected!");
-  const PORT = process.env.PORT || 5009;
-  app.listen(PORT, () => console.log("Election Service running on port 5002"));
+app.listen(PORT, () => {
+    console.log(`🚀 Search Service running on port ${PORT}`);
 });

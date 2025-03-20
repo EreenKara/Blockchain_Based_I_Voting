@@ -29,43 +29,51 @@ const addAccessUserToElectionController = async (req, res) => {
     res.status(200).json({ message: response.message, data: response.data });
   } catch (error) {
     console.error("Hata:", error.message);
-    res
-      .status(500)
-      .json({
-        message: "Kullanıcı veya grup seçime erişilirken hata oluştu.",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Kullanıcı veya grup seçime erişilirken hata oluştu.",
+      error: error.message,
+    });
   }
 };
 const getUsersWithAccessToElectionController = async (req, res) => {
   try {
-      console.log("📡 Gelen Request Params:", req.params); // electionId kontrolü
-      console.log("📡 Gelen Query Params:", req.query); // page ve limit kontrolü
+    console.log("📡 Gelen Request Params:", req.params); // electionId kontrolü
+    console.log("📡 Gelen Query Params:", req.query); // page ve limit kontrolü
 
-      const { electionId } = req.params;
-      let { page, limit } = req.query;
+    const { electionId } = req.params;
+    let { page, limit } = req.query;
 
-      if (!electionId) {
-          return res.status(400).json({ success: false, message: "Eksik parametre: electionId gereklidir." });
-      }
-
-      page = parseInt(page) || 1;
-      limit = parseInt(limit) || 10;
-
-      console.log(`✅ API Çağrısı: electionId=${electionId}, page=${page}, limit=${limit}`);
-
-      const response = await getUsersWithAccessToElection(electionId, page, limit);
-      res.status(200).json(response);
-  } catch (error) {
-      console.error("❌ Controller Hatası:", error.message);
-      res.status(500).json({
+    if (!electionId) {
+      return res
+        .status(400)
+        .json({
           success: false,
-          message: "Beklenmeyen hata oluştu.",
-          error: error.message
-      });
+          message: "Eksik parametre: electionId gereklidir.",
+        });
+    }
+
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 10;
+
+    console.log(
+      `✅ API Çağrısı: electionId=${electionId}, page=${page}, limit=${limit}`
+    );
+
+    const response = await getUsersWithAccessToElection(
+      electionId,
+      page,
+      limit
+    );
+    res.status(200).json(response);
+  } catch (error) {
+    console.error("❌ Controller Hatası:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Beklenmeyen hata oluştu.",
+      error: error.message,
+    });
   }
 };
-
 
 module.exports = {
   addAccessUserToElectionController,
