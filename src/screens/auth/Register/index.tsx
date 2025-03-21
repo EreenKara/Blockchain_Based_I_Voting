@@ -12,6 +12,7 @@ import {RegisterViewModel} from '@viewmodels/register.viewmodel';
 import {useAuth} from '@hooks/use.auth';
 import {useStyles} from '@hooks/Modular/use.styles';
 import createStyles from './index.style';
+import styleNumbers from '@styles/common/style.numbers';
 type Props = NativeStackScreenProps<AuthStackParamList, 'Register'>;
 
 const RegisterScreen: React.FC<Props> = ({navigation}) => {
@@ -177,7 +178,7 @@ const RegisterScreen: React.FC<Props> = ({navigation}) => {
             <Button
               mode="text"
               onPress={() => navigation.navigate('Login')}
-              style={styles.button}>
+              style={[styles.button, {marginBottom: styleNumbers.space * 4}]}>
               Zaten hesabın var mı? Giriş Yap
             </Button>
           </KeyboardAwareScrollView>

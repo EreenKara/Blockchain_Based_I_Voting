@@ -1,8 +1,6 @@
-import {ServiceType} from '@services/backend/concrete/service.container';
-import ElectionService from '@services/backend/concrete/election.service';
-import {ServiceContainer} from '@services/backend/concrete/service.container';
 import {useState} from 'react';
 import {CandidateViewModel} from '@viewmodels/candidate.viewmodel';
+import {electionService} from '@services/backend/concrete/service.container.instances';
 
 const useElectionCandidate = (electionId: string | null) => {
   const [candidates, setCandidates] = useState<CandidateViewModel[]>([]);
@@ -17,10 +15,6 @@ const useElectionCandidate = (electionId: string | null) => {
       setError('Election ID is not set.');
       return false;
     }
-
-    const electionService = ServiceContainer.getService(
-      ServiceType.ElectionService,
-    ) as ElectionService;
 
     try {
       setSubmitting(true);

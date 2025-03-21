@@ -1,10 +1,6 @@
 import {useEffect, useState} from 'react';
 import {useAuthContext} from '@contexts/index';
-import {
-  ServiceContainer,
-  ServiceType,
-} from '@services/backend/concrete/service.container';
-import {UserService} from '@services/backend/concrete/user.service';
+import {userService} from '@services/backend/concrete/service.container.instances';
 import {RegisterViewModel} from '@viewmodels/register.viewmodel';
 
 const codeLength = 6;
@@ -17,9 +13,6 @@ export const useAuth = (login: boolean = true) => {
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [emailOrIdentity, setEmailOrIdentity] = useState('');
-  const userService = ServiceContainer.getService(
-    ServiceType.UserService,
-  ) as UserService;
 
   useEffect(() => {
     if (login) {
@@ -37,6 +30,8 @@ export const useAuth = (login: boolean = true) => {
     password: string;
     rememberMe: boolean;
   }) => {
+    setSubmitError('');
+    setMessage('');
     console.log('submitLogin', values);
     try {
       const token = await userService.login({

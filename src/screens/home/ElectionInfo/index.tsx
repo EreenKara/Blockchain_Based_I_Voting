@@ -28,8 +28,7 @@ export interface FormValues {
 
 const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
   const styles = useStyles(createStyles);
-  const {handleElectionInfoStep, submitting, errors} =
-    useElectionCreationContext();
+  const {handleElectionInfoStep, submitting} = useElectionCreationContext();
 
   const [message, setMessage] = useState('');
   const [visible, setVisible] = useState(false);
@@ -40,12 +39,12 @@ const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
   };
 
   const handleSubmit = async (values: FormValues) => {
-    const resultBool = await handleElectionInfoStep(values);
-    showMessage(
-      errors.info || 'Başarılı, bir sonraki ekrana yönlendiriliyorsunuz...',
-    );
-    if (resultBool) {
+    const result = await handleElectionInfoStep(values);
+    if (result.success) {
+      showMessage('Başarılı, bir sonraki ekrana yönlendiriliyorsunuz...');
       navigation.navigate('PublicOrPrivate');
+    } else {
+      showMessage(result.error ?? 'Bilinmeyen bir hata olustu');
     }
   };
 

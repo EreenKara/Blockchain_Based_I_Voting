@@ -3,11 +3,9 @@ import {useCache} from './Modular/use.cache';
 import {useAppStateListener} from './Modular/use.appstate.listener';
 import {useNetworkListener} from './Modular/use.network.listener';
 import {useBackgroundFetch} from './Modular/use.background.fetch';
-import {ServiceContainer} from '@services/backend/concrete/service.container';
-import {ServiceType} from '@services/backend/concrete/service.container';
-import UserService from '@services/backend/concrete/user.service';
 import GroupViewModel from '@viewmodels/group.viewmodel';
 import {BackendError} from '@services/backend/concrete/backend.error';
+import {userService} from '@services/backend/concrete/service.container.instances';
 
 export interface UseGroupProps {
   groupId: string;
@@ -25,9 +23,6 @@ export default function useGroup({
   pageSize = 10,
   backgroundFetchInterval = 300000,
 }: UseGroupProps) {
-  const userService = ServiceContainer.getService(
-    ServiceType.UserService,
-  ) as UserService;
   const [group, setGroup] = useState<GroupViewModel | null>(null);
   const cacheKey = `group_${groupId}`;
   const {getCache, setCache, clearCache} = useCache(cacheKey, cacheExpiration);

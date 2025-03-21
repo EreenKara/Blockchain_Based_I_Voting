@@ -22,6 +22,7 @@ const createStyles = (colors: ColorsSchema) =>
     button: {
       ...CommonStyles.textStyles.paragraph,
       marginTop: styleNumbers.spaceLittle,
+      marginBottom: styleNumbers.space,
     },
     snackbar: {
       position: 'absolute',

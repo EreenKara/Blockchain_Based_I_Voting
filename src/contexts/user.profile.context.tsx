@@ -1,14 +1,11 @@
 import React, {createContext, useState, useContext, useEffect} from 'react';
 import UserViewModel from '@viewmodels/user.viewmodel';
-import {ServiceContainer} from '@services/backend/concrete/service.container';
-import {ServiceType} from '@services/backend/concrete/service.container';
-import UserService from '@services/backend/concrete/user.service';
 import useGroups from '@hooks/use.groups';
 import GroupViewModel from '@viewmodels/group.viewmodel';
 import {useAddresses} from '@hooks/use.addresses';
 import {AddressViewModel} from '@viewmodels/address.viewmodel';
 import useGroup from '@hooks/use.group';
-
+import {userService} from '@services/backend/concrete/service.container.instances';
 interface UserProfileContextType {
   user: UserViewModel | null;
   fetchUser: () => Promise<void>;
@@ -50,9 +47,6 @@ const UserProfileProvider: React.FC<{children: React.ReactNode}> = ({
   const fetchUser = async () => {
     try {
       setLoading(true);
-      const userService = ServiceContainer.getService(
-        ServiceType.UserService,
-      ) as UserService;
       const response = await userService.getCurrentUser();
       if (response) {
         setUser(response);

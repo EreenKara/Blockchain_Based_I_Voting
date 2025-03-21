@@ -1,15 +1,8 @@
 import {useState, useEffect} from 'react';
-import UserService from '@services/backend/concrete/user.service';
-import {
-  ServiceContainer,
-  ServiceType,
-} from '@services/backend/concrete/service.container';
+import {userService} from '@services/backend/concrete/service.container.instances';
 import GroupViewModel from '@viewmodels/group.viewmodel';
 
 export default function useGroups() {
-  const userService = ServiceContainer.getService(
-    ServiceType.UserService,
-  ) as UserService;
   const [groups, setGroups] = useState<GroupViewModel[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);

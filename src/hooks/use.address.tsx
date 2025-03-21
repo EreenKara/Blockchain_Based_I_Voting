@@ -1,16 +1,8 @@
-import {ServiceType} from '@services/backend/concrete/service.container';
-import {ServiceContainer} from '@services/backend/concrete/service.container';
-import userService, {
-  UserService,
-} from '@services/backend/concrete/user.service';
 import {AddressViewModel} from '@viewmodels/address.viewmodel';
 import {useState} from 'react';
+import {userService} from '@services/backend/concrete/service.container.instances';
 
 const useAddress = () => {
-  const userService = ServiceContainer.getService(
-    ServiceType.UserService,
-  ) as UserService;
-
   const [address, setAddress] = useState<AddressViewModel | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);

@@ -1,15 +1,8 @@
 import {useState, useEffect} from 'react';
-import UserService from '@services/backend/concrete/user.service';
-import {
-  ServiceContainer,
-  ServiceType,
-} from '@services/backend/concrete/service.container';
+import {userService} from '@services/backend/concrete/service.container.instances';
 import LightUserViewModel from '@viewmodels/light.user.viewmodel';
 
 export default function useUsers() {
-  const userService = ServiceContainer.getService(
-    ServiceType.UserService,
-  ) as UserService;
   const [users, setUsers] = useState<LightUserViewModel[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);

@@ -1,16 +1,7 @@
 import {useState, useEffect} from 'react';
-import UserService from '@services/backend/concrete/user.service';
-import {
-  ServiceContainer,
-  ServiceType,
-} from '@services/backend/concrete/service.container';
-import GroupViewModel from '@viewmodels/group.viewmodel';
-import ElectionService from '@services/backend/concrete/election.service';
+import {electionService} from '@services/backend/concrete/service.container.instances';
 
 export default function useVote() {
-  const electionService = ServiceContainer.getService(
-    ServiceType.ElectionService,
-  ) as ElectionService;
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 

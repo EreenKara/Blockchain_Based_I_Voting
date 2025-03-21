@@ -24,17 +24,13 @@ interface ElectionCreationContextType {
     candidate: boolean;
     choice: boolean;
   };
-  errors: {
-    info: string | null;
-    access: string | null;
-    candidate: string | null;
-    choice: string | null;
-  };
 
   // Adım yönetimi
 
   // Fonksiyonlar
-  handleElectionInfoStep: (values: FormValues) => Promise<boolean>;
+  handleElectionInfoStep: (
+    values: FormValues,
+  ) => Promise<{success: boolean; error: string | null}>;
   handleElectionAccessStep: (
     values: ElectionAccessViewModel,
   ) => Promise<boolean>;
@@ -61,7 +57,6 @@ export const ElectionCreationProvider: React.FC<{
   // 1) Info adımı
   const {
     election,
-    error: infoError,
     submitting: infoSubmitting,
     handleElectionInfoStep: originalHandleElectionInfoStep,
     setDbType,
@@ -73,7 +68,6 @@ export const ElectionCreationProvider: React.FC<{
   //    Artık useElectionAccess'e electionId parametresini veriyoruz
   const {
     electionAccess,
-    error: accessError,
     submitting: accessSubmitting,
     handleElectionAccessStep: originalHandleElectionAccessStep,
     reset: resetAccess,
@@ -83,7 +77,6 @@ export const ElectionCreationProvider: React.FC<{
   const {
     candidates,
     submitting: candidateSubmitting,
-    error: candidateError,
     handleElectionCandidateStep: originalHandleElectionCandidateStep,
     reset: resetCandidate,
   } = useElectionCandidate(electionId);
@@ -92,7 +85,6 @@ export const ElectionCreationProvider: React.FC<{
   const {
     choices,
     submitting: choiceSubmitting,
-    error: choiceError,
     handleElectionChoiceStep: originalHandleElectionChoiceStep,
     reset: resetChoice,
   } = useElectionChoices(electionId);
@@ -145,12 +137,6 @@ export const ElectionCreationProvider: React.FC<{
   // --------------------------------------
   // Error & Submitting
   // --------------------------------------
-  const errors = {
-    info: infoError,
-    access: accessError,
-    candidate: candidateError,
-    choice: choiceError,
-  };
 
   const submitting = {
     info: infoSubmitting,
@@ -174,7 +160,6 @@ export const ElectionCreationProvider: React.FC<{
         electionId,
         step,
         submitting,
-        errors,
         handleElectionInfoStep,
         handleElectionAccessStep,
         handleElectionCandidateStep,

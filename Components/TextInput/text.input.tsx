@@ -94,9 +94,8 @@ const TextInputComponent: React.FC<TextInputComponentProps> = ({
           <Text
             style={{
               color: Colors.getTheme().error || 'red',
-              marginRight: styleNumbers.space,
             }}>
-            '📈'
+            ❗
           </Text>
           <Text style={styles.error}>{error}</Text>
         </View>
