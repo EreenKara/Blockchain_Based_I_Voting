@@ -1,39 +1,44 @@
+// hooks/election/useElectionCandidate.ts
 import {useState} from 'react';
 import {CandidateViewModel} from '@viewmodels/candidate.viewmodel';
 import {electionService} from '@services/backend/concrete/service.container.instances';
+import {useAsync} from '@hooks/Modular/use.async';
 
 const useElectionCandidate = (electionId: string | null) => {
   const [candidates, setCandidates] = useState<CandidateViewModel[]>([]);
-  const [submitting, setSubmitting] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
 
-  // Aday ekleme/güncelleme işlemini yürüten fonksiyon
+  const {
+    execute: saveCandidates,
+    loading: submitting,
+    error,
+    reset: resetSubmission,
+  } = useAsync<void>(
+    async (newCandidates: CandidateViewModel[]) => {
+      if (!electionId) throw new Error('Election ID is not set.');
+      await electionService.putElectionCandidates(electionId, newCandidates);
+    },
+    {
+      showNotificationOnError: true,
+      successMessage: 'Adaylar başarıyla kaydedildi.',
+    },
+  );
+
   const handleElectionCandidateStep = async (
     newCandidates: CandidateViewModel[],
-  ) => {
-    if (!electionId) {
-      setError('Election ID is not set.');
-      return false;
+  ): Promise<{success: boolean; error: string | null}> => {
+    const result = await saveCandidates(newCandidates);
+
+    if (result !== null) {
+      setCandidates(newCandidates);
+      return {success: true, error: null};
     }
 
-    try {
-      setSubmitting(true);
-      // Örnek: putElectionCandidates gibi bir fonksiyon ile API'ya gönderin
-      await electionService.putElectionCandidates(electionId, newCandidates);
-      setCandidates(newCandidates);
-      setSubmitting(false);
-      return true;
-    } catch (error: any) {
-      setError(error.message);
-      setSubmitting(false);
-      return false;
-    }
+    return {success: false, error: error || 'Adaylar kaydedilemedi.'};
   };
 
   const reset = () => {
     setCandidates([]);
-    setSubmitting(false);
-    setError(null);
+    resetSubmission();
   };
 
   return {

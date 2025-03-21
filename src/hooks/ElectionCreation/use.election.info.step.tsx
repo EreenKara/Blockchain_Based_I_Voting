@@ -1,60 +1,69 @@
+// hooks/election/useElectionInfoStep.ts
+import {useState} from 'react';
 import {FormValues} from '@screens/home/ElectionInfo';
 import {ElectionViewModel} from '@viewmodels/election.viewmodel';
-import {useEffect, useState} from 'react';
+import {useAsync} from '@hooks/Modular/use.async';
 import {electionService} from '@services/backend/concrete/service.container.instances';
+import {useNotification} from '@contexts/notification.context';
 
 const useElectionInfoStep = () => {
-  const [election, setElection] = useState<ElectionViewModel | null>(null);
-  const [submitting, setSubmitting] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
   const [dbType, setDbType] = useState<'database' | 'blockchain' | null>(null);
+  const {showNotification} = useNotification();
+  const {
+    execute: createElection,
+    loading: submitting,
+    error,
+    reset: resetElection,
+    data: election,
+  } = useAsync<ElectionViewModel>(
+    (electionData: ElectionViewModel) =>
+      electionService.postElectionInfo(electionData),
+    {
+      showNotificationOnError: true,
+      successMessage: 'Seçim bilgileri başarıyla kaydedildi.',
+    },
+  );
 
   const handleElectionInfoStep = async (
     values: FormValues,
-  ): Promise<{success: boolean; error: string | null}> => {
-    try {
-      setSubmitting(true);
-      setError(null);
-      let election: ElectionViewModel = {
-        id: '',
-        name: values.title,
-        description: values.description,
-        startDate: values.startDate.toISOString(),
-        endDate: values.endDate.toISOString(),
-        image: values.image?.base64 || '',
-        color: values.color,
-        dbType:
-          dbType ??
-          (() => {
-            throw new Error('Db type is required');
-          })(),
+  ): Promise<{
+    success: boolean;
+    error: string | null;
+  }> => {
+    if (!dbType) {
+      showNotification({
+        message: 'Veri saklama tipi seçilmelidir.',
+        type: 'error',
+        modalType: 'snackbar',
+      });
+      return {
+        success: false,
+        error: 'Veri saklama tipi seçilmelidir.',
       };
-      const response = await electionService.postElectionInfo(election);
-      if (response) {
-        console.log('Election created:', response);
-        setElection(response);
-        setSubmitting(false);
-        return {success: true, error: null};
-      } else {
-        setSubmitting(false);
-        setError('Election creation failed. Some fields are not valid.');
-        return {
-          success: false,
-          error: 'Election creation failed. Some fields are not valid.',
-        };
-      }
-    } catch (error: any) {
-      console.log('Election creation error:', error);
-      setError(error.message);
-      setSubmitting(false);
-      return {success: false, error: 'Internet veya server problemi.'};
     }
+
+    const electionPayload: ElectionViewModel = {
+      id: '',
+      name: values.title,
+      description: values.description,
+      startDate: values.startDate.toISOString(),
+      endDate: values.endDate.toISOString(),
+      image: values.image?.base64 || '',
+      color: values.color,
+      dbType,
+    };
+
+    const created = await createElection(electionPayload);
+
+    return {
+      success: !!created,
+      error: created ? null : 'Seçim oluşturulamadı.',
+    };
   };
+
   const reset = () => {
-    setElection(null);
+    resetElection();
     setDbType(null);
-    setError(null);
-    setSubmitting(false);
   };
 
   return {

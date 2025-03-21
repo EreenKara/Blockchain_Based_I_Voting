@@ -1,13 +1,14 @@
-// hooks/useAsync.ts
 import {useState, useCallback, useRef} from 'react';
 import {parseApiError} from '@utility/error.handler';
+import {useNotification} from '@contexts/notification.context';
 
 type AsyncFunction<T> = (...args: any[]) => Promise<T>;
 
 interface UseAsyncOptions<T> {
   onSuccess?: (result: T) => void;
   onError?: (errorMessage: string) => void;
-  manual?: boolean;
+  showNotificationOnError?: boolean;
+  successMessage?: string; // opsiyonel: başarılı olunca otomatik mesaj
 }
 
 export function useAsync<T>(
@@ -17,7 +18,9 @@ export function useAsync<T>(
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<T | null>(null);
-  const lastArgsRef = useRef<any[]>([]); // Retry için son parametreleri sakla
+  const lastArgsRef = useRef<any[]>([]);
+
+  const {showNotification} = useNotification();
 
   const execute = useCallback(
     async (...args: any[]) => {
@@ -29,10 +32,20 @@ export function useAsync<T>(
         const result = await asyncFunction(...args);
         setData(result);
         options?.onSuccess?.(result);
+
+        if (options?.successMessage) {
+          showNotification({message: options.successMessage, type: 'success'});
+        }
+
         return result;
       } catch (err) {
         const message = parseApiError(err);
         setError(message);
+
+        if (options?.showNotificationOnError) {
+          showNotification({message, type: 'error'});
+        }
+
         options?.onError?.(message);
         return null;
       } finally {
@@ -48,9 +61,17 @@ export function useAsync<T>(
     }
   }, [execute]);
 
+  const reset = useCallback(() => {
+    setData(null);
+    setLoading(false);
+    setError(null);
+    lastArgsRef.current = [];
+  }, []);
+
   return {
     execute,
     retry,
+    reset,
     loading,
     error,
     data,

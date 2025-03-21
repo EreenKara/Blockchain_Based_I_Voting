@@ -24,6 +24,12 @@ interface ElectionCreationContextType {
     candidate: boolean;
     choice: boolean;
   };
+  errors: {
+    info: string | null;
+    access: string | null;
+    candidate: string | null;
+    choice: string | null;
+  };
 
   // Adım yönetimi
 
@@ -33,13 +39,13 @@ interface ElectionCreationContextType {
   ) => Promise<{success: boolean; error: string | null}>;
   handleElectionAccessStep: (
     values: ElectionAccessViewModel,
-  ) => Promise<boolean>;
+  ) => Promise<{success: boolean; error: string | null}>;
   handleElectionCandidateStep: (
     values: CandidateViewModel[],
-  ) => Promise<boolean>;
+  ) => Promise<{success: boolean; error: string | null}>;
   handleElectionChoiceStep: (
     values: ElectionChoiceViewModel[],
-  ) => Promise<boolean>;
+  ) => Promise<{success: boolean; error: string | null}>;
   resetElectionCreation: () => void;
 }
 
@@ -62,6 +68,7 @@ export const ElectionCreationProvider: React.FC<{
     setDbType,
     dbType,
     reset: resetInfo,
+    error: infoError,
   } = useElectionInfoStep();
 
   // 2) Access adımı
@@ -71,6 +78,7 @@ export const ElectionCreationProvider: React.FC<{
     submitting: accessSubmitting,
     handleElectionAccessStep: originalHandleElectionAccessStep,
     reset: resetAccess,
+    error: accessError,
   } = useElectionAccess(electionId);
 
   // 3) Candidate adımı
@@ -79,6 +87,7 @@ export const ElectionCreationProvider: React.FC<{
     submitting: candidateSubmitting,
     handleElectionCandidateStep: originalHandleElectionCandidateStep,
     reset: resetCandidate,
+    error: candidateError,
   } = useElectionCandidate(electionId);
 
   // 4) Choice adımı
@@ -87,6 +96,7 @@ export const ElectionCreationProvider: React.FC<{
     submitting: choiceSubmitting,
     handleElectionChoiceStep: originalHandleElectionChoiceStep,
     reset: resetChoice,
+    error: choiceError,
   } = useElectionChoices(electionId);
 
   // --------------------------------------
@@ -144,7 +154,12 @@ export const ElectionCreationProvider: React.FC<{
     candidate: candidateSubmitting,
     choice: choiceSubmitting,
   };
-
+  const errors = {
+    info: infoError,
+    access: accessError,
+    candidate: candidateError,
+    choice: choiceError,
+  };
   // --------------------------------------
   // Return
   // --------------------------------------
@@ -160,6 +175,7 @@ export const ElectionCreationProvider: React.FC<{
         electionId,
         step,
         submitting,
+        errors,
         handleElectionInfoStep,
         handleElectionAccessStep,
         handleElectionCandidateStep,

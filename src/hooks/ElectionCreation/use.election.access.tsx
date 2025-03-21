@@ -1,49 +1,66 @@
+// hooks/election/useElectionAccess.ts
 import {ElectionAccessViewModel} from '@viewmodels/election.access.viewmodel';
 import {useState} from 'react';
 import {electionService} from '@services/backend/concrete/service.container.instances';
+import {useAsync} from '@hooks/Modular/use.async';
 
 const useElectionAccess = (electionId: string | null) => {
   const [electionAccess, setElectionAccess] = useState<ElectionAccessViewModel>(
     {} as ElectionAccessViewModel,
   );
-  const [submitting, setSubmitting] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const handleElectionAccessStep = async (values: ElectionAccessViewModel) => {
-    if (!electionId) {
-      setError('Election ID is not set.');
-      return false;
-    }
-    try {
-      setSubmitting(true);
-      let electAccess: ElectionAccessViewModel = {};
+  const {
+    execute: saveAccess,
+    loading: submitting,
+    error,
+    reset: resetSubmission,
+  } = useAsync<void>(
+    async (values: ElectionAccessViewModel) => {
+      if (!electionId) throw new Error('Election ID is not set.');
+
+      let accessData: ElectionAccessViewModel;
+
       if (values.accessType === 'public') {
-        electAccess = {
+        accessData = {
           accessType: 'public',
           city: values.city,
           district: values.district,
         };
       } else if (values.accessType === 'private') {
-        electAccess = {
+        accessData = {
           accessType: 'private',
           groups: values.groups,
           users: values.users,
         };
+      } else {
+        throw new Error('Geçersiz erişim tipi');
       }
-      await electionService.putElectionAccess(electionId, electAccess);
-      setElectionAccess(electAccess);
-      setSubmitting(false);
-      return true;
-    } catch (error: any) {
-      setError(error.message);
-      return false;
+
+      await electionService.putElectionAccess(electionId, accessData);
+    },
+    {
+      showNotificationOnError: true,
+      successMessage: 'Erişim bilgileri başarıyla kaydedildi.',
+    },
+  );
+
+  const handleElectionAccessStep = async (
+    values: ElectionAccessViewModel,
+  ): Promise<{success: boolean; error: string | null}> => {
+    const result = await saveAccess(values);
+    if (result !== null) {
+      setElectionAccess(values);
     }
+    return {
+      success: result !== null,
+      error:
+        result === null ? error || 'Erişim bilgileri kaydedilemedi.' : null,
+    };
   };
 
   const reset = () => {
     setElectionAccess({} as ElectionAccessViewModel);
-    setSubmitting(false);
-    setError(null);
+    resetSubmission();
   };
 
   return {
