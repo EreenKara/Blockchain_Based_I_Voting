@@ -219,3 +219,16 @@ services:
       - /searchbar-service/node_modules
     networks:
       - ivote-network
+
+  websocket-service:
+    build: ./websocket-service
+    container_name: websocket-service
+    environment:
+      PORT: 5010
+    ports:
+      - "5010:5010"
+    volumes:
+      - ./websocket-service:/websocket-service
+      - /websocket-service/node_modules
+    networks:
+      - ivote-network

@@ -164,5 +164,40 @@ const getAllGroups = async (req, res) => {
       });
   }
 };
+const inviteUserToGroup = async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ message: "Authorization token is missing" });
+  }
 
-module.exports = { createGroup, addUserToGroup, getUsersInGroup, getAllGroups };
+  const { userId, groupId } = req.body;
+
+  try {
+    const user = await authenticateUser(token);
+    if (!user || !user.email) {
+      return res.status(403).json({ message: "Yetkisiz erişim." });
+    }
+
+    const group = await Group.findByPk(groupId);
+    if (!group) {
+      return res.status(404).json({ message: "Grup bulunamadı." });
+    }
+
+    if (group.createdBy !== user.email) {
+      return res.status(403).json({ message: "Sadece grup sahibi kullanıcıları davet edebilir." });
+    }
+
+    // WebSocket Servisine HTTP isteği göndererek daveti ilet
+    await axios.post(`${process.env.WEB_SOCKET_SERVICE_URL}/send-invite`, {
+      userId,
+      groupId,
+      message: `Size ${group.name} grubuna katılmanız için davet gönderildi.`,
+    });
+
+    res.status(200).json({ success: true, message: "Kullanıcıya davet gönderildi." });
+  } catch (error) {
+    console.error("Davet gönderme hatası:", error.message);
+    res.status(500).json({ message: "Davet gönderirken hata oluştu.", error: error.message });
+  }
+};
+module.exports = { createGroup, addUserToGroup, getUsersInGroup, getAllGroups,inviteUserToGroup };
