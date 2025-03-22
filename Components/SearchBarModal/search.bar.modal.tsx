@@ -135,6 +135,7 @@ const createStyles = (colors: ColorsSchema) =>
     modalTitle: {
       ...CommonStyles.textStyles.title,
       paddingHorizontal: styleNumbers.space * 3,
+      textAlign: 'center',
       flex: 1,
     },
     contentContainer: {

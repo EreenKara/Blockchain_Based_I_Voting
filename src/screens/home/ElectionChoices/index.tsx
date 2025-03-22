@@ -13,6 +13,7 @@ import {useNavigation} from '@react-navigation/native';
 import {Snackbar} from 'react-native-paper';
 import {useStyles} from '@hooks/Modular/use.styles';
 import createStyles from './index.style';
+import {useNotification} from '@contexts/notification.context';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'ElectionChoices'>;
 
@@ -74,10 +75,9 @@ const ElectionChoicesScreen: React.FC<Props> = ({navigation}) => {
   const styles = useStyles(createStyles);
   const {handleElectionChoiceStep, submitting, errors} =
     useElectionCreationContext();
+  const {showNotification} = useNotification();
   const [groups] = useState<Group[]>(initialGroups);
   const [choices, setChoices] = useState<SelectedGroup[]>([]);
-  const [visible, setVisible] = useState(false);
-  const [message, setMessage] = useState('');
 
   const getOptionDetails = useCallback(
     (optionName: string) => {
@@ -115,8 +115,11 @@ const ElectionChoicesScreen: React.FC<Props> = ({navigation}) => {
     const success = await handleElectionChoiceStep(
       choices.map(group => group.option),
     );
-    setMessage(errors.choice ?? 'Başarıyla seçim oluşturuldu.');
-    setVisible(true);
+    showNotification({
+      message: errors.choice ?? 'Başarıyla seçim oluşturuldu.',
+      type: 'info',
+      modalType: 'snackbar',
+    });
     if (success)
       rootNavigation.navigate('Success', {
         success: 'Başarıyla seçim oluşturuldu.',
@@ -144,17 +147,6 @@ const ElectionChoicesScreen: React.FC<Props> = ({navigation}) => {
         onPress={handleSubmit}
         disabled={choices.length < groups.length || submitting.choice}
       />
-      <Snackbar
-        visible={visible}
-        onDismiss={() => setVisible(false)}
-        action={{
-          label: 'Tamam',
-          onPress: () => setVisible(false),
-        }}
-        duration={3000}
-        style={styles.snackbar}>
-        {message}
-      </Snackbar>
     </View>
   );
 };

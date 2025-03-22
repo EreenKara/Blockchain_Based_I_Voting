@@ -8,7 +8,7 @@ interface BaseElectionViewModel {
   image: string;
   startDate: string;
   endDate: string;
-  color: string;
+  //color: string;
   dbType: 'database' | 'blockchain';
 }
 

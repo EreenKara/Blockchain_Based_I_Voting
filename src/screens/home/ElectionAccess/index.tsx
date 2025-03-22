@@ -18,14 +18,14 @@ import useUsers from '@hooks/use.users';
 import SearchBarModalComponent from '@components/SearchBarModal/search.bar.modal';
 import {useStyles} from '@hooks/Modular/use.styles';
 import createStyles from './index.style';
+import {useNotification} from '@contexts/notification.context';
 type Props = NativeStackScreenProps<HomeStackParamList, 'ElectionAccess'>;
 
 const ElectionAccessScreen: React.FC<Props> = ({navigation, route}) => {
+  const {showNotification} = useNotification();
   const styles = useStyles(createStyles);
   const {accessType} = route.params;
   const {user} = useUserProfileContext();
-  const [visible, setVisible] = useState(false);
-  const [message, setMessage] = useState('');
 
   const {handleElectionAccessStep, submitting, errors} =
     useElectionCreationContext();
@@ -53,7 +53,11 @@ const ElectionAccessScreen: React.FC<Props> = ({navigation, route}) => {
             district: values.district,
           });
           console.log('result', result);
-          setMessage(errors.access || 'Seçim başarıyla oluşturuldu.');
+          showNotification({
+            message: errors.access || 'Seçim başarıyla oluşturuldu.',
+            type: 'success',
+            modalType: 'snackbar',
+          });
           if (result) {
             navigation.navigate('ElectionCandidates');
           }
@@ -96,7 +100,7 @@ const ElectionAccessScreen: React.FC<Props> = ({navigation, route}) => {
     useEffect(() => {
       if (user !== null) {
         fetchGroups(user.id);
-        setHandledGroups(Array.from(groups));
+        setHandledGroups(Array.from(groups || []));
         fetchUsers();
       } else {
         setHandledGroups([
@@ -136,15 +140,21 @@ const ElectionAccessScreen: React.FC<Props> = ({navigation, route}) => {
 
     const addPicker = (values: FormValues) => {
       if (values.groups.length <= pickerNumber - 1) {
-        setMessage('Daha fazla grup eklemeden önce bir seçim yapınız.');
-        setVisible(true);
+        showNotification({
+          message: 'Daha fazla grup eklemeden önce bir seçim yapınız.',
+          type: 'error',
+          modalType: 'snackbar',
+        });
         return;
       }
       if (handledGroups.length > 0) {
         setPickerNumber(prev => prev + 1); // Yeni bir picker ekle
       } else {
-        setMessage('Tüm grupları seçtiniz.');
-        setVisible(true);
+        showNotification({
+          message: 'Tüm grupları seçtiniz.',
+          type: 'success',
+          modalType: 'snackbar',
+        });
       }
     };
 
@@ -160,7 +170,11 @@ const ElectionAccessScreen: React.FC<Props> = ({navigation, route}) => {
           });
           console.log('result', result);
 
-          setMessage(errors.access || 'Seçim başarıyla oluşturuldu.');
+          showNotification({
+            message: errors.access || 'Seçim başarıyla oluşturuldu.',
+            type: 'success',
+            modalType: 'snackbar',
+          });
           if (result) {
             navigation.navigate('ElectionCandidates');
           }
@@ -235,13 +249,13 @@ useEffect(() => {
                   <Text style={styles.subtitle}>Kullanıcılar</Text>
                 </View>
                 <View style={styles.userListContainer}>
-                  {users.length <= 0 ? (
+                  {users && users.length <= 0 ? (
                     <Text style={styles.subtitle}>
                       Hiçbir kullanıcı seçilmedi
                     </Text>
                   ) : (
                     users
-                      .filter(user =>
+                      ?.filter(user =>
                         user.name
                           .toLowerCase()
                           .includes(searchQuery.toLowerCase()),
@@ -291,14 +305,6 @@ useEffect(() => {
           disabled={submitting.access}
         />
       </View>
-
-      <Snackbar
-        visible={visible}
-        onDismiss={() => setVisible(false)}
-        duration={3000}
-        style={styles.snackbar}>
-        {message}
-      </Snackbar>
     </ScrollView>
   );
 };

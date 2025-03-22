@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {View, Text, SafeAreaView} from 'react-native';
-import {Button, Snackbar} from 'react-native-paper';
+import {Button} from 'react-native-paper';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {Formik} from 'formik';
 import {AuthStackParamList} from '@navigation/types';
@@ -17,15 +17,17 @@ type Props = NativeStackScreenProps<AuthStackParamList, 'Register'>;
 
 const RegisterScreen: React.FC<Props> = ({navigation}) => {
   const styles = useStyles(createStyles);
-  const {submitRegister, visible, message, setVisible, submitError} =
-    useAuth(false);
+  const {submitRegister, submitError} = useAuth(false);
 
-  const handleRegister = async (values: RegisterViewModel) => {
-    const result = await submitRegister(values);
-    if (result === true) {
-      navigation.navigate('EmailConfirm', {emailOrIdentity: values.email});
-    }
-  };
+  const handleRegister = useCallback(
+    async (values: RegisterViewModel) => {
+      const result = await submitRegister(values);
+      if (result === true) {
+        navigation.navigate('EmailConfirm', {emailOrIdentity: values.email});
+      }
+    },
+    [submitRegister, navigation],
+  );
   return (
     <SafeAreaView style={{flex: 1}}>
       <Formik
@@ -42,8 +44,6 @@ const RegisterScreen: React.FC<Props> = ({navigation}) => {
         validationSchema={registerUserSchema}
         onSubmit={handleRegister}>
         {({
-          setErrors,
-          setFieldError,
           setFieldValue,
           handleChange,
           handleBlur,
@@ -184,13 +184,6 @@ const RegisterScreen: React.FC<Props> = ({navigation}) => {
           </KeyboardAwareScrollView>
         )}
       </Formik>
-      <Snackbar
-        visible={visible}
-        onDismiss={() => setVisible(false)}
-        duration={3000}
-        style={styles.snackbar}>
-        {message}
-      </Snackbar>
     </SafeAreaView>
   );
 };

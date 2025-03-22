@@ -34,7 +34,6 @@ export const NotificationProvider: React.FC<{children: React.ReactNode}> = ({
   children,
 }) => {
   const {colors} = useThemeColors();
-
   const queueRef = useRef<NotificationOptions[]>([]);
   const [current, setCurrent] = useState<NotificationOptions | null>(null);
   const [visible, setVisible] = useState(false);
@@ -50,17 +49,17 @@ export const NotificationProvider: React.FC<{children: React.ReactNode}> = ({
     }
   };
 
-  const showNotification = useCallback(
-    (options: NotificationOptions) => {
-      queueRef.current.push(options);
-      // Eğer şu anda bir snackbar gösterilmiyorsa göster:
-      if (!visible && !current) {
-        setCurrent(queueRef.current.shift() || null);
-        setVisible(true);
+  const showNotification = useCallback((options: NotificationOptions) => {
+    queueRef.current.push(options);
+    // Eğer şu anda bir snackbar gösterilmiyorsa göster:
+    if (!visible && !current) {
+      const next = queueRef.current.shift();
+      console.log('next', next);
+      if (next) {
+        setCurrent(next);
       }
-    },
-    [visible, current],
-  );
+    }
+  }, []);
 
   const onDismiss = () => {
     setVisible(false);
@@ -70,37 +69,46 @@ export const NotificationProvider: React.FC<{children: React.ReactNode}> = ({
   useEffect(() => {
     if (!visible && queueRef.current.length > 0) {
       const next = queueRef.current.shift()!;
+      console.log('next 2: ', next);
       setCurrent(next);
-      setVisible(true);
     } else if (!visible && queueRef.current.length === 0) {
       setCurrent(null);
     }
   }, [visible]);
 
+  useEffect(() => {
+    if (current && !visible) {
+      console.log('visible: ', visible);
+      setVisible(true);
+    }
+  }, [current]);
+  console.log('current: ', current);
   return (
     <NotificationContext.Provider value={{showNotification}}>
       {children}
 
-      {current?.modalType === 'snackbar' && current.message && (
-        <Snackbar
-          visible={visible}
-          onDismiss={onDismiss}
-          duration={current.duration ?? 3000}
-          action={
-            current.actionLabel
-              ? {
-                  label: current.actionLabel,
-                  onPress: () => {
-                    current.onActionPress?.();
-                    onDismiss(); // action sonrası kapat
-                  },
-                }
-              : undefined
-          }
-          style={{backgroundColor: getBackgroundColor()}}>
-          {current.message}
-        </Snackbar>
-      )}
+      {(current?.modalType === undefined ||
+        current?.modalType === 'snackbar') &&
+        current?.message && (
+          <Snackbar
+            visible={visible}
+            onDismiss={onDismiss}
+            duration={current.duration ?? 3000}
+            action={
+              current.actionLabel
+                ? {
+                    label: current.actionLabel,
+                    onPress: () => {
+                      current.onActionPress?.();
+                      onDismiss(); // action sonrası kapat
+                    },
+                  }
+                : undefined
+            }
+            style={[{backgroundColor: getBackgroundColor()}]}>
+            {current.message}
+          </Snackbar>
+        )}
     </NotificationContext.Provider>
   );
 };

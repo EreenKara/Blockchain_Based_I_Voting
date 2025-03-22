@@ -1,13 +1,6 @@
 import React, {useState, useContext} from 'react';
 import {StyleSheet, ScrollView, View} from 'react-native';
-import {
-  TextInput,
-  Button,
-  Snackbar,
-  Title,
-  Card,
-  Paragraph,
-} from 'react-native-paper';
+import {Title, Card, Paragraph} from 'react-native-paper';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
 import Colors, {ColorsSchema} from '@styles/common/colors';
@@ -21,8 +14,6 @@ type Props = NativeStackScreenProps<HomeStackParamList, 'BeCandidate'>;
 const BeCandidateScreen: React.FC<Props> = ({navigation}) => {
   const styles = useStyles(createStyles);
   const [biography, setBiography] = useState('');
-  const [visible, setVisible] = useState(false);
-  const [message, setMessage] = useState('');
 
   const handleSubmit = async () => {};
 
@@ -57,14 +48,6 @@ const BeCandidateScreen: React.FC<Props> = ({navigation}) => {
         onPress={handleSubmit}
         style={styles.button}
       />
-
-      <Snackbar
-        visible={visible}
-        onDismiss={() => setVisible(false)}
-        duration={3000}
-        style={styles.snackbar}>
-        {message}
-      </Snackbar>
     </ScrollView>
   );
 };

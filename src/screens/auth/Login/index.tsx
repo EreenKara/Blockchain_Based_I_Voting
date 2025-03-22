@@ -1,6 +1,6 @@
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {View, Text, SafeAreaView, Image} from 'react-native';
-import {Button, Snackbar, Checkbox} from 'react-native-paper';
+import {Button, Checkbox} from 'react-native-paper';
 import type {
   NativeStackScreenProps,
   NativeStackNavigationProp,
@@ -21,29 +21,24 @@ type RootProps = NativeStackNavigationProp<RootStackParamList>;
 const LoginScreen: React.FC<Props> = ({navigation}) => {
   const homeNavigation = useNavigation<RootProps>();
   const styles = useStyles(createStyles);
-  const {
-    loading,
-    visible,
-    setVisible,
-    submitError,
-    message,
-    submitLogin,
-    emailOrIdentity,
-  } = useAuth(true);
+  const {loading, submitError, submitLogin, emailOrIdentity} = useAuth(true);
 
-  const handleLogin = async (values: {
-    emailOrIdentity: string;
-    password: string;
-    rememberMe: boolean;
-  }) => {
-    const result = await submitLogin(values);
-    if (result === true) {
-      homeNavigation.reset({
-        index: 0,
-        routes: [{name: 'Main'}],
-      });
-    }
-  };
+  const handleLogin = useCallback(
+    async (values: {
+      emailOrIdentity: string;
+      password: string;
+      rememberMe: boolean;
+    }) => {
+      const result = await submitLogin(values);
+      if (result === true) {
+        homeNavigation.reset({
+          index: 0,
+          routes: [{name: 'Main'}],
+        });
+      }
+    },
+    [submitLogin, homeNavigation],
+  );
 
   const initialValues = {
     emailOrIdentity: emailOrIdentity,
@@ -149,13 +144,6 @@ const LoginScreen: React.FC<Props> = ({navigation}) => {
           </>
         )}
       </Formik>
-      <Snackbar
-        visible={visible}
-        onDismiss={() => setVisible(false)}
-        duration={2000}
-        style={styles.snackbar}>
-        {message}
-      </Snackbar>
     </SafeAreaView>
   );
 };

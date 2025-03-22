@@ -30,21 +30,10 @@ const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
   const styles = useStyles(createStyles);
   const {handleElectionInfoStep, submitting} = useElectionCreationContext();
 
-  const [message, setMessage] = useState('');
-  const [visible, setVisible] = useState(false);
-
-  const showMessage = (message: string) => {
-    setMessage(message);
-    setVisible(true);
-  };
-
   const handleSubmit = async (values: FormValues) => {
     const result = await handleElectionInfoStep(values);
     if (result.success) {
-      showMessage('Başarılı, bir sonraki ekrana yönlendiriliyorsunuz...');
       navigation.navigate('PublicOrPrivate');
-    } else {
-      showMessage(result.error ?? 'Bilinmeyen bir hata olustu');
     }
   };
 
@@ -92,7 +81,6 @@ const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
                 containerStyle={styles.dateContainer}
                 values={values}
                 setFieldValue={setFieldValue}
-                showMessage={showMessage}
               />
 
               <ImagePickerComponent
@@ -118,14 +106,6 @@ const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
           );
         }}
       </Formik>
-
-      <Snackbar
-        style={styles.snackbar}
-        visible={visible}
-        onDismiss={() => setVisible(false)}
-        duration={3000}>
-        {message}
-      </Snackbar>
     </KeyboardAwareScrollView>
   );
 };

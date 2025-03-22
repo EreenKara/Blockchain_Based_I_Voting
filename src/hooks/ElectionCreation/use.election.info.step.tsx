@@ -49,7 +49,6 @@ const useElectionInfoStep = () => {
       startDate: values.startDate.toISOString(),
       endDate: values.endDate.toISOString(),
       image: values.image?.base64 || '',
-      color: values.color,
       dbType,
     };
 

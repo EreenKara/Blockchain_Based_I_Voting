@@ -34,7 +34,11 @@ export function useAsync<T>(
         options?.onSuccess?.(result);
 
         if (options?.successMessage) {
-          showNotification({message: options.successMessage, type: 'success'});
+          showNotification({
+            message: options.successMessage,
+            type: 'success',
+            modalType: 'snackbar',
+          });
         }
 
         return result;
@@ -42,8 +46,8 @@ export function useAsync<T>(
         const message = parseApiError(err);
         setError(message);
 
-        if (options?.showNotificationOnError) {
-          showNotification({message, type: 'error'});
+        if (options?.showNotificationOnError !== false) {
+          showNotification({message, type: 'error', modalType: 'snackbar'});
         }
 
         options?.onError?.(message);

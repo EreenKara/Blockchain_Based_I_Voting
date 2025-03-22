@@ -2,15 +2,14 @@ import {useEffect, useState} from 'react';
 import {useAuthContext} from '@contexts/index';
 import {userService} from '@services/backend/concrete/service.container.instances';
 import {RegisterViewModel} from '@viewmodels/register.viewmodel';
-
+import {useNotification} from '@contexts/notification.context';
 const codeLength = 6;
 
 //login page or not gibi düşün.
 export const useAuth = (login: boolean = true) => {
   const {login: authLogin, rememberUser, getUserMail} = useAuthContext();
+  const {showNotification} = useNotification();
   const [submitError, setSubmitError] = useState('');
-  const [message, setMessage] = useState('');
-  const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [emailOrIdentity, setEmailOrIdentity] = useState('');
 
@@ -31,7 +30,6 @@ export const useAuth = (login: boolean = true) => {
     rememberMe: boolean;
   }) => {
     setSubmitError('');
-    setMessage('');
     console.log('submitLogin', values);
     try {
       const token = await userService.login({
@@ -42,8 +40,11 @@ export const useAuth = (login: boolean = true) => {
         rememberUser(values.emailOrIdentity);
       }
       authLogin(token);
-      setMessage('Giriş başarılı');
-      setVisible(true);
+      showNotification({
+        message: 'Giriş başarılı',
+        type: 'success',
+        modalType: 'snackbar',
+      });
       return true;
     } catch (error: any) {
       setSubmitError(error.message);
@@ -54,8 +55,11 @@ export const useAuth = (login: boolean = true) => {
   const submitRegister = async (values: RegisterViewModel) => {
     try {
       const message = await userService.register(values);
-      setMessage(message);
-      setVisible(true);
+      showNotification({
+        message: message,
+        type: 'success',
+        modalType: 'snackbar',
+      });
       return true;
     } catch (error: any) {
       setSubmitError(error.message);
@@ -68,8 +72,11 @@ export const useAuth = (login: boolean = true) => {
     verificationCode: string,
   ) => {
     if (verificationCode.length !== codeLength) {
-      setMessage('Lütfen 6 haneli kodu eksiksiz giriniz.');
-      setVisible(true);
+      showNotification({
+        message: 'Lütfen 6 haneli kodu eksiksiz giriniz.',
+        type: 'error',
+        modalType: 'snackbar',
+      });
       return false;
     }
     try {
@@ -77,8 +84,11 @@ export const useAuth = (login: boolean = true) => {
         emailOrIdentity,
         verificationCode,
       );
-      setMessage(`Email doğrulama başarılı-${response}`);
-      setVisible(true);
+      showNotification({
+        message: `Email doğrulama başarılı-${response}`,
+        type: 'success',
+        modalType: 'snackbar',
+      });
       return true;
     } catch (error: any) {
       setSubmitError('Doğrulama başarısız oldu. Lütfen tekrar deneyiniz.');
@@ -92,9 +102,6 @@ export const useAuth = (login: boolean = true) => {
     submitRegister,
     submitEmailVerification,
     submitError,
-    message,
-    visible,
-    setVisible,
     loading,
     setLoading,
   };

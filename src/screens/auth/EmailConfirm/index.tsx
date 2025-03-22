@@ -5,7 +5,6 @@ import {AuthStackParamList} from '@navigation/types';
 import createStyles from './index.style';
 import CommonStyles from '@styles/common/commonStyles';
 import ButtonComponent from '@components/Button/Button';
-import {Snackbar} from 'react-native-paper';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 import {useAuth} from '@hooks/use.auth';
@@ -19,8 +18,6 @@ const EmailConfirmScreen: React.FC<Props> = ({navigation, route}) => {
 
   const {emailOrIdentity} = route.params;
   const [code, setCode] = useState(['', '', '', '', '', '']);
-  const [error, setError] = useState('');
-  const [visible, setVisible] = useState(false);
   const codeLength = 6;
   const {submitError, submitEmailVerification} = useAuth();
   const inputs = useRef<Array<TextInput | null>>([
@@ -144,14 +141,6 @@ const EmailConfirmScreen: React.FC<Props> = ({navigation, route}) => {
           />
         </View>
       </KeyboardAwareScrollView>
-
-      <Snackbar
-        visible={visible}
-        onDismiss={() => setVisible(false)}
-        duration={3000}
-        style={styles.snackbar}>
-        {error}
-      </Snackbar>
     </SafeAreaView>
   );
 };

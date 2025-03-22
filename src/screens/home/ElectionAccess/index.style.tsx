@@ -51,12 +51,6 @@ const createStyles = (colors: ColorsSchema) =>
       minHeight: 100,
       maxHeight: 350,
     },
-    snackbar: {
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
-    },
     picker: {
       marginTop: styleNumbers.space,
       backgroundColor: colors.transition,

@@ -71,16 +71,16 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
               onPress={() => {
                 if (item.screen === 'BlockchainOrDb') {
                   switch (step) {
-                    case 1:
+                    case 0:
                       navigation.navigate('BlockchainOrDb');
                       break;
-                    case 2:
+                    case 1:
                       navigation.navigate('PublicOrPrivate');
                       break;
-                    case 3:
+                    case 2:
                       navigation.navigate('ElectionCandidates');
                       break;
-                    case 4:
+                    case 3:
                       navigation.navigate('DefaultCustom');
                       break;
                     default:

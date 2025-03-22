@@ -32,14 +32,14 @@ const App = () => {
 
   return (
     <ThemeProvider colorScheme="light">
-      <AuthProvider>
-        <UserProfileProvider>
-          <ElectionCreationProvider>
-            <SearchProvider>
-              <PaperProvider>
-                <NotificationProvider>
-                  <GestureHandlerRootView style={{flex: 1}}>
-                    <NavigationContainer>
+      <NavigationContainer>
+        <PaperProvider>
+          <NotificationProvider>
+            <AuthProvider>
+              <UserProfileProvider>
+                <ElectionCreationProvider>
+                  <SearchProvider>
+                    <GestureHandlerRootView style={{flex: 1}}>
                       <Stack.Navigator
                         initialRouteName="Auth"
                         screenOptions={{headerShown: false}}>
@@ -51,14 +51,14 @@ const App = () => {
                           component={SuccessScreen}
                         />
                       </Stack.Navigator>
-                    </NavigationContainer>
-                  </GestureHandlerRootView>
-                </NotificationProvider>
-              </PaperProvider>
-            </SearchProvider>
-          </ElectionCreationProvider>
-        </UserProfileProvider>
-      </AuthProvider>
+                    </GestureHandlerRootView>
+                  </SearchProvider>
+                </ElectionCreationProvider>
+              </UserProfileProvider>
+            </AuthProvider>
+          </NotificationProvider>
+        </PaperProvider>
+      </NavigationContainer>
     </ThemeProvider>
   );
 };

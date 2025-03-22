@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
-import {TextInput, Button, Snackbar} from 'react-native-paper';
+import {TextInput, Button} from 'react-native-paper';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AuthStackParamList} from '@navigation/types';
 import styleNumbers from '@styles/common/style.numbers';
@@ -8,35 +8,43 @@ import CommonStyles from '@styles/common/commonStyles';
 import Colors, {ColorsSchema} from '@styles/common/colors';
 import TextInputComponent from '@components/TextInput/text.input';
 import {useStyles} from '@hooks/Modular/use.styles';
+import {useNotification} from '@contexts/notification.context';
 type Props = NativeStackScreenProps<AuthStackParamList, 'ForgotPassword'>;
 
 const ForgotPasswordScreen: React.FC<Props> = ({navigation}) => {
   const styles = useStyles(createStyles);
   const [email, setEmail] = useState('');
-  const [visible, setVisible] = useState(false);
-  const [message, setMessage] = useState('');
-
-  const handleResetPassword = async () => {
+  const {showNotification} = useNotification();
+  const handleResetPassword = useCallback(async () => {
     if (!email) {
-      setMessage('Email adresi gereklidir');
-      setVisible(true);
+      showNotification({
+        message: 'Email adresi gereklidir',
+        type: 'error',
+        modalType: 'snackbar',
+      });
       return;
     }
 
     if (!email.includes('@')) {
-      setMessage('Geçerli bir email adresi giriniz');
-      setVisible(true);
+      showNotification({
+        message: 'Geçerli bir email adresi giriniz',
+        type: 'error',
+        modalType: 'snackbar',
+      });
       return;
     }
 
     // İleride API entegrasyonu için yer tutucu
-    setMessage('Şifre sıfırlama bağlantısı gönderildi');
-    setVisible(true);
+    showNotification({
+      message: 'Şifre sıfırlama bağlantısı gönderildi',
+      type: 'success',
+      modalType: 'snackbar',
+    });
 
     setTimeout(() => {
       navigation.navigate('Login');
     }, 2000);
-  };
+  }, [email]);
 
   return (
     <View style={styles.container}>
@@ -72,13 +80,6 @@ const ForgotPasswordScreen: React.FC<Props> = ({navigation}) => {
         style={styles.button}>
         Giriş Ekranına Dön
       </Button>
-      <Snackbar
-        visible={visible}
-        onDismiss={() => setVisible(false)}
-        duration={2000}
-        style={styles.snackbar}>
-        {message}
-      </Snackbar>
     </View>
   );
 };
@@ -100,10 +101,7 @@ const createStyles = (colors: ColorsSchema) =>
     button: {
       marginTop: styleNumbers.spaceLittle,
     },
-    snackbar: {
-      position: 'absolute',
-      bottom: 0,
-    },
+
     viewTextInput: {
       marginTop: styleNumbers.space * 3,
     },

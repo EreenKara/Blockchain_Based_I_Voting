@@ -38,11 +38,7 @@ const createStyles = (colors: ColorsSchema) =>
       ...CommonStyles.textStyles.paragraph,
       marginTop: styleNumbers.spaceLittle,
     },
-    snackbar: {
-      position: 'absolute',
-      bottom: 10,
-      backgroundColor: colors.button,
-    },
+
     logoContainer: {
       alignItems: 'center',
     },

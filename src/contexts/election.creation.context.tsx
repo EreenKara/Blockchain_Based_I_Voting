@@ -58,7 +58,7 @@ export const ElectionCreationProvider: React.FC<{
 }> = ({children}) => {
   // Tek bir electionId
   const [electionId, setElectionId] = useState<string | null>(null);
-  const [step, setStep] = useState<number>(1);
+  const [step, setStep] = useState<number>(0);
 
   // 1) Info adımı
   const {

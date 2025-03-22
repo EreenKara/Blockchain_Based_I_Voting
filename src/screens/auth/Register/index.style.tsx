@@ -24,11 +24,6 @@ const createStyles = (colors: ColorsSchema) =>
       marginTop: styleNumbers.spaceLittle,
       marginBottom: styleNumbers.space,
     },
-    snackbar: {
-      position: 'absolute',
-      bottom: 10,
-      backgroundColor: colors.button,
-    },
     viewTextInput: {
       marginTop: styleNumbers.spaceLarge,
     },

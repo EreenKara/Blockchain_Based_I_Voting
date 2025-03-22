@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import ButtonComponent from '@components/Button/Button';
-import {handleDateTimeChange} from '@hooks/handleDateTimeChange';
+import {handleDateTimeChange} from '@icomponents/StartToEndDate/handleDateTimeChange';
 import styleNumbers from '@styles/common/style.numbers';
 import {ColorsSchema} from '@styles/common/colors';
 import {useStyles} from '@hooks/Modular/use.styles';
@@ -19,14 +19,12 @@ interface StartToEndDateComponentProps {
     endDate: Date;
   };
   setFieldValue: (field: string, value: any) => void;
-  showMessage: (message: string) => void;
   containerStyle?: StyleProp<ViewStyle>;
 }
 
 const StartToEndDateComponent: React.FC<StartToEndDateComponentProps> = ({
   values,
   setFieldValue,
-  showMessage,
   containerStyle,
 }) => {
   const styles = useStyles(createStyles);
@@ -87,7 +85,6 @@ const StartToEndDateComponent: React.FC<StartToEndDateComponentProps> = ({
               setFieldValue,
               'startDate',
               false,
-              showMessage,
             );
           }}
           minimumDate={new Date()}
@@ -107,7 +104,6 @@ const StartToEndDateComponent: React.FC<StartToEndDateComponentProps> = ({
               setFieldValue,
               'startDate',
               true,
-              showMessage,
             );
           }}
         />
@@ -126,7 +122,6 @@ const StartToEndDateComponent: React.FC<StartToEndDateComponentProps> = ({
               setFieldValue,
               'endDate',
               false,
-              showMessage,
             );
           }}
           minimumDate={values.startDate}
@@ -146,7 +141,6 @@ const StartToEndDateComponent: React.FC<StartToEndDateComponentProps> = ({
               setFieldValue,
               'endDate',
               true,
-              showMessage,
             );
           }}
         />

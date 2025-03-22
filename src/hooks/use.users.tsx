@@ -1,23 +1,26 @@
-import {useState, useEffect} from 'react';
+// hooks/user/useUsers.ts
+import {useAsync} from '@hooks/Modular/use.async';
 import {userService} from '@services/backend/concrete/service.container.instances';
 import LightUserViewModel from '@viewmodels/light.user.viewmodel';
 
 export default function useUsers() {
-  const [users, setUsers] = useState<LightUserViewModel[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    execute: fetchUsers,
+    data: users,
+    loading,
+    error,
+    retry,
+    reset,
+  } = useAsync<LightUserViewModel[]>(() => userService.getUsers(), {
+    showNotificationOnError: true,
+  });
 
-  const fetchUsers = async () => {
-    try {
-      setLoading(true);
-      const fetchedUsers = await userService.getUsers();
-      setUsers(fetchedUsers);
-    } catch (err) {
-      setError('Kullanıcıların yüklenmesi sırasında bir hata oluştu.');
-    } finally {
-      setLoading(false);
-    }
+  return {
+    users,
+    fetchUsers,
+    loading,
+    error,
+    retry,
+    reset,
   };
-
-  return {users, fetchUsers, loading, error};
 }

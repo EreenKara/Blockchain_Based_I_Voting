@@ -31,12 +31,6 @@ const createStyles = (colors: ColorsSchema) =>
       left: 0,
       right: 0,
     },
-    snackbar: {
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
-    },
   });
 
 export default createStyles;

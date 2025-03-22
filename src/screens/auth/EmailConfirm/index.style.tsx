@@ -48,9 +48,6 @@ const createStyles = (colors: ColorsSchema) =>
     button: {
       width: '100%',
     },
-    snackbar: {
-      backgroundColor: colors.error,
-    },
     errorText: {
       ...CommonStyles.textStyles.error,
       textAlign: 'center',
