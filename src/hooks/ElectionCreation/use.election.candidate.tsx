@@ -5,7 +5,22 @@ import {electionService} from '@services/backend/concrete/service.container.inst
 import {useAsync} from '@hooks/Modular/use.async';
 
 const useElectionCandidate = (electionId: string | null) => {
-  const [candidates, setCandidates] = useState<CandidateViewModel[]>([]);
+  const [candidates, setCandidates] = useState<CandidateViewModel[]>([
+    {
+      id: '',
+      name: '',
+      color: '#000000',
+      votes: 0,
+      image: '',
+    },
+    {
+      id: '',
+      name: '',
+      color: '#000000',
+      votes: 0,
+      image: '',
+    },
+  ]);
 
   const {
     execute: saveCandidates,
@@ -22,6 +37,29 @@ const useElectionCandidate = (electionId: string | null) => {
       successMessage: 'Adaylar başarıyla kaydedildi.',
     },
   );
+  const updateCandidateAt = (
+    index: number,
+    updatedCandidate: CandidateViewModel,
+  ) => {
+    setCandidates(prev => {
+      const updated = [...prev];
+      updated[index] = updatedCandidate;
+      return updated;
+    });
+  };
+
+  const addCandidate = () => {
+    setCandidates(prev => [
+      ...prev,
+      {
+        id: '',
+        name: '',
+        color: '#000000',
+        votes: 0,
+        image: '',
+      },
+    ]);
+  };
 
   const handleElectionCandidateStep = async (
     newCandidates: CandidateViewModel[],
@@ -45,6 +83,8 @@ const useElectionCandidate = (electionId: string | null) => {
     candidates,
     submitting,
     error,
+    updateCandidateAt,
+    addCandidate,
     handleElectionCandidateStep,
     reset,
   };

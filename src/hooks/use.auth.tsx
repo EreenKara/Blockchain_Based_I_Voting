@@ -40,11 +40,7 @@ export const useAuth = (login: boolean = true) => {
         rememberUser(values.emailOrIdentity);
       }
       authLogin(token);
-      showNotification({
-        message: 'Giriş başarılı',
-        type: 'success',
-        modalType: 'snackbar',
-      });
+
       return true;
     } catch (error: any) {
       setSubmitError(error.message);
@@ -55,11 +51,7 @@ export const useAuth = (login: boolean = true) => {
   const submitRegister = async (values: RegisterViewModel) => {
     try {
       const message = await userService.register(values);
-      showNotification({
-        message: message,
-        type: 'success',
-        modalType: 'snackbar',
-      });
+
       return true;
     } catch (error: any) {
       setSubmitError(error.message);
@@ -84,11 +76,6 @@ export const useAuth = (login: boolean = true) => {
         emailOrIdentity,
         verificationCode,
       );
-      showNotification({
-        message: `Email doğrulama başarılı-${response}`,
-        type: 'success',
-        modalType: 'snackbar',
-      });
       return true;
     } catch (error: any) {
       setSubmitError('Doğrulama başarısız oldu. Lütfen tekrar deneyiniz.');

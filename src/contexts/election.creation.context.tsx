@@ -47,6 +47,11 @@ interface ElectionCreationContextType {
     values: ElectionChoiceViewModel[],
   ) => Promise<{success: boolean; error: string | null}>;
   resetElectionCreation: () => void;
+  updateCandidateAt: (
+    index: number,
+    updatedCandidate: CandidateViewModel,
+  ) => void;
+  addCandidate: () => void;
 }
 
 const ElectionCreationContext = createContext<
@@ -88,6 +93,8 @@ export const ElectionCreationProvider: React.FC<{
     handleElectionCandidateStep: originalHandleElectionCandidateStep,
     reset: resetCandidate,
     error: candidateError,
+    updateCandidateAt,
+    addCandidate,
   } = useElectionCandidate(electionId);
 
   // 4) Choice adımı
@@ -181,6 +188,8 @@ export const ElectionCreationProvider: React.FC<{
         handleElectionCandidateStep,
         handleElectionChoiceStep,
         resetElectionCreation,
+        updateCandidateAt,
+        addCandidate,
       }}>
       {children}
     </ElectionCreationContext.Provider>

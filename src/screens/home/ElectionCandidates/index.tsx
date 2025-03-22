@@ -10,46 +10,25 @@ import ButtonComponent from '@components/Button/Button';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useStyles} from '@hooks/Modular/use.styles';
 import createStyles from './index.style';
+import {useElectionCreationContext} from '@contexts/election.creation.context';
 type Props = NativeStackScreenProps<HomeStackParamList, 'ElectionCandidates'>;
 
 const ElectionCandidatesScreen: React.FC<Props> = ({navigation}) => {
   const styles = useStyles(createStyles);
   const [pickers, setPickers] = useState<number>(2);
   const pickerRefs = useRef<React.RefObject<ChildRef>[]>([]);
-  const [candidates, setCandidates] = useState<CandidateViewModel[]>([
-    {
-      id: '',
-      name: '',
-      color: '#000000',
-      votes: 100,
-      image: '',
-    },
-    {
-      id: '',
-      name: '',
-      color: '#000000',
-      votes: 100,
-      image: '',
-    },
-  ]);
+  const {candidates, updateCandidateAt, addCandidate} =
+    useElectionCreationContext();
 
   const handleSubmit = useCallback(() => {
     navigation.navigate('ElectionChoices');
   }, []);
 
-  const addCandidate = useCallback(() => {
+  const addCandidateView = useCallback(() => {
     setPickers(prev => prev + 1);
-    setCandidates(prev => [
-      ...prev,
-      {
-        id: '',
-        name: '',
-        color: '#000000',
-        votes: 0,
-        image: '',
-      },
-    ]);
+    addCandidate();
   }, []);
+
   return (
     <KeyboardAwareScrollView
       style={styles.container}
@@ -72,13 +51,7 @@ const ElectionCandidatesScreen: React.FC<Props> = ({navigation}) => {
               <CandidateInputItemComponent
                 candidate={candidates[index]}
                 setCandidate={candidate => {
-                  setCandidates(prev => {
-                    // Şu anki candidate dizisini kopyalıyoruz
-                    const updated = [...prev];
-                    // İlgili index'teki adayı güncel “candidate” objesiyle değiştiriyoruz
-                    updated[index] = candidate;
-                    return updated;
-                  });
+                  updateCandidateAt(index, candidate);
                 }}
               />
             }
@@ -91,7 +64,7 @@ const ElectionCandidatesScreen: React.FC<Props> = ({navigation}) => {
         <ButtonComponent
           style={styles.addCandidateButton}
           title="Aday Ekle"
-          onPress={addCandidate}
+          onPress={addCandidateView}
         />
         <ButtonComponent
           style={styles.button}
