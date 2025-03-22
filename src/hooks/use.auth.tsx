@@ -30,7 +30,6 @@ export const useAuth = (login: boolean = true) => {
     rememberMe: boolean;
   }) => {
     setSubmitError('');
-    console.log('submitLogin', values);
     try {
       const token = await userService.login({
         emailOrIdentity: values.emailOrIdentity,
