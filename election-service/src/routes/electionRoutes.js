@@ -10,6 +10,7 @@ const {
   updateElectionAccessController,
   setAccessTypeController, // ✅ yeni
   addOptionToElectionController, // ✅ yeni
+  getAllElectionsController,
 } = require("../controllers/electionController");
 
 const router = express.Router();
@@ -30,6 +31,7 @@ router.post("/addChoiceToElection", addChoiceToElectionController);
 
 // Diğer
 router.get("/:id", getElectionByIdOnly);
+router.get("/getElections/all", getAllElectionsController);
 router.get("/:id/active", getActiveElectionController);
 router.get("/electionWithOptions/:id", getElectionByIdController);
 router.patch("/change/status/:id", updateElectionStatusController);

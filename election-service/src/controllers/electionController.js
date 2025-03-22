@@ -9,9 +9,11 @@ const {
   updateElectionAccess,
   setAccessType, // ✅ yeni
   addOptionToElection, // ✅ yeni
+  getAllElectionsSortedByStartDate,
 } = require("../services/electionService");
 
 const Election = require("../models/Election");
+
 
 const getElectionByIdOnly = asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -35,7 +37,9 @@ const getElectionByIdOnly = asyncHandler(async (req, res) => {
   }
   res.status(200).json({ election });
 });
-
+const getAllElectionsController = asyncHandler(async (req, res) => {
+   getAllElectionsSortedByStartDate(req, res);
+});
 const createElectionController = asyncHandler(async (req, res) => {
    createElection(req, res);
 });
@@ -89,4 +93,5 @@ module.exports = {
   updateElectionAccessController,
   setAccessTypeController, // ✅ yeni
   addOptionToElectionController, // ✅ yeni
+  getAllElectionsController,
 };

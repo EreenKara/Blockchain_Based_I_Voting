@@ -661,6 +661,32 @@ const getActiveElection = asyncHandler(async (req, res) => {
 //         res.status(500).json({ message: "An error occurred while updating election status.", error: error.message });
 //     }
 // };
+const getAllElectionsSortedByStartDate = asyncHandler(async (req, res) => {
+  const now = new Date();
+
+  const elections = await Election.findAll({
+    attributes: [
+      "id",
+      "name",
+      "description",
+      "createdBy",
+      "image",
+      "startDate",
+      "endDate",
+      "status",
+      "accessType",
+      "electionType",
+    ],
+    order: [
+      [
+        Sequelize.literal(`ABS(EXTRACT(EPOCH FROM "startDate" - TIMESTAMP '${now.toISOString()}'))`),
+        "ASC",
+      ],
+    ],
+  });
+
+  res.status(200).json({ elections });
+});
 
 module.exports = {
   createElection,
@@ -673,4 +699,5 @@ module.exports = {
   updateElectionAccess,
   setAccessType,
   addOptionToElection,
+  getAllElectionsSortedByStartDate,
 };
