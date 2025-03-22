@@ -10,6 +10,7 @@ const createStyles = (colors: ColorsSchema) =>
       paddingHorizontal: styleNumbers.space * 3,
       ...CommonStyles.viewStyles.container,
       flexGrow: 1,
+      backgroundColor: colors.background,
     },
     input: {
       marginBottom: styleNumbers.space,

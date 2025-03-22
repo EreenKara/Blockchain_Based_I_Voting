@@ -8,6 +8,7 @@ const createStyles = (colors: ColorsSchema) =>
     container: {
       ...CommonStyles.viewStyles.container,
       padding: styleNumbers.space * 2,
+      backgroundColor: colors.background,
     },
     headerContainer: {
       marginTop: styleNumbers.space,

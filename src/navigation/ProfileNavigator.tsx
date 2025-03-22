@@ -9,17 +9,16 @@ import PaymentScreen from '@screens/profile/Payment';
 import AddCardScreen from '@screens/profile/Payment/add.card';
 import PersonalInformationScreen from '@screens/profile/PersonalInformation';
 import GroupsScreen from '@screens/profile/Groups';
-import CastedVotesScreen from '@screens/profile/CastedVotes';
-import CandidateElectionsScreen from '@screens/profile/CandidateElections';
 import AddressInformationScreen from '@screens/profile/AddressInformation';
-import SpecificElectionScreen from '@screens/shared/SpecificElection';
 import CreateGroupScreen from '@screens/profile/CreateGroup';
 import GroupScreen from '@screens/profile/Group';
-import {ListElectionsScreen} from '@screens/home';
-import ElectionResultScreen from '@screens/shared/ElectionResult';
+import SharedNavigator from './shared.navigator';
+import {useThemeColors} from '@contexts/theme.provider';
+import CreatedElectionsScreen from '@screens/profile/CreatedElections';
 const Stack = createNativeStackNavigator<ProfileStackParamList>();
 
 const ProfileNavigator: React.FC = () => {
+  const {colors} = useThemeColors();
   return (
     <Stack.Navigator
       screenOptions={{
@@ -27,7 +26,7 @@ const ProfileNavigator: React.FC = () => {
         headerRight: () => <NavBarTitle />,
         headerTitleAlign: 'center',
         headerStyle: {
-          backgroundColor: Colors.getTheme().transition,
+          backgroundColor: colors.transition,
         },
       }}>
       <Stack.Screen
@@ -39,6 +38,11 @@ const ProfileNavigator: React.FC = () => {
         }}
       />
       <Stack.Screen
+        name="Shared"
+        component={SharedNavigator}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
         name="Payment"
         component={PaymentScreen}
         options={{title: 'Ödeme'}}
@@ -46,18 +50,14 @@ const ProfileNavigator: React.FC = () => {
       <Stack.Screen
         name="Settings"
         component={SettingsScreen}
-        options={{title: 'Ayarlar', headerShown: false}}
+        options={{title: 'Ayarlar'}}
       />
       <Stack.Screen
         name="AddCard"
         component={AddCardScreen}
         options={{title: 'Kart Ekle'}}
       />
-      <Stack.Screen
-        name="ListElections"
-        component={ListElectionsScreen}
-        options={{title: 'Seçimler'}}
-      />
+
       <Stack.Screen
         name="PersonalInformation"
         component={PersonalInformationScreen}
@@ -79,29 +79,14 @@ const ProfileNavigator: React.FC = () => {
         options={{title: 'Grup Oluştur'}}
       />
       <Stack.Screen
-        name="CastedVotes"
-        component={CastedVotesScreen}
-        options={{title: 'Oy Kullanılan Seçimler'}}
-      />
-      <Stack.Screen
-        name="CandidateElections"
-        component={CandidateElectionsScreen}
-        options={{title: 'İstekli Seçimler'}}
+        name="CreatedElections"
+        component={CreatedElectionsScreen}
+        options={{title: 'Oluşturduğun Seçimler'}}
       />
       <Stack.Screen
         name="AddressInformation"
         component={AddressInformationScreen}
         options={{title: 'Adres Bilgileri'}}
-      />
-      <Stack.Screen
-        name="SpecificElection"
-        component={SpecificElectionScreen}
-        options={{title: 'Seçim'}}
-      />
-      <Stack.Screen
-        name="ElectionResult"
-        component={ElectionResultScreen}
-        options={{title: 'Seçim Sonucu'}}
       />
     </Stack.Navigator>
   );

@@ -9,16 +9,18 @@ import Colors from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import EmailConfirmScreen from '@screens/auth/EmailConfirm';
 import DenemeScreen from '@screens/auth/Deneme';
+import {useThemeColors} from '@contexts/index';
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
 const AuthNavigator: React.FC = () => {
+  const {colors} = useThemeColors();
   return (
     <Stack.Navigator
       initialRouteName="Login"
       screenOptions={{
         headerStyle: {
-          backgroundColor: Colors.getTheme().transition,
+          backgroundColor: colors.transition,
         },
         headerTintColor: '#000',
         headerTitleStyle: {

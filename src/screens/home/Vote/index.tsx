@@ -7,9 +7,9 @@ import createStyles from './index.style';
 import useVote from '@hooks/use.vote';
 import LottieView from 'lottie-react-native';
 import {useNavigation} from '@react-navigation/native';
-import {HomeStackParamList} from '@navigation/types';
+import {SharedStackParamList} from '@navigation/types';
 import {RootStackParamList} from '@navigation/types';
-type VoteScreenProps = NativeStackScreenProps<HomeStackParamList, 'Vote'>;
+type VoteScreenProps = NativeStackScreenProps<SharedStackParamList, 'Vote'>;
 
 const VoteScreen: React.FC<VoteScreenProps> = ({navigation}) => {
   const rootNavigation =

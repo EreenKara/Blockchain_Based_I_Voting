@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {View, ScrollView, StyleSheet} from 'react-native';
-import {useAuthContext} from '@contexts/index';
+import {useAuthContext, useThemeColors} from '@contexts/index';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ProfileStackParamList, RootStackParamList} from '@navigation/types';
 import {useNavigation} from '@react-navigation/native';
@@ -18,6 +18,7 @@ type ScreenProps = NativeStackScreenProps<ProfileStackParamList, 'ProfileMain'>;
 type RootProps = NativeStackNavigationProp<RootStackParamList>;
 
 const ProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
+  const {colors} = useThemeColors();
   const styles = useStyles(createStyles);
   const rootNavigation = useNavigation<RootProps>();
   const {logout} = useAuthContext();
@@ -75,7 +76,7 @@ const ProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
         <MenuItemComponent
           icon={require('@assets/images/person.png')}
           title="Kişisel Bilgiler"
-          tintColor={Colors.getTheme().icon}
+          tintColor={colors.icon}
           onPress={() => {
             navigation.navigate('PersonalInformation');
           }}
@@ -84,7 +85,7 @@ const ProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
         <MenuItemComponent
           icon={require('@assets/images/address.png')}
           title="Adres"
-          tintColor={Colors.getTheme().icon}
+          tintColor={colors.icon}
           onPress={() => {
             navigation.navigate('AddressInformation');
           }}
@@ -93,7 +94,7 @@ const ProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
         <MenuItemComponent
           icon={require('@assets/images/group-people.png')}
           title="Grup Oluştur"
-          tintColor={Colors.getTheme().icon}
+          tintColor={colors.icon}
           onPress={() => {
             navigation.navigate('Groups');
           }}
@@ -105,27 +106,33 @@ const ProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
         <MenuItemComponent
           icon={require('@assets/images/elections.png')}
           title="Oluşturduğun Seçimler"
-          tintColor={Colors.getTheme().icon}
+          tintColor={colors.icon}
           onPress={() => {
-            navigation.navigate('ListElections', {type: ElectionType.Created});
+            navigation.navigate('CreatedElections');
           }}
           rightIcon={require('@assets/images/right-arrow.png')}
         />
         <MenuItemComponent
           icon={require('@assets/images/b-box.png')}
           title="Oy Kullandığın Seçimler"
-          tintColor={Colors.getTheme().icon}
+          tintColor={colors.icon}
           onPress={() => {
-            navigation.navigate('CastedVotes');
+            navigation.navigate('Shared', {
+              screen: 'ListElections',
+              params: {type: ElectionType.Casted},
+            });
           }}
           rightIcon={require('@assets/images/right-arrow.png')}
         />
         <MenuItemComponent
           icon={require('@assets/images/candidate.png')}
           title="Aday Olduğun Seçimler"
-          tintColor={Colors.getTheme().icon}
+          tintColor={colors.icon}
           onPress={() => {
-            navigation.navigate('CandidateElections');
+            navigation.navigate('Shared', {
+              screen: 'ListElections',
+              params: {type: ElectionType.BeingCandidate},
+            });
           }}
           rightIcon={require('@assets/images/right-arrow.png')}
         />
@@ -134,7 +141,7 @@ const ProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
         <MenuItemComponent
           icon={require('@assets/images/payment.png')}
           title="Ödeme"
-          tintColor={Colors.getTheme().icon}
+          tintColor={colors.icon}
           onPress={() => {
             navigation.navigate('Payment');
           }}
@@ -145,7 +152,7 @@ const ProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
         <MenuItemComponent
           icon={require('@assets/images/settings.png')}
           title="Ayarlar"
-          tintColor={Colors.getTheme().icon}
+          tintColor={colors.icon}
           onPress={() => {
             navigation.navigate('Settings');
           }}
@@ -156,11 +163,11 @@ const ProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
       <View style={styles.menuGroup}>
         <MenuItemComponent
           icon={require('@assets/images/logout.png')}
-          imageStyle={{tintColor: Colors.getTheme().error}}
-          textStyle={{color: Colors.getTheme().error}}
+          imageStyle={{tintColor: colors.error}}
+          textStyle={{color: colors.error}}
           title="Çıkış Yap"
           onPress={handleLogout}
-          tintColor={Colors.getTheme().error}
+          tintColor={colors.error}
           rightIcon={require('@assets/images/right-arrow.png')}
         />
       </View>
@@ -182,7 +189,7 @@ const createStyles = (colors: ColorsSchema) =>
     menuGroup: {
       marginTop: styleNumbers.space,
       paddingHorizontal: styleNumbers.space,
-      backgroundColor: Colors.getTheme().transition,
+      backgroundColor: colors.transition,
       padding: styleNumbers.space * 2,
       borderRadius: styleNumbers.borderRadius * 2,
       borderWidth: 1,

@@ -10,6 +10,7 @@ const createStyles = (colors: ColorsSchema) =>
       paddingHorizontal: styleNumbers.spaceLarge,
       ...CommonStyles.viewStyles.container,
       ...CommonStyles.safearea,
+      backgroundColor: colors.background,
     },
     errorText: {
       ...CommonStyles.textStyles.error,

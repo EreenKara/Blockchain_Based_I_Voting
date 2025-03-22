@@ -25,7 +25,7 @@ export const createStyles = (colors: ColorsSchema) =>
       borderColor: colors.button,
     },
     primaryText: {
-      color: colors.background,
+      color: colors.buttonText,
       fontSize: styleNumbers.textSize,
       fontWeight: styleNumbers.fontWeight,
     },

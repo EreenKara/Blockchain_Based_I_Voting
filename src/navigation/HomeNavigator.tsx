@@ -10,16 +10,9 @@ import {ElectionInfoScreen} from '@screens/home/index';
 import {BeCandidateScreen} from '@screens/home/index';
 import {ElectionsScreen} from '@screens/home/index';
 import {SpecificElectionScreen} from '@screens/home/index';
-import Colors from '@styles/common/colors';
 import NavBarTitle from '@screens/shared/navbar_title';
-import DefaultCustomScreen from '@screens/home/CreateElection/default.or.custom';
-import ListElectionsScreen from '@screens/shared/ListElections';
-import ElectionAccessScreen from '@screens/home/ElectionAccess';
-import PublicOrPrivateScreen from '@screens/home/CreateElection/public.or.private';
-import ElectionCandidatesScreen from '@screens/home/ElectionCandidates';
-import ElectionChoicesScreen from '@screens/home/ElectionChoices';
 import DiscardButtonComponent from '@screens/shared/discard.buttont';
-import {useElectionCreationContext} from '@contexts/index';
+import {useElectionCreationContext, useThemeColors} from '@contexts/index';
 import ElectionResultScreen from '@screens/shared/ElectionResult';
 import VoteScreen from '@screens/home/Vote';
 import SharedNavigator from './shared.navigator';
@@ -27,6 +20,8 @@ const Stack = createNativeStackNavigator<HomeStackParamList>();
 
 const HomeNavigator: React.FC = () => {
   const {resetElectionCreation} = useElectionCreationContext();
+  const {colors} = useThemeColors();
+
   return (
     <Stack.Navigator
       screenOptions={{
@@ -34,7 +29,7 @@ const HomeNavigator: React.FC = () => {
         headerRight: () => <NavBarTitle />,
         headerTitleAlign: 'center',
         headerStyle: {
-          backgroundColor: Colors.getTheme().bar,
+          backgroundColor: colors.bar,
         },
       }}>
       <Stack.Screen
@@ -104,11 +99,6 @@ const HomeNavigator: React.FC = () => {
         name="ElectionResult"
         component={ElectionResultScreen}
         options={{title: 'Seçim Sonucu'}}
-      />
-      <Stack.Screen
-        name="Vote"
-        component={VoteScreen}
-        options={{title: 'Oy Ver'}}
       />
     </Stack.Navigator>
   );

@@ -4,5 +4,6 @@ export enum ElectionType {
   Upcoming = 'upcoming',
   Past = 'past',
   Search = 'search',
-  Created = 'created',
+  Casted = 'casted',
+  BeingCandidate = 'beingCandidate',
 }

@@ -6,16 +6,19 @@ import ProfileNavigator from '@navigation/ProfileNavigator';
 import SocialMediaScreen from '@screens/social/SocialMedia';
 import {Image, StyleSheet} from 'react-native';
 import Colors from '@styles/common/colors';
+import {useThemeColors} from '@contexts/theme.provider';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 const MainNavigator: React.FC = () => {
+  const {colors} = useThemeColors();
+
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: Colors.getTheme().bar,
+          backgroundColor: colors.bar,
         },
         tabBarIcon: ({color, size}) => {
           let iconSource;

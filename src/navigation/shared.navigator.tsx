@@ -14,11 +14,10 @@ import ElectionChoicesScreen from '@screens/home/ElectionChoices';
 import {useNavigation} from '@react-navigation/native';
 import Colors from '@styles/common/colors';
 import NavBarTitle from '@screens/shared/navbar_title';
-import {View} from 'react-native';
 import ElectionResultScreen from '@screens/shared/ElectionResult';
 import SpecificElectionScreen from '@screens/shared/SpecificElection';
 import ListElectionsScreen from '@screens/shared/ListElections';
-import ButtonComponent from '@components/Button/Button';
+import VoteScreen from '@screens/home/Vote';
 
 const Stack = createNativeStackNavigator<SharedStackParamList>();
 
@@ -138,6 +137,11 @@ const SharedNavigator: React.FC = () => {
         name="ListElections"
         component={ListElectionsScreen}
         options={{title: 'Seçimler'}}
+      />
+      <Stack.Screen
+        name="Vote"
+        component={VoteScreen}
+        options={{title: 'Oy Ver'}}
       />
     </Stack.Navigator>
   );

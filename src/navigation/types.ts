@@ -42,7 +42,6 @@ export type HomeStackParamList = {
   SpecificElection: {election: LightElectionViewModel};
   Success: undefined;
   ElectionResult: {election: LightElectionViewModel};
-  Vote: undefined;
   Shared: NavigatorScreenParams<SharedStackParamList>;
 };
 
@@ -55,9 +54,6 @@ export type ProfileStackParamList = {
   Groups: undefined;
   Group: {group: GroupViewModel};
   CreateGroup: undefined;
-  CreatedElections: undefined;
-  CastedVotes: undefined;
-  CandidateElections: undefined;
   AddressInformation: undefined;
   Shared: NavigatorScreenParams<SharedStackParamList>;
 };
@@ -71,4 +67,5 @@ export type SharedStackParamList = {
   SpecificElection: {election: LightElectionViewModel};
   ElectionResult: {election: LightElectionViewModel};
   ListElections: {type: ElectionType};
+  Vote: undefined;
 };
