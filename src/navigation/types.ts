@@ -1,4 +1,5 @@
 import {ElectionType} from '@enums/election.type';
+import {NavigatorScreenParams} from '@react-navigation/native';
 import {ElectionViewModel} from '@viewmodels/election.viewmodel';
 import GroupViewModel from '@viewmodels/group.viewmodel';
 import LightElectionViewModel from '@viewmodels/light.election.viewmodel';
@@ -35,19 +36,14 @@ export type MainTabParamList = {
 export type HomeStackParamList = {
   HomeMain: undefined;
   BlockchainOrDb: undefined;
-  PublicOrPrivate: undefined;
-  DefaultCustom: undefined;
   ElectionInfo: {dbType: 'database' | 'blockchain'};
-  ElectionAccess: {accessType: 'public' | 'private'};
-  ElectionCandidates: undefined;
-  ElectionChoices: undefined;
-  ListElections: {type: ElectionType};
   BeCandidate: undefined;
   Elections: undefined;
   SpecificElection: {election: LightElectionViewModel};
   Success: undefined;
   ElectionResult: {election: LightElectionViewModel};
   Vote: undefined;
+  Shared: NavigatorScreenParams<SharedStackParamList>;
 };
 
 export type ProfileStackParamList = {
@@ -57,13 +53,22 @@ export type ProfileStackParamList = {
   AddCard: undefined;
   PersonalInformation: undefined;
   Groups: undefined;
-  ListElections: {type: ElectionType};
   Group: {group: GroupViewModel};
   CreateGroup: undefined;
   CreatedElections: undefined;
   CastedVotes: undefined;
   CandidateElections: undefined;
   AddressInformation: undefined;
+  Shared: NavigatorScreenParams<SharedStackParamList>;
+};
+
+export type SharedStackParamList = {
+  ElectionAccess: {accessType: 'public' | 'private'};
+  ElectionCandidates: undefined;
+  ElectionChoices: undefined;
+  PublicOrPrivate: undefined;
+  DefaultCustom: undefined;
   SpecificElection: {election: LightElectionViewModel};
   ElectionResult: {election: LightElectionViewModel};
+  ListElections: {type: ElectionType};
 };

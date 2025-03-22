@@ -33,7 +33,9 @@ const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
   const handleSubmit = async (values: FormValues) => {
     const result = await handleElectionInfoStep(values);
     if (result.success) {
-      navigation.navigate('PublicOrPrivate');
+      navigation.navigate('Shared', {
+        screen: 'PublicOrPrivate',
+      });
     }
   };
 
@@ -93,7 +95,10 @@ const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
               <Button
                 title="Go to Election Info"
                 onPress={() =>
-                  navigation.navigate('ElectionAccess', {accessType: 'private'})
+                  navigation.navigate('Shared', {
+                    screen: 'ElectionAccess',
+                    params: {accessType: 'private'},
+                  })
                 }
               />
               <ButtonComponent

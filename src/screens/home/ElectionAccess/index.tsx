@@ -1,6 +1,9 @@
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {
+  NativeStackNavigationProp,
+  NativeStackScreenProps,
+} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
 import {Formik, FormikProps} from 'formik';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -19,9 +22,14 @@ import SearchBarModalComponent from '@components/SearchBarModal/search.bar.modal
 import {useStyles} from '@hooks/Modular/use.styles';
 import createStyles from './index.style';
 import {useNotification} from '@contexts/notification.context';
-type Props = NativeStackScreenProps<HomeStackParamList, 'ElectionAccess'>;
+import {SharedStackParamList} from '@navigation/types';
+import {useNavigation} from '@react-navigation/native';
+
+type Props = NativeStackScreenProps<SharedStackParamList, 'ElectionAccess'>;
 
 const ElectionAccessScreen: React.FC<Props> = ({navigation, route}) => {
+  const homeNavigation =
+    useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
   const {showNotification} = useNotification();
   const styles = useStyles(createStyles);
   const {accessType} = route.params;

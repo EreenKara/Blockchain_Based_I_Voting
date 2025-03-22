@@ -201,6 +201,15 @@ const CreateGroupScreen = () => {
         <View style={styles.listContainer}>
           <FlatListComponent
             data={searchQuery ? users : selectedUsers}
+            ListEmptyComponent={
+              <Text
+                style={[
+                  {...CommonStyles.textStyles.subtitle},
+                  {textAlign: 'center'},
+                ]}>
+                {searchQuery ? 'Kişi bulunamadı' : 'Seçilen kişiler yok'}
+              </Text>
+            }
             renderItem={renderUserItem}
             showsVerticalScrollIndicator={false}
           />

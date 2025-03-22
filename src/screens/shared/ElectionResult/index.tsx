@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {View, Text, Image} from 'react-native';
-import {HomeStackParamList, ProfileStackParamList} from '@navigation/types';
+import {SharedStackParamList} from '@navigation/types';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useStyles} from '@hooks/Modular/use.styles';
 import createStyles from './index.style';
@@ -8,7 +8,7 @@ import CandidateViewModel from '@viewmodels/candidate.viewmodel';
 import PodiumComponent from '@icomponents/Podium/podium';
 
 type ElectionResultScreenProps = NativeStackScreenProps<
-  HomeStackParamList | ProfileStackParamList,
+  SharedStackParamList,
   'ElectionResult'
 >;
 const candidates: CandidateViewModel[] = [

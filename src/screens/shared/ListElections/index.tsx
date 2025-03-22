@@ -7,7 +7,7 @@ import Colors, {ColorsSchema} from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import ActivityIndicatorComponent from '@screens/shared/activity.indicator';
 import ElectionCardComponent from '@icomponents/ElectionCard/election.card';
-import {HomeStackParamList, ProfileStackParamList} from '@navigation/types';
+import {SharedStackParamList} from '@navigation/types';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useSearchContext} from '@contexts/search.context';
 import getElectionTexts from './text.screen.type';
@@ -16,7 +16,7 @@ import LightElectionViewModel from '@viewmodels/light.election.viewmodel';
 import {useElection} from '@hooks/use.election';
 import {useStyles} from '@hooks/Modular/use.styles';
 type ListElectionsScreenProps = NativeStackScreenProps<
-  HomeStackParamList | ProfileStackParamList,
+  SharedStackParamList,
   'ListElections'
 >;
 

@@ -3,11 +3,11 @@ import React from 'react';
 import ChoiceCardComponent from '@icomponents/ChoiceCard/choice.card';
 import {ElectionInfoScreen} from '@screens/home';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {HomeStackParamList} from '@navigation/types';
+import {HomeStackParamList, SharedStackParamList} from '@navigation/types';
 import Colors, {ColorsSchema} from '@styles/common/colors';
 import styleNumbers from '@styles/common/style.numbers';
 import {useStyles} from '@hooks/Modular/use.styles';
-type Props = NativeStackScreenProps<HomeStackParamList, 'DefaultCustom'>;
+type Props = NativeStackScreenProps<SharedStackParamList, 'DefaultCustom'>;
 
 const DefaultCustomScreen: React.FC<Props> = ({navigation}) => {
   const styles = useStyles(createStyles);

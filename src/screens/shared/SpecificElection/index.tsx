@@ -14,13 +14,13 @@ import styleNumbers from '@styles/common/style.numbers';
 import {useSearchContext} from '@contexts/search.context';
 import {useStyles} from '@hooks/Modular/use.styles';
 import createStyles from './index.style';
-import {HomeStackParamList, ProfileStackParamList} from '@navigation/types';
+import {SharedStackParamList} from '@navigation/types';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 const windowHeight = Dimensions.get('window').height;
 
 type SpecificElectionScreenProps = NativeStackScreenProps<
-  HomeStackParamList | ProfileStackParamList,
+  SharedStackParamList,
   'SpecificElection'
 >;
 const SpecificElectionScreen: React.FC<SpecificElectionScreenProps> = ({

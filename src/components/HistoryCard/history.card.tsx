@@ -6,7 +6,7 @@ import Colors, {ColorsSchema} from '@styles/common/colors';
 import ButtonComponent from '@components/Button/Button';
 import styleNumbers from '@styles/common/style.numbers';
 import {useNavigation} from '@react-navigation/native';
-import {HomeStackParamList} from '@navigation/types';
+import {HomeStackParamList, SharedStackParamList} from '@navigation/types';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useSearchContext} from '@contexts/search.context';
 import {ElectionType} from '@enums/election.type';
@@ -38,16 +38,16 @@ const menuItems = [
 interface HistoryCardComponentProps {
   style?: ViewStyle;
 }
-type ElectionNavigationProp = NativeStackNavigationProp<
+type HomeNavigationProp = NativeStackNavigationProp<
   HomeStackParamList,
-  'ListElections'
+  'Shared'
 >;
 
 const HistoryCardComponent: React.FC<HistoryCardComponentProps> = ({style}) => {
   const styles = useStyles(createStyles);
 
   const {search} = useSearchContext();
-  const navigation = useNavigation<ElectionNavigationProp>();
+  const navigation = useNavigation<HomeNavigationProp>();
   return (
     <View style={[styles.container, style]}>
       <View>
@@ -77,7 +77,10 @@ const HistoryCardComponent: React.FC<HistoryCardComponentProps> = ({style}) => {
             <ButtonComponent
               title="İncele"
               onPress={() => {
-                navigation.navigate(item.screen, item.routeParams);
+                navigation.navigate('Shared', {
+                  screen: item.screen,
+                  params: item.routeParams,
+                });
               }}
             />
           </Card.Actions>

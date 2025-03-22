@@ -4,7 +4,11 @@ import {
   NativeStackNavigationProp,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack';
-import {HomeStackParamList, RootStackParamList} from '@navigation/types';
+import {
+  HomeStackParamList,
+  RootStackParamList,
+  SharedStackParamList,
+} from '@navigation/types';
 import OptionGroup from '@components/OptionGroup/option.group';
 import {useElectionCreationContext} from '@contexts/election.creation.context';
 import {ElectionChoiceViewModel} from '@viewmodels/election.choice.viewmodel';
@@ -14,7 +18,7 @@ import {useStyles} from '@hooks/Modular/use.styles';
 import createStyles from './index.style';
 import {useNotification} from '@contexts/notification.context';
 
-type Props = NativeStackScreenProps<HomeStackParamList, 'ElectionChoices'>;
+type Props = NativeStackScreenProps<SharedStackParamList, 'ElectionChoices'>;
 
 interface Group {
   name: string;

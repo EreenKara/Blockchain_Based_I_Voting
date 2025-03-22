@@ -22,6 +22,7 @@ import DiscardButtonComponent from '@screens/shared/discard.buttont';
 import {useElectionCreationContext} from '@contexts/index';
 import ElectionResultScreen from '@screens/shared/ElectionResult';
 import VoteScreen from '@screens/home/Vote';
+import SharedNavigator from './shared.navigator';
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 
 const HomeNavigator: React.FC = () => {
@@ -41,42 +42,7 @@ const HomeNavigator: React.FC = () => {
         component={HomeScreen}
         options={{title: 'Ana Sayfa'}}
       />
-      <Stack.Screen
-        name="ElectionCandidates"
-        component={ElectionCandidatesScreen}
-        options={navigation => ({
-          title: 'Adaylar',
-          headerRight: () => (
-            <DiscardButtonComponent
-              onPress={() => {
-                resetElectionCreation();
-                navigation.navigation.reset({
-                  index: 0,
-                  routes: [{name: 'HomeMain'}],
-                });
-              }}
-            />
-          ),
-        })}
-      />
-      <Stack.Screen
-        name="ElectionChoices"
-        component={ElectionChoicesScreen}
-        options={navigation => ({
-          title: 'Seçim Seçenekleri',
-          headerRight: () => (
-            <DiscardButtonComponent
-              onPress={() => {
-                resetElectionCreation();
-                navigation.navigation.reset({
-                  index: 0,
-                  routes: [{name: 'HomeMain'}],
-                });
-              }}
-            />
-          ),
-        })}
-      />
+
       <Stack.Screen
         name="ElectionInfo"
         component={ElectionInfoScreen}
@@ -96,22 +62,9 @@ const HomeNavigator: React.FC = () => {
         })}
       />
       <Stack.Screen
-        name="ElectionAccess"
-        component={ElectionAccessScreen}
-        options={navigation => ({
-          title: 'Seçim Erişim Bilgileri',
-          headerRight: () => (
-            <DiscardButtonComponent
-              onPress={() => {
-                resetElectionCreation();
-                navigation.navigation.reset({
-                  index: 0,
-                  routes: [{name: 'HomeMain'}],
-                });
-              }}
-            />
-          ),
-        })}
+        name="Shared"
+        component={SharedNavigator}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name="BlockchainOrDb"
@@ -131,42 +84,7 @@ const HomeNavigator: React.FC = () => {
           ),
         })}
       />
-      <Stack.Screen
-        name="PublicOrPrivate"
-        component={PublicOrPrivateScreen}
-        options={navigation => ({
-          title: 'Public Or Private',
-          headerRight: () => (
-            <DiscardButtonComponent
-              onPress={() => {
-                resetElectionCreation();
-                navigation.navigation.reset({
-                  index: 0,
-                  routes: [{name: 'HomeMain'}],
-                });
-              }}
-            />
-          ),
-        })}
-      />
-      <Stack.Screen
-        name="DefaultCustom"
-        component={DefaultCustomScreen}
-        options={navigation => ({
-          title: 'Varsayılan veya Özel',
-          headerRight: () => (
-            <DiscardButtonComponent
-              onPress={() => {
-                resetElectionCreation();
-                navigation.navigation.reset({
-                  index: 0,
-                  routes: [{name: 'HomeMain'}],
-                });
-              }}
-            />
-          ),
-        })}
-      />
+
       <Stack.Screen
         name="Elections"
         component={ElectionsScreen}
@@ -176,11 +94,6 @@ const HomeNavigator: React.FC = () => {
         name="SpecificElection"
         component={SpecificElectionScreen}
         options={{title: 'Seçim'}}
-      />
-      <Stack.Screen
-        name="ListElections"
-        component={ListElectionsScreen}
-        options={{title: 'Seçimler'}}
       />
       <Stack.Screen
         name="BeCandidate"

@@ -1,7 +1,7 @@
 import {Text, View, FlatList, ScrollView} from 'react-native';
 import React, {useCallback, useRef, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {HomeStackParamList} from '@navigation/types';
+import {HomeStackParamList, SharedStackParamList} from '@navigation/types';
 import ExtendedPickerComponent, {ChildRef} from '@icomponents/ExtendedPicker';
 import {CandidateViewModel} from '@viewmodels/candidate.viewmodel';
 import CandidateInputItemComponent from '@icomponents/CandidateInputItem';
@@ -11,7 +11,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useStyles} from '@hooks/Modular/use.styles';
 import createStyles from './index.style';
 import {useElectionCreationContext} from '@contexts/election.creation.context';
-type Props = NativeStackScreenProps<HomeStackParamList, 'ElectionCandidates'>;
+type Props = NativeStackScreenProps<SharedStackParamList, 'ElectionCandidates'>;
 
 const ElectionCandidatesScreen: React.FC<Props> = ({navigation}) => {
   const styles = useStyles(createStyles);
@@ -55,7 +55,7 @@ const ElectionCandidatesScreen: React.FC<Props> = ({navigation}) => {
                 }}
               />
             }
-            title={candidates[index].name || 'Aday Seçimi'}
+            title={candidates[index]?.name || 'Aday Seçimi'}
             icon={require('@assets/images/candidate.png')}
           />
         );
