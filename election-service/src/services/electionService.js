@@ -12,7 +12,7 @@ const createElection = asyncHandler(async (req, res) => {
     return res.status(401).json({ message: "Authorization token is missing" });
   }
 
-  const { name, description, startDate, endDate, accessType, electionType } =
+  const { name, description, startDate, endDate, electionType } =
     req.body;
   if (!name || !startDate || !endDate) {
     return res
@@ -21,7 +21,7 @@ const createElection = asyncHandler(async (req, res) => {
   }
 
   const user = await authenticateUser(token);
-  if (!user || !user.email || !user.hasPaidBalance) {
+  if (!user || !user.email) {
     return res
       .status(403)
       .json({ message: "Yetkisiz erişim veya bakiye yetersiz." });
@@ -33,7 +33,7 @@ const createElection = asyncHandler(async (req, res) => {
     startDate,
     endDate,
     createdBy: user.email,
-    accessType,
+    accessType:"null",
     electionType,
     step: "step1", // İlk adım
     status: "upcoming",
@@ -43,6 +43,46 @@ const createElection = asyncHandler(async (req, res) => {
     .status(201)
     .json({ message: "Step 1: Election created successfully", election });
 });
+const setAccessType = asyncHandler(async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ message: "Authorization token is missing" });
+  }
+
+  const { electionId, accessType } = req.body;
+
+  if (!["public", "private"].includes(accessType)) {
+    return res.status(400).json({ message: "Invalid access type" });
+  }
+
+  const user = await authenticateUser(token);
+  if (!user || !user.email) {
+    return res
+      .status(403)
+      .json({ message: "Yetkisiz erişim veya bakiye yetersiz." });
+  }
+
+  const election = await Election.findByPk(electionId);
+  if (!election || election.step !== "step1") {
+    return res
+      .status(400)
+      .json({ message: "Election not found or not in step1" });
+  }
+
+  if (election.createdBy !== user.email) {
+    return res.status(403).json({ message: "Unauthorized to update this election" });
+  }
+
+  election.accessType = accessType;
+  election.step = "step2";
+  await election.save();
+
+  return res.status(200).json({
+    message: "Step 2: Access type set successfully",
+    election,
+  });
+});
+
 const setElectionAccess = async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
@@ -53,7 +93,7 @@ const setElectionAccess = async (req, res) => {
 
   try {
     const user = await authenticateUser(token);
-    if (!user || !user.email || !user.hasPaidBalance) {
+    if (!user || !user.email ) {
       return res
         .status(403)
         .json({ message: "Yetkisiz erişim veya bakiye yetersiz." });
@@ -63,7 +103,7 @@ const setElectionAccess = async (req, res) => {
       attributes:["id","step","accessType"],
     });
     console.log(election);
-    if (!election || election.step !== "step1") {
+    if (!election || election.step !== "step2") {
       return res
         .status(400)
         .json({ message: "Election not found or incorrect step" });
@@ -123,7 +163,7 @@ const setElectionAccess = async (req, res) => {
 
       // ✅ Eğer hem kullanıcı hem de grup ekleme başarılıysa step güncelle
       if (successUser && successGroup) {
-        election.step = "step2";
+        election.step = "step3";
         await election.save();
         return res.status(200).json({
           message: "Step 2: Election access set successfully",
@@ -164,7 +204,7 @@ const updateElectionAccess = async (req, res) => {
 
   try {
     const user = await authenticateUser(token);
-    if (!user || !user.email || !user.hasPaidBalance) {
+    if (!user || !user.email) {
       console.error(
         "❌ Yetkisiz erişim: Kullanıcı doğrulanamadı veya bakiyesi yetersiz."
       );
@@ -176,7 +216,7 @@ const updateElectionAccess = async (req, res) => {
     const election = await Election.findByPk(electionId,{
       attributes:["id","step","createdBy"],
     });
-    if (!election || election.step !== "step2") {
+    if (!election || election.step !== "step3") {
       console.error("❌ Seçim bulunamadı veya yanlış aşamada:", electionId);
       return res
         .status(400)
@@ -337,6 +377,76 @@ const updateElectionAccess = async (req, res) => {
     });
   }
 };
+const addOptionToElection = asyncHandler(async (req, res) => {
+  const {
+    electionId,
+    optionName,
+    optionImgUrl,
+    optionDescription,
+    color,
+    userId,
+  } = req.body;
+
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return res.status(401).json({ message: "Token missing" });
+
+  const user = await authenticateUser(token);
+  const election = await Election.findByPk(electionId);
+
+  if (!election || election.step !== "step3") {
+    return res.status(400).json({ message: "Election not in correct step to add option" });
+  }
+
+  if (election.createdBy !== user.email) {
+    return res.status(403).json({ message: "Only the creator can add options" });
+  }
+
+  // ✅ Option-service'e istek atarak option oluştur
+  try {
+    const createRes = await axios.post(
+      `${process.env.OPTION_SERVICE_URL}/api/options/create-option`,
+      {
+        optionName,
+        optionImgUrl,
+        optionDescription,
+        color,
+        electionId,
+        userId,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+  
+
+    const createdOption = createRes.data.option;
+
+    // ✅ Mevcut option sayısını kontrol et
+    const optionRes = await axios.get(
+      `${process.env.OPTION_SERVICE_URL}/api/options/election/${electionId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    const options = optionRes.data.options || [];
+
+    if (options.length >= 2) {
+      election.step = "step4";
+      await election.save();
+    }
+
+    return res.status(201).json({
+      message: `Option added successfully${options.length >= 2 ? " and election moved to step3" : ""}`,
+      option: createdOption,
+    });
+
+  } catch (error) {
+    console.error("Option creation failed:", error.message);
+    return res.status(500).json({ message: "Failed to create option", error: error.message });
+  }
+});
+
 
 const addChoiceToElection = asyncHandler(async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
@@ -362,7 +472,7 @@ const addChoiceToElection = asyncHandler(async (req, res) => {
   const election = await Election.findByPk(electionId,{
     attributes:["id","step","electionType"]
   });
-  if (!election || election.step !== "step2") {
+  if (!election || election.step !== "step4") {
     return res
       .status(400)
       .json({ message: "Election not found or incorrect step" });
@@ -382,7 +492,7 @@ const addChoiceToElection = asyncHandler(async (req, res) => {
       ElectionChoice.create({ electionId, choiceId: choice.id })
     )
   );
-  election.step = "step3";
+  election.step = "step5";
   await election.save();
 
   res
@@ -561,4 +671,6 @@ module.exports = {
   setElectionAccess,
   getActiveElection,
   updateElectionAccess,
+  setAccessType,
+  addOptionToElection,
 };

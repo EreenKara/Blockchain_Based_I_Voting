@@ -7,16 +7,27 @@ const {
   getElectionById,
   getActiveElection,
   updateElectionAccess,
+  setAccessType, // ✅ yeni
+  addOptionToElection, // ✅ yeni
 } = require("../services/electionService");
 
 const Election = require("../models/Election");
 
-// ✅ Tekrar eden `handleError` fonksiyonunu kaldırdık. Artık hata yönetimi `asyncHandler` içinde otomatik yapılacak.
-
 const getElectionByIdOnly = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const election = await Election.findByPk(id,{
-    attributes:["id","name","description","createdBy","image","startDate","endDate","status","accessType","electionType"]
+  const election = await Election.findByPk(id, {
+    attributes: [
+      "id",
+      "name",
+      "description",
+      "createdBy",
+      "image",
+      "startDate",
+      "endDate",
+      "status",
+      "accessType",
+      "electionType",
+    ],
   });
   if (!election) {
     res.status(404);
@@ -26,15 +37,19 @@ const getElectionByIdOnly = asyncHandler(async (req, res) => {
 });
 
 const createElectionController = asyncHandler(async (req, res) => {
-  await createElection(req, res);
+   createElection(req, res);
 });
 
 const setElectionAccessController = asyncHandler(async (req, res) => {
   await setElectionAccess(req, res);
 });
 
+const updateElectionAccessController = asyncHandler(async (req, res) => {
+  await updateElectionAccess(req, res);
+});
+
 const addChoiceToElectionController = asyncHandler(async (req, res) => {
-  await addChoiceToElection(req, res);
+   addChoiceToElection(req, res);
 });
 
 const getElectionByIdController = asyncHandler(async (req, res) => {
@@ -48,24 +63,30 @@ const getElectionByIdController = asyncHandler(async (req, res) => {
 });
 
 const getActiveElectionController = asyncHandler(async (req, res) => {
-  await getActiveElection(req, res);
+   getActiveElection(req, res);
 });
 
 const updateElectionStatusController = asyncHandler(async (req, res) => {
-  await updateElectionStatus(req, res);
+   updateElectionStatus(req, res);
 });
 
-const updateElectionAccessController = asyncHandler(async (req, res) => {
-  await updateElectionAccess(req, res);
+const setAccessTypeController = asyncHandler(async (req, res) => {
+   setAccessType(req, res);
+});
+
+const addOptionToElectionController = asyncHandler(async (req, res) => {
+   addOptionToElection(req, res);
 });
 
 module.exports = {
   createElectionController,
   getElectionByIdOnly,
-  getActiveElectionController,
   getElectionByIdController,
+  getActiveElectionController,
   updateElectionStatusController,
   addChoiceToElectionController,
   setElectionAccessController,
   updateElectionAccessController,
+  setAccessTypeController, // ✅ yeni
+  addOptionToElectionController, // ✅ yeni
 };

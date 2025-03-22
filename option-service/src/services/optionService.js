@@ -37,10 +37,9 @@ const createOption = async (req, res) => {
     // Seçimi doğrula
     const election = await validateElection(electionId, token);
     if (!election) {
-      return res
-        .status(404)
-        .json({ message: "Election not found or not valid." });
+      return res.status(404).json({ message: "Election not found or not valid." });
     }
+
 
     if (election.createdBy !== user.email) {
       return res
@@ -55,7 +54,18 @@ const createOption = async (req, res) => {
         .status(400)
         .json({ message: "Invalid user ID. No such user exists." });
     }
+   const existingOption = await Option.findOne({
+      where: {
+        electionId,
+        userId,
+      },
+    });
 
+    if (existingOption) {
+      return res.status(400).json({
+        message: "This user has already been added to this election as an option.",
+      });
+    }
     // userId belirleme mantığı
     let userType = "registered";
     if (userId == 1) {
@@ -93,6 +103,7 @@ const createOption = async (req, res) => {
       voteCount: 0,
       userId,
     };
+    
 
     const newOption = await Option.create(newOptionData);
 

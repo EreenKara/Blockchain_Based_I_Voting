@@ -14,7 +14,7 @@ const Election = sequelize.define("Election", {
     allowNull: false,
   },
   accessType: {
-    type: DataTypes.ENUM("public", "private"),
+    type: DataTypes.ENUM("public", "private","null"),
     allowNull: false,
   },
   electionType: {

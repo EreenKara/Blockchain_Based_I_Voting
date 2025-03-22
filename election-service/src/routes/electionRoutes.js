@@ -8,18 +8,31 @@ const {
   addChoiceToElectionController,
   getElectionByIdController,
   updateElectionAccessController,
+  setAccessTypeController, // ✅ yeni
+  addOptionToElectionController, // ✅ yeni
 } = require("../controllers/electionController");
 
 const router = express.Router();
 
+// STEP 1
 router.post("/create-election", createElectionController);
-router.get("/:id/active", getActiveElectionController);
-router.get("/:id", getElectionByIdOnly);
-router.patch("/change/status/:id", updateElectionStatusController);
+
+// STEP 2
+router.patch("/setAccessType", setAccessTypeController);
 router.post("/setElectionAccess", setElectionAccessController);
-router.post("/addChoiceToElection", addChoiceToElectionController);
-router.get("/electionWithOptions/:id", getElectionByIdController);
 router.put("/updateElectionAccess", updateElectionAccessController);
-// router.patch("/changeElectionStatus/:id",updateElectionStatusIfActiveController);
+
+// STEP 3
+router.post("/addOptionToElection", addOptionToElectionController);
+
+// STEP 4
+router.post("/addChoiceToElection", addChoiceToElectionController);
+
+// Diğer
+router.get("/:id", getElectionByIdOnly);
+router.get("/:id/active", getActiveElectionController);
+router.get("/electionWithOptions/:id", getElectionByIdController);
+router.patch("/change/status/:id", updateElectionStatusController);
+// router.patch("/changeElectionStatus/:id", updateElectionStatusIfActiveController);
 
 module.exports = router;
