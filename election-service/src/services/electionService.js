@@ -43,6 +43,47 @@ const createElection = asyncHandler(async (req, res) => {
     .status(201)
     .json({ message: "Step 1: Election created successfully", election });
 });
+const updateElection = asyncHandler(async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ message: "Authorization token is missing" });
+  }
+
+  const { electionId, name, description, startDate, endDate, electionType } = req.body;
+
+  if (!electionId) {
+    return res.status(400).json({ message: "Election ID is required." });
+  }
+
+  const user = await authenticateUser(token);
+  if (!user || !user.email) {
+    return res.status(403).json({ message: "Unauthorized access." });
+  }
+
+  const election = await Election.findByPk(electionId);
+  if (!election) {
+    return res.status(404).json({ message: "Election not found" });
+  }
+
+  if (election.createdBy !== user.email) {
+    return res.status(403).json({ message: "You are not allowed to update this election." });
+  }
+
+  // Güncellenebilir alanlar
+  if (name) election.name = name;
+  if (description) election.description = description;
+  if (startDate) election.startDate = startDate;
+  if (endDate) election.endDate = endDate;
+  if (electionType) election.electionType = electionType;
+
+  await election.save();
+
+  return res.status(200).json({
+    message: "Election updated successfully",
+    election,
+  });
+});
+
 const setAccessType = asyncHandler(async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
@@ -700,4 +741,5 @@ module.exports = {
   setAccessType,
   addOptionToElection,
   getAllElectionsSortedByStartDate,
+  updateElection,
 };

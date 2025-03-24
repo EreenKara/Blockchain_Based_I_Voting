@@ -11,12 +11,14 @@ const {
   setAccessTypeController, // ✅ yeni
   addOptionToElectionController, // ✅ yeni
   getAllElectionsController,
+  updateElectionController,
 } = require("../controllers/electionController");
 
 const router = express.Router();
 
 // STEP 1
 router.post("/create-election", createElectionController);
+router.put("/updateElection",updateElectionController);
 
 // STEP 2
 router.patch("/setAccessType", setAccessTypeController);
