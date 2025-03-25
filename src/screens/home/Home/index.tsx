@@ -75,13 +75,19 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
                       navigation.navigate('BlockchainOrDb');
                       break;
                     case 1:
-                      navigation.navigate('PublicOrPrivate');
+                      navigation.navigate('Shared', {
+                        screen: 'PublicOrPrivate',
+                      });
                       break;
                     case 2:
-                      navigation.navigate('ElectionCandidates');
+                      navigation.navigate('Shared', {
+                        screen: 'ElectionCandidates',
+                      });
                       break;
                     case 3:
-                      navigation.navigate('DefaultCustom');
+                      navigation.navigate('Shared', {
+                        screen: 'DefaultCustom',
+                      });
                       break;
                     default:
                       navigation.navigate('BlockchainOrDb');
@@ -94,7 +100,11 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
       ))}
       <ButtonComponent
         title="Vote"
-        onPress={() => navigation.navigate('Vote')}
+        onPress={() =>
+          navigation.navigate('Shared', {
+            screen: 'Vote',
+          })
+        }
       />
     </View>
   );

@@ -7,8 +7,8 @@ import {useStyles} from '@hooks/Modular/use.styles';
 const createStyles = (colors: ColorsSchema) =>
   StyleSheet.create({
     container: {
-      flex: 1,
       backgroundColor: colors.transition,
+      flex: 1,
     },
     listContainer: {
       backgroundColor: colors.background,

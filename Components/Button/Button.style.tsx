@@ -6,6 +6,7 @@ import CommonStyles from '@styles/common/commonStyles';
 export const createStyles = (colors: ColorsSchema) =>
   StyleSheet.create({
     baseButton: {
+      maxWidth: '100%',
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
@@ -13,7 +14,6 @@ export const createStyles = (colors: ColorsSchema) =>
       paddingHorizontal: styleNumbers.space * 2,
       borderRadius: styleNumbers.borderRadius,
       minWidth: styleNumbers.buttonSize * 1.5,
-
       ...CommonStyles.shadowStyle,
     },
     primaryButton: {

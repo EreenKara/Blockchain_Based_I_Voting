@@ -53,6 +53,7 @@ export type ProfileStackParamList = {
   PersonalInformation: undefined;
   Groups: undefined;
   Group: {group: GroupViewModel};
+  CreatedElections: undefined;
   CreateGroup: undefined;
   AddressInformation: undefined;
   Shared: NavigatorScreenParams<SharedStackParamList>;

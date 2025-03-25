@@ -11,10 +11,13 @@ import {SharedStackParamList} from '@navigation/types';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useSearchContext} from '@contexts/search.context';
 import getElectionTexts from './text.screen.type';
-import {useGetElectionsFunction} from '../../../hooks/election.hook';
+import {useGetElectionsFunction} from './election.hook';
 import LightElectionViewModel from '@viewmodels/light.election.viewmodel';
 import {useElection} from '@hooks/use.election';
 import {useStyles} from '@hooks/Modular/use.styles';
+import {BaseElectionViewModel} from '@viewmodels/base.election.viewmodel';
+import {ElectionViewModel} from '@viewmodels/election.viewmodel';
+import styleNumbers from '@styles/common/style.numbers';
 type ListElectionsScreenProps = NativeStackScreenProps<
   SharedStackParamList,
   'ListElections'
@@ -27,8 +30,31 @@ const ListElectionsScreen: React.FC<ListElectionsScreenProps> = ({
   const styles = useStyles(createStyles);
   const {type} = route.params;
   const {title, description, errorTitle} = getElectionTexts(type);
+  navigation.setOptions({title: title});
   const {elections, loading, fetchElections} = useElection(type);
   const {search} = useSearchContext();
+  const [electionss, setElectionss] = useState<ElectionViewModel[]>([
+    {
+      id: '1',
+      name: 'string1',
+      description: 'string',
+      startDate: Date.now().toString(),
+      endDate: Date.now().toString(),
+      image: 'string',
+      dbType: 'blockchain',
+      step: 'step 2',
+    },
+    {
+      id: '2',
+      name: 'string2',
+      description: 'string',
+      startDate: Date.now().toString(),
+      endDate: Date.now().toString(),
+      image: 'string',
+      dbType: 'blockchain',
+      step: 'step 3',
+    },
+  ]);
 
   // Ekran her odaklandığında seçimleri yenile
   useFocusEffect(
@@ -52,7 +78,7 @@ const ListElectionsScreen: React.FC<ListElectionsScreenProps> = ({
     );
   }
 
-  if (elections.length === 0) {
+  if (electionss.length === 0) {
     return (
       <View style={CommonStyles.viewStyles.centerContainer}>
         <Text style={CommonStyles.textStyles.title}>{errorTitle}</Text>
@@ -63,8 +89,8 @@ const ListElectionsScreen: React.FC<ListElectionsScreenProps> = ({
   return (
     <View style={styles.container}>
       <ElectionCardComponent
-        title={`${search.city} ${title}`}
-        items={elections}
+        title={`${search.city ?? ''} ${title}`}
+        items={electionss}
       />
     </View>
   );
@@ -75,6 +101,17 @@ const createStyles = (colors: ColorsSchema) =>
     container: {
       ...CommonStyles.viewStyles.container,
       backgroundColor: colors.background,
+      paddingTop: styleNumbers.space * 2,
+    },
+    header: {
+      padding: styleNumbers.space,
+      borderBottomWidth: styleNumbers.borderWidth,
+      borderBottomColor: colors.borderColor,
+    },
+    headerTitle: {
+      textAlign: 'center',
+      ...CommonStyles.textStyles.title,
+      marginBottom: styleNumbers.space,
     },
   });
 

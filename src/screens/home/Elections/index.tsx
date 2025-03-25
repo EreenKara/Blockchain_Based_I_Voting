@@ -1,4 +1,4 @@
-import {View} from 'react-native';
+import {Text, View} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import MapAnimationComponent from '@components/TurkeyMap/MapAnimation';
@@ -42,6 +42,9 @@ const ElectionsScreen: React.FC<ElectionsScreenProps> = () => {
         </View>
         <View style={styles.popularElectionsContainer}>
           <View style={{flex: 1}}>
+            <View style={styles.header}>
+              <Text style={styles.headerTitle}>Popüler Seçimler</Text>
+            </View>
             <ElectionCardComponent title="Popüler Seçimler" items={elections} />
           </View>
         </View>

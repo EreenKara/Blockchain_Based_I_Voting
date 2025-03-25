@@ -1,4 +1,6 @@
 import Colors, {ColorsSchema} from '@styles/common/colors';
+import CommonStyles from '@styles/common/commonStyles';
+import styleNumbers from '@styles/common/style.numbers';
 import {StyleSheet} from 'react-native';
 
 const createStyles = (colors: ColorsSchema) =>
@@ -18,6 +20,17 @@ const createStyles = (colors: ColorsSchema) =>
       flex: 0.6,
       width: '100%',
       height: '100%',
+    },
+    header: {
+      backgroundColor: colors.transition,
+      padding: styleNumbers.space,
+      borderBottomWidth: styleNumbers.borderWidth,
+      borderBottomColor: colors.borderColor,
+    },
+    headerTitle: {
+      textAlign: 'center',
+      ...CommonStyles.textStyles.title,
+      marginBottom: styleNumbers.space,
     },
     bottomContainer: {
       position: 'absolute',

@@ -14,6 +14,12 @@ const useGetElectionsFunction = (
       getElectionFunc = electionService.getUpcomingElections;
     case ElectionType.Popular:
       getElectionFunc = electionService.getPopularElections;
+    case ElectionType.Search:
+      getElectionFunc = electionService.getElectionsByUserId;
+    case ElectionType.BeingCandidate:
+      getElectionFunc = electionService.getElectionsByUserId;
+    case ElectionType.Casted:
+      getElectionFunc = electionService.getElectionsByUserId;
     case ElectionType.Created:
       getElectionFunc = electionService.getElectionsByUserId;
     default:

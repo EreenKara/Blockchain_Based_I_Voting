@@ -2,7 +2,7 @@ import {useCallback, useEffect, useState} from 'react';
 import {useSearchContext} from '@contexts/search.context';
 import LightElectionViewModel from '@viewmodels/light.election.viewmodel';
 import {ElectionType} from '@enums/election.type';
-import {useGetElectionsFunction} from './election.hook';
+import {useGetElectionsFunction} from '../screens/shared/ListElections/election.hook';
 
 export const useElection = (type: ElectionType) => {
   const [elections, setElections] = useState<LightElectionViewModel[]>([]);

@@ -8,6 +8,8 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
 import LightElectionViewModel from '@viewmodels/light.election.viewmodel';
 import {useStyles} from '@hooks/Modular/use.styles';
+import {ElectionViewModel} from '@viewmodels/election.viewmodel';
+import {BaseElectionViewModel} from '@viewmodels/base.election.viewmodel';
 type ElectionNavigationProp = NativeStackNavigationProp<HomeStackParamList>;
 
 const sampleItems: LightElectionViewModel[] = [
@@ -18,7 +20,6 @@ const sampleItems: LightElectionViewModel[] = [
     image: '',
     startDate: '2021-01-01',
     endDate: '2021-01-01',
-    color: '#000000',
   },
   {
     id: '2',
@@ -27,14 +28,13 @@ const sampleItems: LightElectionViewModel[] = [
     image: '',
     startDate: '2021-01-01',
     endDate: '2021-01-01',
-    color: '#000000',
   },
 ];
 
 interface ElectionCardComponentProps {
   title: string;
   renderItem?: ListRenderItem<any>;
-  items?: LightElectionViewModel[];
+  items?: BaseElectionViewModel[];
 }
 
 const ElectionCardComponent: React.FC<ElectionCardComponentProps> = ({
@@ -45,12 +45,12 @@ const ElectionCardComponent: React.FC<ElectionCardComponentProps> = ({
   const styles = useStyles(createStyles);
   const navigation = useNavigation<ElectionNavigationProp>();
 
-  const defaultRenderItem = ({item}: {item: LightElectionViewModel}) => (
+  const defaultRenderItem = ({item}: {item: BaseElectionViewModel}) => (
     <ElectionCardItemComponent
       election={item}
       navigatePress={() =>
         navigation.navigate('SpecificElection', {
-          election: item,
+          election: item as BaseElectionViewModel,
         })
       }
     />
@@ -63,9 +63,6 @@ const ElectionCardComponent: React.FC<ElectionCardComponentProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={[styles.header]}>
-        <Text style={styles.headerTitle}>{title}</Text>
-      </View>
       <FlatListComponent
         style={styles.listContainer}
         contentContainerStyle={styles.listContent}

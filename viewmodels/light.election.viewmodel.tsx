@@ -1,11 +1,12 @@
-export interface LightElectionViewModel {
-  id: string;
-  name: string;
-  description: string;
-  image: string;
-  startDate: string;
-  endDate: string;
-  color: string;
+import {BaseElectionViewModel} from './base.election.viewmodel';
+
+export interface LightElectionViewModel extends BaseElectionViewModel {
+  //id: string;
+  //name: string;
+  //description: string;
+  //startDate: string;
+  //endDate: string;
+  //image: string;
 }
 
 export default LightElectionViewModel;

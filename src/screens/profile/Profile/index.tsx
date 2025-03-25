@@ -108,7 +108,10 @@ const ProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
           title="Oluşturduğun Seçimler"
           tintColor={colors.icon}
           onPress={() => {
-            navigation.navigate('CreatedElections');
+            navigation.navigate('Shared', {
+              screen: 'ListElections',
+              params: {type: ElectionType.Created},
+            });
           }}
           rightIcon={require('@assets/images/right-arrow.png')}
         />

@@ -44,6 +44,12 @@ const getElectionTexts = (electionType: ElectionType) => {
         description: 'Popüler seçimlerin listesi aşağıdadır.',
         errorTitle: 'Popüler seçim bulunmamaktadır',
       };
+    case ElectionType.Created:
+      return {
+        title: 'Oluşturduğun Seçimler',
+        description: 'Oluşturduğum seçimlerin listesi aşağıdadır.',
+        errorTitle: 'Oluşturduğum seçimler bulunmamaktadır',
+      };
     default:
       return {
         title: 'Seçimler',
