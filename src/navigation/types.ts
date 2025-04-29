@@ -3,6 +3,7 @@ import {NavigatorScreenParams} from '@react-navigation/native';
 import {ElectionViewModel} from '@viewmodels/election.viewmodel';
 import GroupViewModel from '@viewmodels/group.viewmodel';
 import LightElectionViewModel from '@viewmodels/light.election.viewmodel';
+import LightGroupViewModel from '@viewmodels/light.group.viewmodel';
 
 export type RootStackParamList = {
   Auth: undefined;
@@ -52,7 +53,7 @@ export type ProfileStackParamList = {
   AddCard: undefined;
   PersonalInformation: undefined;
   Groups: undefined;
-  Group: {group: GroupViewModel};
+  Group: {group: LightGroupViewModel};
   CreatedElections: undefined;
   CreateGroup: undefined;
   AddressInformation: undefined;

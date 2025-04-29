@@ -19,6 +19,7 @@ const PublicOrPrivateScreen: React.FC<Props> = ({navigation}) => {
   const {election} = useElectionCreationContext();
   const homeNavigation =
     useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
+
   if (!election) {
     return (
       <View style={styles.container}>

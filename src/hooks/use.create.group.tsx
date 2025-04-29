@@ -8,23 +8,23 @@ import {BackendError} from '@services/backend/concrete/backend.error';
 import {groupService} from '@services/backend/concrete/service.container.instances';
 import {useAsync} from './Modular/use.async';
 
-export interface UseGroupProps {
-  groupId: string;
-}
-export default function useGroup({groupId}: UseGroupProps) {
+export default function useCreateGroup() {
   const {
-    execute: fetchGroup,
+    execute: createGroup,
     loading,
     error,
-    data: group,
-  } = useAsync<GroupViewModel>(() => groupService.getGroupUsersById(groupId), {
-    showNotificationOnError: true,
-    successMessage: 'Group fetched successfully',
-  });
+    data,
+  } = useAsync<void>(
+    (group: GroupViewModel) => groupService.createGroup(group),
+    {
+      showNotificationOnError: true,
+      successMessage: 'Group fetched successfully',
+    },
+  );
 
   return {
-    fetchGroup,
-    group,
+    createGroup,
+    data,
     loading,
     error,
   };

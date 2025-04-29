@@ -35,6 +35,7 @@ export const useAuth = (login: boolean = true) => {
         emailOrIdentity: values.emailOrIdentity,
         password: values.password,
       });
+      console.log('login view hook token :', token);
       if (values.rememberMe === true) {
         rememberUser(values.emailOrIdentity);
       }

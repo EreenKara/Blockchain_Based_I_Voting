@@ -99,6 +99,24 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
         </Card>
       ))}
       <ButtonComponent
+        title="sadasd"
+        onPress={() =>
+          navigation.navigate('Shared', {
+            screen: 'ElectionResult',
+            params: {
+              election: {
+                id: '',
+                name: '',
+                description: '',
+                endDate: Date.now().toString(),
+                startDate: Date.now().toString(),
+                image: '',
+              },
+            },
+          })
+        }
+      />
+      <ButtonComponent
         title="Vote"
         onPress={() =>
           navigation.navigate('Shared', {

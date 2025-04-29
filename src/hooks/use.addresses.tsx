@@ -1,6 +1,6 @@
 import {AddressViewModel} from '@viewmodels/address.viewmodel';
 import {useState} from 'react';
-import {userService} from '@services/backend/concrete/service.container.instances';
+import {userAddressService} from '@services/backend/concrete/service.container.instances';
 
 export const useAddresses = () => {
   const [addresses, setAddresses] = useState<AddressViewModel[]>([]);
@@ -10,7 +10,7 @@ export const useAddresses = () => {
   const fetchAddresses = async (userId: string) => {
     try {
       setLoading(true);
-      const addresses = await userService.getAddressesById(userId);
+      const addresses = await userAddressService.getAddressesById(userId);
       setAddresses(addresses);
     } catch (error) {
       setError('Adres yüklenirken bir hata oluştu. API HATASI.');

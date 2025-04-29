@@ -48,8 +48,13 @@ const useElectionInfoStep = () => {
       description: values.description,
       startDate: values.startDate.toISOString(),
       endDate: values.endDate.toISOString(),
-      image: values.image?.base64 || '',
+      image: {
+        uri: values.image?.uri || null,
+        type: values.image?.type || null,
+        name: values.image?.fileName || null,
+      } as {uri: string; type: string; name: string} | null,
       dbType,
+      step: 'step 1',
     };
 
     const created = await createElection(electionPayload);

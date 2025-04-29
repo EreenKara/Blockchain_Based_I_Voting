@@ -10,6 +10,7 @@ import ErrorComponent from '@screens/shared/error.screen';
 import ActivityIndicatorComponent from '@screens/shared/activity.indicator';
 import FlatListComponent from '@components/List/flat.list';
 import GroupViewModel from '@viewmodels/group.viewmodel';
+import LightGroupViewModel from '@viewmodels/light.group.viewmodel';
 import {useUserProfileContext} from '@contexts/user.profile.context';
 import CommonStyles from '@styles/common/commonStyles';
 import {useStyles} from '@hooks/Modular/use.styles';
@@ -19,16 +20,14 @@ const GroupsScreen: React.FC<GroupsProps> = ({navigation}) => {
   const styles = useStyles(createStyles);
   const {
     user,
-    groups,
+    groups, // burada backend scces ve data döndürüyor yapcak bir şey yok
     groupsLoading: loading,
     groupsError: error,
     fetchGroups,
   } = useUserProfileContext();
 
   useEffect(() => {
-    if (user) {
-      fetchGroups(user.id);
-    }
+    fetchGroups();
   }, [user]);
 
   if (loading) {
@@ -45,7 +44,7 @@ const GroupsScreen: React.FC<GroupsProps> = ({navigation}) => {
     );
   }
 
-  const renderItem = ({item}: {item: GroupViewModel}) => {
+  const renderItem = ({item}: {item: LightGroupViewModel}) => {
     return (
       <MenuItemComponent
         icon={require('@assets/images/group-people.png')}
@@ -63,7 +62,7 @@ const GroupsScreen: React.FC<GroupsProps> = ({navigation}) => {
     <View style={styles.container}>
       <View style={styles.listContainer}>
         <FlatListComponent
-          data={groups}
+          data={groups ?? []}
           renderItem={renderItem}
           ListEmptyComponent={
             <>

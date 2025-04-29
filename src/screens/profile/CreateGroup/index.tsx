@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import Colors, {ColorsSchema} from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import styleNumbers from '@styles/common/style.numbers';
@@ -10,6 +10,12 @@ import ButtonComponent from '@components/Button/Button';
 import {GestureHandlerRootView, ScrollView} from 'react-native-gesture-handler';
 import {useStyles} from '@hooks/Modular/use.styles';
 import AvatarHeaderComponent from '@icomponents/AvatarHeader/avatar.header';
+import {TextInput} from 'react-native-paper';
+import TextInputComponent from '@components/TextInput/text.input';
+import useUsers from '@hooks/use.users';
+import useCreateGroup from '@hooks/use.create.group';
+import LightUserViewModel from '@viewmodels/light.user.viewmodel';
+import GroupViewModel from '@viewmodels/group.viewmodel';
 const initialUsers: UserViewModel[] = [
   {
     id: '1',
@@ -51,94 +57,18 @@ const initialUsers: UserViewModel[] = [
     phoneNumber: '1234567890',
     image: require('@assets/images/no-avatar.png'),
   },
-  {
-    id: '5',
-    username: 'dalehouston',
-    name: 'Dale',
-    surname: 'Houston',
-    identityNumber: '1234567890',
-    email: 'dale@example.com',
-    phoneNumber: '1234567890',
-    image: require('@assets/images/no-avatar.png'),
-  },
-  {
-    id: '6',
-    username: 'madgemurphy',
-    name: 'Madge',
-    surname: 'Murphy',
-    identityNumber: '1234567890',
-    email: 'madge@example.com',
-    phoneNumber: '1234567890',
-    image: require('@assets/images/no-avatar.png'),
-  },
-  {
-    id: '7',
-    username: 'dalehouston',
-    name: 'Dale',
-    surname: 'Houston',
-    identityNumber: '1234567890',
-    email: 'dale@example.com',
-    phoneNumber: '1234567890',
-    image: require('@assets/images/no-avatar.png'),
-  },
-  {
-    id: '8',
-    username: 'madgemurphy',
-    name: 'Madge',
-    surname: 'Murphy',
-    identityNumber: '1234567890',
-    email: 'madge@example.com',
-    phoneNumber: '1234567890',
-    image: require('@assets/images/no-avatar.png'),
-  },
-  {
-    id: '9',
-    username: 'dalehouston',
-    name: 'Dale',
-    surname: 'Houston',
-    identityNumber: '1234567890',
-    email: 'dale@example.com',
-    phoneNumber: '1234567890',
-    image: require('@assets/images/no-avatar.png'),
-  },
-  {
-    id: '10',
-    username: 'madgemurphy',
-    name: 'Madge',
-    surname: 'Murphy',
-    identityNumber: '1234567890',
-    email: 'madge@example.com',
-    phoneNumber: '1234567890',
-    image: require('@assets/images/no-avatar.png'),
-  },
-  {
-    id: '11',
-    username: 'dalehouston',
-    name: 'Dale',
-    surname: 'Houston',
-    identityNumber: '1234567890',
-    email: 'dale@example.com',
-    phoneNumber: '1234567890',
-    image: require('@assets/images/no-avatar.png'),
-  },
-  {
-    id: '12',
-    username: 'madgemurphy',
-    name: 'Madge',
-    surname: 'Murphy',
-    identityNumber: '1234567890',
-    email: 'madge@example.com',
-    phoneNumber: '1234567890',
-    image: require('@assets/images/no-avatar.png'),
-  },
 ];
 
 /* Item id 'si bu screen de zorunlu olarak verilmeli. */
 const CreateGroupScreen = () => {
   const styles = useStyles(createStyles);
-  const [users, setUsers] = useState(initialUsers);
-  const [selectedUsers, setSelectedUsers] = useState<UserViewModel[]>([]);
+  const {fetchUsers, users} = useUsers();
+  const {createGroup} = useCreateGroup();
+  const [selectedUsers, setSelectedUsers] = useState<LightUserViewModel[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
+
+  const [groupName, setGroupName] = useState<string>('');
+
   const handleSearch = useCallback((text: string) => {
     console.log('text', text);
     setSearchQuery(text);
@@ -148,13 +78,17 @@ const CreateGroupScreen = () => {
     setUsers(filteredUsers);*/
   }, []);
 
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
   const handleUserSelect = useCallback(
     (userId: string) => {
       setSelectedUsers(prev => {
         const isSelected = prev.some(user => user.id === userId);
         return isSelected
           ? prev.filter(user => user.id !== userId) // Kullanıcı seçiliyse, çıkar
-          : [...prev, users.find(user => user.id === userId)!]; // Kullanıcı seçili değilse, ekle
+          : [...prev, users?.find(user => user.id === userId)!]; // Kullanıcı seçili değilse, ekle
       });
     },
     [users], // 🔥 `users` bağımlılık olarak eklendi
@@ -192,6 +126,13 @@ const CreateGroupScreen = () => {
   return (
     <>
       <View style={styles.container}>
+        <View>
+          <TextInputComponent
+            value={groupName}
+            onChangeText={setGroupName}
+            style={{marginBottom: styleNumbers.space}}
+            placeholder="Grup Adı"></TextInputComponent>
+        </View>
         <SearchBarComponent
           debounceTime={300}
           modalTitle="Kişi Arayın"
@@ -200,7 +141,7 @@ const CreateGroupScreen = () => {
         />
         <View style={styles.listContainer}>
           <FlatListComponent
-            data={searchQuery ? users : selectedUsers}
+            data={searchQuery ? users ?? [] : selectedUsers}
             ListEmptyComponent={
               <Text
                 style={[
@@ -217,7 +158,15 @@ const CreateGroupScreen = () => {
         <View style={styles.createGroupButton}>
           <ButtonComponent
             title="Seçilen Kişilerden Grup Oluştur"
-            onPress={() => {}}
+            onPress={() => {
+              const group: GroupViewModel = {
+                id: '',
+                name: groupName,
+                users: selectedUsers,
+              };
+              console.log('group olusturulurken kullancılar. ', group.users);
+              createGroup(group);
+            }}
             style={styles.createGroupButton}
           />
         </View>

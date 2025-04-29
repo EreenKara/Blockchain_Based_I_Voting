@@ -86,6 +86,7 @@ const StartToEndDateComponent: React.FC<StartToEndDateComponentProps> = ({
               'startDate',
               false,
             );
+            console.log('Selected Date:', selectedDate);
           }}
           minimumDate={new Date()}
         />

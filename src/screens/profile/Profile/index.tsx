@@ -27,9 +27,18 @@ const ProfileScreen: React.FC<ScreenProps> = ({navigation}) => {
   useEffect(() => {
     const getUser = async () => {
       await fetchUser();
+      console.log('user', user);
     };
     getUser();
   }, []);
+  useEffect(() => {
+    if (!user) {
+      const getUser = async () => {
+        await fetchUser();
+      };
+      getUser();
+    }
+  }, [user]);
 
   const handleLogout = () => {
     logout();

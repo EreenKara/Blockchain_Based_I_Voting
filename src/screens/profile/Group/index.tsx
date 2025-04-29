@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  View,
-  Image,
-  TouchableOpacity,
-  ActivityIndicatorComponent,
-} from 'react-native';
+import {StyleSheet, View, Image, TouchableOpacity} from 'react-native';
 import React, {useEffect} from 'react';
 import Colors, {ColorsSchema} from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
@@ -12,15 +6,14 @@ import styleNumbers from '@styles/common/style.numbers';
 import SearchBarComponent from '@components/SearchBar/search.bar';
 import FlatListComponent from '@components/List/flat.list';
 import UserViewModel from '@viewmodels/user.viewmodel';
-import {GestureHandlerRootView, ScrollView} from 'react-native-gesture-handler';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {ProfileStackParamList} from '@navigation/types';
 import MenuItemComponent from '@icomponents/MenuItem/menu.item';
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
-import {useUserProfileContext} from '@contexts/user.profile.context';
 import ErrorScreenComponent from '@screens/shared/error.screen';
 import useGroup from '@hooks/use.group';
 import {useStyles} from '@hooks/Modular/use.styles';
+import ActivityIndicatorComponent from '@screens/shared/activity.indicator';
 type GroupProps = NativeStackScreenProps<ProfileStackParamList, 'Group'>;
 
 /* Item id 'si bu screen de zorunlu olarak verilmeli. */
@@ -32,13 +25,11 @@ const GroupScreen: React.FC<GroupProps> = ({navigation, route}) => {
   });
   const {group, loading, error, fetchGroup} = useGroup({
     groupId: localGroup.id,
-    cache: true,
   });
-  const {} = useUserProfileContext();
 
   useEffect(() => {
     fetchGroup();
-  }, [localGroup]);
+  }, []);
 
   const handleDelete = (userId: string) => {
     if (userId) {
@@ -89,25 +80,15 @@ const GroupScreen: React.FC<GroupProps> = ({navigation, route}) => {
   }
 
   return (
-    <>
-      <View style={styles.container}>
-        <SearchBarComponent
-          inputStyle={{
-            borderRadius: 0,
-          }}
-          handleSearch={() => {}}
-        />
-
-        <GestureHandlerRootView style={styles.listContainer}>
-          <FlatListComponent
-            data={group?.users || []}
-            renderItem={renderUserItem}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.listContainer}
-          />
-        </GestureHandlerRootView>
-      </View>
-    </>
+    <View style={styles.container}>
+      <SearchBarComponent handleSearch={() => {}} />
+      <FlatListComponent
+        data={group?.users || []}
+        renderItem={renderUserItem}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContainer}
+      />
+    </View>
   );
 };
 

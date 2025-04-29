@@ -11,11 +11,11 @@ import LightUserViewModel from '@viewmodels/light.user.viewmodel';
 
 export class UserService extends BaseBackendService implements IUserService {
   constructor() {
-    super('/user/api/users');
+    super('/user');
   }
   async getCurrentUser(): Promise<UserViewModel> {
     const response = await this.api.get<UserViewModel>(
-      `${this.endpoint}/current`,
+      `${this.endpoint}/current-user`,
     );
     return response.data;
   }
@@ -41,7 +41,7 @@ export class UserService extends BaseBackendService implements IUserService {
   async login(user: LoginViewModel): Promise<string> {
     try {
       const response = await this.api.post(`${this.endpoint}/login`, user);
-      return response.data.token;
+      return response.data.jwtToken;
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
         let message = error.response?.data?.message || 'Giriş başarısız.';
@@ -62,46 +62,10 @@ export class UserService extends BaseBackendService implements IUserService {
     });
     return response.data.message;
   }
-  async getAddressesById(userId: string): Promise<AddressViewModel[]> {
-    const response = await this.api.get<AddressViewModel[]>(
-      `${this.endpoint}/user/${userId}/addresses`,
-    );
-    return response.data;
-  }
-  public async getGroupsByUserId(userId: string): Promise<GroupViewModel[]> {
-    const response = await this.api.get<GroupViewModel[]>(
-      `${this.endpoint}/user/${userId}/groups`,
-    );
-    return response.data;
-  }
-  public async getGroupById(
-    groupId: string,
-    offset: number,
-    pageSize: number,
-  ): Promise<GroupViewModel> {
-    const response = await this.api.get<GroupViewModel>(
-      `${this.endpoint}/group/${groupId}?offset=${offset}&pageSize=${pageSize}`,
-    );
-    return response.data;
-  }
-  public async getAddressById(addressId: string): Promise<AddressViewModel> {
-    const response = await this.api.get<AddressViewModel>(
-      `${this.endpoint}/address/${addressId}`,
-    );
-    return response.data;
-  }
-  public async getAddressByUserId(
-    userId: string,
-    addressId: string,
-  ): Promise<AddressViewModel> {
-    const response = await this.api.get<AddressViewModel>(
-      `${this.endpoint}/user/${userId}/address/${addressId}`,
-    );
-    return response.data;
-  }
+
   public async getUsers(): Promise<LightUserViewModel[]> {
     const response = await this.api.get<LightUserViewModel[]>(
-      `${this.endpoint}/users`,
+      `${this.endpoint}/getusers`,
     );
     return response.data;
   }

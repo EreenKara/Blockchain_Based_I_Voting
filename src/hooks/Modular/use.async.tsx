@@ -43,11 +43,16 @@ export function useAsync<T>(
 
         return result;
       } catch (err) {
+        console.log('Error:', err);
         const message = parseApiError(err);
         setError(message);
 
         if (options?.showNotificationOnError !== false) {
-          showNotification({message, type: 'error', modalType: 'snackbar'});
+          showNotification({
+            message,
+            type: 'error',
+            modalType: 'snackbar',
+          });
         }
 
         options?.onError?.(message);

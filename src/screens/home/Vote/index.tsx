@@ -16,7 +16,7 @@ const VoteScreen: React.FC<VoteScreenProps> = ({navigation}) => {
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const styles = useStyles(createStyles);
   const [done, setDone] = useState(true);
-  const {giveVote, loading, error} = useVote();
+  let {giveVote, loading, error} = useVote();
   if (loading) {
     return (
       <View style={styles.loadingContainer}>

@@ -23,7 +23,6 @@ export interface FormValues {
   startDate: Date;
   endDate: Date;
   image: ExtendedAsset | null;
-  color: string;
 }
 
 const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
@@ -31,6 +30,7 @@ const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
   const {handleElectionInfoStep, submitting} = useElectionCreationContext();
 
   const handleSubmit = async (values: FormValues) => {
+    console.log('Form Values:', values);
     const result = await handleElectionInfoStep(values);
     if (result.success) {
       navigation.navigate('Shared', {
@@ -45,7 +45,6 @@ const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
     startDate: new Date(),
     endDate: new Date(),
     image: null,
-    color: '#',
   };
 
   return (
@@ -96,8 +95,7 @@ const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
                 title="Go to Election Info"
                 onPress={() =>
                   navigation.navigate('Shared', {
-                    screen: 'ElectionAccess',
-                    params: {accessType: 'private'},
+                    screen: 'PublicOrPrivate',
                   })
                 }
               />

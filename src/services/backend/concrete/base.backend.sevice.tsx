@@ -7,11 +7,11 @@ export abstract class BaseBackendService implements IBaseBackendService {
   protected static readonly LogService: LogService;
   protected readonly api: AxiosInstance;
   protected readonly endpoint: string;
-  private static token: string | null = null;
+  public static token: string | null = null;
 
   constructor(endpoint: string) {
     this.api = axios.create({
-      baseURL: 'http://10.0.2.2:3000', // API'nin base URL'i
+      baseURL: 'https://z904h9sz52.execute-api.eu-north-1.amazonaws.com/api/', // API'nin base URL'i
       headers: {
         'Content-Type': 'application/json',
       },

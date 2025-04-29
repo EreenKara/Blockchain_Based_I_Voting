@@ -22,6 +22,7 @@ export const handleDateTimeChange = (
     }
 
     setFieldValue(type, newDate);
+    console.log('New Date:', newDate);
 
     if (type === 'startDate') {
       if (values.endDate <= newDate) {

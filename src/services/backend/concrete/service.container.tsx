@@ -1,11 +1,14 @@
 import BaseBackendService from './base.backend.sevice';
 import {UserService} from './user.service';
 import {ElectionService} from './election.service';
+import {GroupService} from './group.service';
+import {UserAddressService} from './user.address.service';
 
 export enum ServiceType {
   UserService = 'UserService',
   GroupService = 'GroupService',
   ElectionService = 'ElectionService',
+  UserAddressService = 'UserAddressService',
 }
 
 export class ServiceContainer {
@@ -29,6 +32,12 @@ export class ServiceContainer {
           break;
         case ServiceType.ElectionService:
           service = new ElectionService();
+          break;
+        case ServiceType.GroupService:
+          service = new GroupService();
+          break;
+        case ServiceType.UserAddressService:
+          service = new UserAddressService();
           break;
         default:
           throw new Error('Service not found');

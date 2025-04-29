@@ -11,7 +11,7 @@ export class ElectionService
   implements IElectionService
 {
   constructor() {
-    super('/election/api/elections');
+    super('/election');
   }
   public async getPopularElections(): Promise<LightElectionViewModel[]> {
     const response = await this.api.get<LightElectionViewModel[]>(
@@ -54,9 +54,25 @@ export class ElectionService
   public async postElectionInfo(
     election: ElectionViewModel,
   ): Promise<ElectionViewModel> {
-    const response = await this.api.post<ElectionViewModel>(
-      `${this.endpoint}`,
-      election,
+    const formData = new FormData();
+    formData.append('name', election.name);
+    formData.append('description', election.description);
+    formData.append('startDate', election.startDate.toString());
+    formData.append('endDate', election.endDate.toString());
+    formData.append('electionType', election.dbType);
+    formData.append('file', {
+      uri: election.image?.uri,
+      name: election.image?.name, // İstersen dosya adını dinamik de alabilirsin
+      type: election.image?.type, // veya 'image/png' vs.
+    });
+    const response = await this.api.post(
+      `${this.endpoint}/auth/create-election`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      },
     );
     return response.data;
   }

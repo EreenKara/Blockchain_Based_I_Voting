@@ -1,20 +1,23 @@
 import React, {createContext, useState, useContext, useEffect} from 'react';
 import UserViewModel from '@viewmodels/user.viewmodel';
-import useGroups from '@hooks/use.groups';
 import GroupViewModel from '@viewmodels/group.viewmodel';
 import {useAddresses} from '@hooks/use.addresses';
 import {AddressViewModel} from '@viewmodels/address.viewmodel';
-import useGroup from '@hooks/use.group';
 import {userService} from '@services/backend/concrete/service.container.instances';
+import {groupService} from '@services/backend/concrete/service.container.instances';
+import {useAsync} from '@hooks/Modular/use.async';
+import {useNotification} from '@contexts/notification.context';
+import LightGroupViewModel from '@viewmodels/light.group.viewmodel';
+
 interface UserProfileContextType {
   user: UserViewModel | null;
-  fetchUser: () => Promise<void>;
+  fetchUser: () => Promise<UserViewModel | null>;
   loading: boolean;
   error: string | null;
-  groups: GroupViewModel[];
+  groups: LightGroupViewModel[] | null;
   groupsError: string | null;
   groupsLoading: boolean;
-  fetchGroups: (userId: string) => Promise<void>;
+  fetchGroups: () => Promise<LightGroupViewModel[] | null>;
   addresses: AddressViewModel[];
   addressesError: string | null;
   addressesLoading: boolean;
@@ -28,15 +31,18 @@ const UserProfileContext = createContext<UserProfileContextType | undefined>(
 const UserProfileProvider: React.FC<{children: React.ReactNode}> = ({
   children,
 }) => {
-  const [user, setUser] = useState<UserViewModel | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
   const {
-    groups,
-    error: groupsError,
+    execute: fetchGroups,
+    data: groups,
     loading: groupsLoading,
-    fetchGroups,
-  } = useGroups();
+    error: groupsError,
+  } = useAsync<LightGroupViewModel[]>(
+    () => groupService.getGroupsCurrentUser(),
+    {
+      showNotificationOnError: true,
+    },
+  );
+
   const {
     addresses,
     error: addressesError,
@@ -44,20 +50,14 @@ const UserProfileProvider: React.FC<{children: React.ReactNode}> = ({
     fetchAddresses,
   } = useAddresses();
 
-  const fetchUser = async () => {
-    try {
-      setLoading(true);
-      const response = await userService.getCurrentUser();
-      if (response) {
-        setUser(response);
-      }
-    } catch (error) {
-      setError('Kullanıcı bilgileri yüklenirken bir hata oluştu.');
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    execute: fetchUser,
+    data: user,
+    loading,
+    error,
+  } = useAsync<UserViewModel>(() => userService.getCurrentUser(), {
+    showNotificationOnError: true,
+  });
 
   return (
     <UserProfileContext.Provider
