@@ -8,8 +8,9 @@ import NotificationViewModel from '@viewmodels/notification.viewmodel';
 import NotificationBellComponent from '@icomponents/NotificationBell/notification.bell';
 import LightUserViewModel from '@viewmodels/light.user.viewmodel';
 import {useStyles} from '@hooks/Modular/use.styles';
+import UserViewModel from '@viewmodels/user.viewmodel';
 interface AvatarHeaderComponentProps {
-  user?: LightUserViewModel;
+  user?: UserViewModel;
   notifications: NotificationViewModel[];
 }
 
@@ -33,9 +34,7 @@ const AvatarHeaderComponent = ({
         <Text style={[CommonStyles.textStyles.title]}>
           {user?.name} {user?.surname}
         </Text>
-        <Text style={[CommonStyles.textStyles.paragraph]}>
-          {user?.username}
-        </Text>
+        <Text style={[CommonStyles.textStyles.paragraph]}>{user?.email}</Text>
       </View>
       <NotificationBellComponent notifications={notifications} />
     </View>

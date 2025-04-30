@@ -42,6 +42,8 @@ export const NotificationProvider: React.FC<{children: React.ReactNode}> = ({
     switch (current?.type) {
       case 'success':
         return colors.button;
+      case 'info':
+        return colors.button;
       case 'error':
         return colors.error;
       default:

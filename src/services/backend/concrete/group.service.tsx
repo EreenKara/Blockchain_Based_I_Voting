@@ -32,6 +32,7 @@ export class GroupService extends BaseBackendService {
     const response = await this.api.get<GroupViewModel>(
       `${this.endpoint}/getGroupWithUsers/${groupId}`,
     );
+
     return response.data;
   }
   public async createGroup(group: GroupViewModel): Promise<void> {

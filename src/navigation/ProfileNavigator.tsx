@@ -15,6 +15,7 @@ import GroupScreen from '@screens/profile/Group';
 import SharedNavigator from './shared.navigator';
 import {useThemeColors} from '@contexts/theme.provider';
 import CreatedElectionsScreen from '@screens/profile/CreatedElections';
+import AddressChangeScreen from '@screens/profile/AddressChange';
 const Stack = createNativeStackNavigator<ProfileStackParamList>();
 
 const ProfileNavigator: React.FC = () => {
@@ -32,6 +33,14 @@ const ProfileNavigator: React.FC = () => {
       <Stack.Screen
         name="ProfileMain"
         component={ProfileScreen}
+        options={{
+          title: 'Profil',
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="AddressChange"
+        component={AddressChangeScreen}
         options={{
           title: 'Profil',
           headerShown: false,

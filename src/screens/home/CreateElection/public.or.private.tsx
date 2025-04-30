@@ -20,18 +20,6 @@ const PublicOrPrivateScreen: React.FC<Props> = ({navigation}) => {
   const homeNavigation =
     useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
 
-  if (!election) {
-    return (
-      <View style={styles.container}>
-        <Text>Election not found</Text>
-        <Button
-          title="Go to Election Info"
-          onPress={() => homeNavigation.navigate('BlockchainOrDb')}
-        />
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       <View style={styles.transparentContainer}>

@@ -15,7 +15,7 @@ export class UserService extends BaseBackendService implements IUserService {
   }
   async getCurrentUser(): Promise<UserViewModel> {
     const response = await this.api.get<UserViewModel>(
-      `${this.endpoint}/current-user`,
+      `${this.endpoint}/auth/current-user`,
     );
     return response.data;
   }
@@ -64,9 +64,11 @@ export class UserService extends BaseBackendService implements IUserService {
   }
 
   public async getUsers(): Promise<LightUserViewModel[]> {
+    console.log('getUsers called');
     const response = await this.api.get<LightUserViewModel[]>(
-      `${this.endpoint}/getusers`,
+      `${this.endpoint}/auth/getusers`,
     );
+    console.log('getUsers response:', response.data);
     return response.data;
   }
 }

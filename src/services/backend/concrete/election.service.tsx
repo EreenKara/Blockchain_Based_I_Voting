@@ -15,7 +15,7 @@ export class ElectionService
   }
   public async getPopularElections(): Promise<LightElectionViewModel[]> {
     const response = await this.api.get<LightElectionViewModel[]>(
-      `${this.endpoint}/popular`,
+      `${this.endpoint}/getElections/all`,
     );
     return response.data;
   }
@@ -23,7 +23,7 @@ export class ElectionService
     city: string,
   ): Promise<LightElectionViewModel[]> {
     const response = await this.api.get<LightElectionViewModel[]>(
-      `${this.endpoint}/past/${city}`,
+      `${this.endpoint}/timeframe/past`,
     );
     return response.data;
   }
@@ -31,7 +31,7 @@ export class ElectionService
     city: string,
   ): Promise<LightElectionViewModel[]> {
     const response = await this.api.get<LightElectionViewModel[]>(
-      `${this.endpoint}/current/${city}`,
+      `${this.endpoint}/timeframe/current`,
     );
     return response.data;
   }
@@ -39,7 +39,7 @@ export class ElectionService
     city: string,
   ): Promise<LightElectionViewModel[]> {
     const response = await this.api.get<LightElectionViewModel[]>(
-      `${this.endpoint}/upcoming/${city}`,
+      `${this.endpoint}/timeframe/upcoming`,
     );
     return response.data;
   }
@@ -60,7 +60,8 @@ export class ElectionService
     formData.append('startDate', election.startDate.toString());
     formData.append('endDate', election.endDate.toString());
     formData.append('electionType', election.dbType);
-    formData.append('file', {
+
+    formData.append('image', {
       uri: election.image?.uri,
       name: election.image?.name, // İstersen dosya adını dinamik de alabilirsin
       type: election.image?.type, // veya 'image/png' vs.
@@ -74,6 +75,8 @@ export class ElectionService
         },
       },
     );
+    console.log('Election creation response:', response);
+    console.log('Election creation response DATA:', response.data);
     return response.data;
   }
   public async putElectionAccess(

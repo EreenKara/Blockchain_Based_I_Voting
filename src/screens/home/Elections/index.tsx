@@ -12,6 +12,7 @@ import {useElection} from '@hooks/use.election';
 import {ElectionType} from '@enums/election.type';
 import {useStyles} from '@hooks/Modular/use.styles';
 import createStyles from './index.style';
+import {BaseElectionViewModel} from '@viewmodels/base.election.viewmodel';
 
 type ElectionsScreenProps = NativeStackScreenProps<
   HomeStackParamList,
@@ -21,6 +22,7 @@ type ElectionsScreenProps = NativeStackScreenProps<
 const ElectionsScreen: React.FC<ElectionsScreenProps> = () => {
   const styles = useStyles(createStyles);
   const [index, setIndex] = useState<number>(-1);
+  // asagidaki baglanir baglanmaz otomatik fetch ediyor electionslari.
   const {elections, loading, fetchElections} = useElection(
     ElectionType.Popular,
   );
@@ -45,7 +47,10 @@ const ElectionsScreen: React.FC<ElectionsScreenProps> = () => {
             <View style={styles.header}>
               <Text style={styles.headerTitle}>Popüler Seçimler</Text>
             </View>
-            <ElectionCardComponent title="Popüler Seçimler" items={elections} />
+            <ElectionCardComponent
+              title="Popüler Seçimler"
+              items={elections as BaseElectionViewModel[]}
+            />
           </View>
         </View>
         <View style={styles.bottomContainer}>

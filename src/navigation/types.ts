@@ -1,5 +1,6 @@
 import {ElectionType} from '@enums/election.type';
 import {NavigatorScreenParams} from '@react-navigation/native';
+import {AddressViewModel} from '@viewmodels/address.viewmodel';
 import {ElectionViewModel} from '@viewmodels/election.viewmodel';
 import GroupViewModel from '@viewmodels/group.viewmodel';
 import LightElectionViewModel from '@viewmodels/light.election.viewmodel';
@@ -57,6 +58,7 @@ export type ProfileStackParamList = {
   CreatedElections: undefined;
   CreateGroup: undefined;
   AddressInformation: undefined;
+  AddressChange: {address: AddressViewModel | null};
   Shared: NavigatorScreenParams<SharedStackParamList>;
 };
 

@@ -7,24 +7,24 @@ import {useStyles} from '@hooks/Modular/use.styles';
 import ButtonComponent from '@components/Button/Button';
 import CommonStyles from '@styles/common/commonStyles';
 import {useAddress} from '@hooks/use.address';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {ProfileStackParamList} from '@navigation/types';
-interface AddressInformationScreenProps {
-  navigation: NativeStackNavigationProp<
-    ProfileStackParamList,
-    'AddressInformation'
-  >;
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import TextInputComponent from '@components/TextInput/text.input';
+import {AddressViewModel} from '@viewmodels/address.viewmodel';
+interface AddressChangeScreenProps {
+  navigation: NativeStackNavigationProp<ProfileStackParamList, 'AddressChange'>;
+  route: {
+    params: {
+      address: AddressViewModel;
+    };
+  };
 }
 
-const AddressInformationScreen: React.FC<AddressInformationScreenProps> = ({
-  navigation,
-}) => {
+const AddressChangeScreen: React.FC<AddressChangeScreenProps> = ({route}) => {
+  const {address} = route.params;
   const styles = useStyles(createStyles);
-  const {address, loading, error, fetchAddress} = useAddress();
 
-  useEffect(() => {
-    fetchAddress();
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <View style={styles.container}>
@@ -33,33 +33,25 @@ const AddressInformationScreen: React.FC<AddressInformationScreenProps> = ({
           style={styles.image}
           source={require('@assets/images/home.png')}
         />
-        <View style={styles.textDiv}>
-          <Text style={styles.text}>Şehir:</Text>
-          <Text style={styles.text}>{address?.city ?? 'Bilgi yok.'}</Text>
-        </View>
-        <View style={styles.textDiv}>
-          <Text style={styles.text}>İlçe:</Text>
-          <Text style={styles.text}>{address?.district ?? 'Bilgi yok.'}</Text>
-        </View>
+        <TextInputComponent style={styles.textInput} placeholder="Şehir" />
+        <TextInputComponent placeholder="İlçe" />
+        <TextInputComponent placeholder="Bina numarası" />
 
-        <View style={styles.textDiv}>
-          <Text style={styles.text}>Bina numarası:</Text>
-          <Text style={styles.text}>{address?.buildingNo ?? 'Bilgi yok.'}</Text>
-        </View>
+        <Text style={styles.text}>{address?.city}</Text>
+        <Text style={styles.text}>{address?.district}</Text>
+        <Text style={styles.text}>{address?.buildingNo ?? 'Bilgi yok.'}</Text>
       </View>
 
       <ButtonComponent
         style={styles.button}
         title="Adres Bilgilerini Değiştir"
-        onPress={() => {
-          navigation.navigate('AddressChange');
-        }}
+        onPress={() => {}}
       />
     </View>
   );
 };
 
-export default AddressInformationScreen;
+export default AddressChangeScreen;
 
 const createStyles = (colors: ColorsSchema) =>
   StyleSheet.create({
@@ -86,10 +78,7 @@ const createStyles = (colors: ColorsSchema) =>
     text: {
       ...CommonStyles.textStyles.title,
     },
-    textDiv: {
-      flexDirection: 'row',
-      justifyContent: 'space-evenly',
+    textInput: {
       width: '100%',
-      marginBottom: styleNumbers.space * 2,
     },
   });

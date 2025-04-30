@@ -6,5 +6,5 @@ export interface BaseElectionViewModel {
   description: string;
   startDate: string;
   endDate: string;
-  image: ImageViewModel | null;
+  image: string | null;
 }

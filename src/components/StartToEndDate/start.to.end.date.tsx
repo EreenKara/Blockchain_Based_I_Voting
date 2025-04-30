@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -13,8 +13,14 @@ import {handleDateTimeChange} from '@icomponents/StartToEndDate/handleDateTimeCh
 import styleNumbers from '@styles/common/style.numbers';
 import {ColorsSchema} from '@styles/common/colors';
 import {useStyles} from '@hooks/Modular/use.styles';
+import {ExtendedAsset} from '@hooks/useCamera';
+import {useNotification} from '@contexts/notification.context';
+
 interface StartToEndDateComponentProps {
   values: {
+    title: string;
+    description: string;
+    image: ExtendedAsset | null;
     startDate: Date;
     endDate: Date;
   };
@@ -32,6 +38,9 @@ const StartToEndDateComponent: React.FC<StartToEndDateComponentProps> = ({
   const [showEndDate, setShowEndDate] = useState(false);
   const [showStartTime, setShowStartTime] = useState(false);
   const [showEndTime, setShowEndTime] = useState(false);
+  const {showNotification} = useNotification();
+  useEffect(() => {}, [values.startDate, values.endDate]);
+
   return (
     <View style={containerStyle}>
       <View style={styles.dateContainer}>
@@ -79,14 +88,19 @@ const StartToEndDateComponent: React.FC<StartToEndDateComponentProps> = ({
           display={Platform.OS === 'ios' ? 'spinner' : 'default'}
           onChange={(_, selectedDate) => {
             setShowStartDate(false);
-            handleDateTimeChange(
+            const message = handleDateTimeChange(
               selectedDate,
               values,
               setFieldValue,
               'startDate',
               false,
             );
-            console.log('Selected Date:', selectedDate);
+            message &&
+              showNotification({
+                message: message,
+                type: 'info',
+                modalType: 'snackbar',
+              });
           }}
           minimumDate={new Date()}
         />
@@ -99,13 +113,19 @@ const StartToEndDateComponent: React.FC<StartToEndDateComponentProps> = ({
           display={Platform.OS === 'ios' ? 'spinner' : 'default'}
           onChange={(_, selectedDate) => {
             setShowStartTime(false);
-            handleDateTimeChange(
+            const message = handleDateTimeChange(
               selectedDate,
               values,
               setFieldValue,
               'startDate',
               true,
             );
+            message &&
+              showNotification({
+                message: message ?? '',
+                type: 'info',
+                modalType: 'snackbar',
+              });
           }}
         />
       )}

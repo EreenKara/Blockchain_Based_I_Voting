@@ -101,7 +101,9 @@ const CreateGroupScreen = () => {
       <View style={styles.userItem}>
         <Image
           source={
-            item.image ? item.image : require('@assets/images/no-avatar.png')
+            item.image
+              ? {uri: item.image}
+              : require('@assets/images/no-avatar.png')
           }
           style={styles.avatar}
         />

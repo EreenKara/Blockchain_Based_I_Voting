@@ -15,7 +15,7 @@ export class UserAddressService extends BaseBackendService {
   }
   async getAddressesById(userId: string): Promise<AddressViewModel[]> {
     const response = await this.api.get<AddressViewModel[]>(
-      `${this.endpoint}/getAdressByUserId/${userId}`,
+      `${this.endpoint}/getAddressByUserId/${userId}`,
     );
     return response.data;
   }
@@ -23,6 +23,12 @@ export class UserAddressService extends BaseBackendService {
   public async getAddressById(addressId: string): Promise<AddressViewModel> {
     const response = await this.api.get<AddressViewModel>(
       `${this.endpoint}/address/${addressId}`,
+    );
+    return response.data;
+  }
+  public async getAddress(): Promise<AddressViewModel> {
+    const response = await this.api.get<AddressViewModel>(
+      `${this.endpoint}/auth/getAddressOfAuthUser`,
     );
     return response.data;
   }

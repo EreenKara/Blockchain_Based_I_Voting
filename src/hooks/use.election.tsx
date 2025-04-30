@@ -3,27 +3,19 @@ import {useSearchContext} from '@contexts/search.context';
 import LightElectionViewModel from '@viewmodels/light.election.viewmodel';
 import {ElectionType} from '@enums/election.type';
 import {useGetElectionsFunction} from '../screens/shared/ListElections/election.hook';
+import {useAsync} from './Modular/use.async';
 
 export const useElection = (type: ElectionType) => {
-  const [elections, setElections] = useState<LightElectionViewModel[]>([]);
-  const [loading, setLoading] = useState(false);
   const {search} = useSearchContext();
   const getElectionsFunction = useGetElectionsFunction(type);
-
-  const fetchElections = useCallback(async () => {
-    setLoading(true);
-    try {
-      const data = await getElectionsFunction(search.city || 'İstanbul');
-      setElections(data);
-    } catch (error) {
-      console.error('Error fetching elections:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [search.city]);
+  const {
+    execute: fetchElections,
+    data: elections,
+    loading,
+  } = useAsync<LightElectionViewModel[]>(getElectionsFunction);
 
   useEffect(() => {
-    fetchElections();
+    fetchElections(search.city);
   }, [search.city]);
 
   return {
