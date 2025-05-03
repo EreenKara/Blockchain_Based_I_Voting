@@ -4,7 +4,8 @@ import LightElectionViewModel from '@viewmodels/light.election.viewmodel';
 import {ElectionType} from '@enums/election.type';
 import {useGetElectionsFunction} from '../screens/shared/ListElections/election.hook';
 import {useAsync} from './Modular/use.async';
-
+import {ElectionSearchObject} from '@services/backend/concrete/election.service';
+import {electionService} from '@services/backend/concrete/service.container.instances';
 export const useElection = (type: ElectionType) => {
   const {search} = useSearchContext();
   const getElectionsFunction = useGetElectionsFunction(type);
@@ -15,7 +16,12 @@ export const useElection = (type: ElectionType) => {
   } = useAsync<LightElectionViewModel[]>(getElectionsFunction);
 
   useEffect(() => {
-    fetchElections(search.city);
+    fetchElections({city: search.city});
+  }, []);
+  useEffect(() => {
+    if (type !== ElectionType.Popular) {
+      fetchElections({city: search.city});
+    }
   }, [search.city]);
 
   return {

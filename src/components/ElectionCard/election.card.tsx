@@ -8,11 +8,12 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {HomeStackParamList} from '@navigation/types';
 import LightElectionViewModel from '@viewmodels/light.election.viewmodel';
 import {useStyles} from '@hooks/Modular/use.styles';
-import {ElectionViewModel} from '@viewmodels/election.viewmodel';
 import {BaseElectionViewModel} from '@viewmodels/base.election.viewmodel';
+import ActivityIndicatorComponent from '@screens/shared/activity.indicator';
+import {ScrollView} from 'react-native-gesture-handler';
 type ElectionNavigationProp = NativeStackNavigationProp<HomeStackParamList>;
 
-const sampleItems: LightElectionViewModel[] = [
+const sampleItems: LightElectionViewModel[] | null = [
   {
     id: '1',
     name: 'Seçim 1',
@@ -68,7 +69,7 @@ const ElectionCardComponent: React.FC<ElectionCardComponentProps> = ({
         contentContainerStyle={styles.listContent}
         data={items}
         renderItem={renderItem ? renderItem : defaultRenderItem}
-        ListEmptyComponent={renderEmptyList}
+        ListEmptyComponent={renderEmptyList()}
         showsVerticalScrollIndicator={false}
         initialNumToRender={10}
         maxToRenderPerBatch={20}

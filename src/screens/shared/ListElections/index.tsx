@@ -16,7 +16,6 @@ import LightElectionViewModel from '@viewmodels/light.election.viewmodel';
 import {useElection} from '@hooks/use.election';
 import {useStyles} from '@hooks/Modular/use.styles';
 import {BaseElectionViewModel} from '@viewmodels/base.election.viewmodel';
-import {ElectionViewModel} from '@viewmodels/election.viewmodel';
 import styleNumbers from '@styles/common/style.numbers';
 type ListElectionsScreenProps = NativeStackScreenProps<
   SharedStackParamList,
@@ -30,43 +29,17 @@ const ListElectionsScreen: React.FC<ListElectionsScreenProps> = ({
   const styles = useStyles(createStyles);
   const {type} = route.params;
   const {title, description, errorTitle} = getElectionTexts(type);
-  navigation.setOptions({title: title});
+
   const {elections, loading, fetchElections} = useElection(type);
   const {search} = useSearchContext();
-  const [electionss, setElectionss] = useState<ElectionViewModel[]>([
-    {
-      id: '1',
-      name: 'string1',
-      description: 'string',
-      startDate: Date.now().toString(),
-      endDate: Date.now().toString(),
-      image: 'string',
-      dbType: 'blockchain',
-      step: 'step 2',
-    },
-    {
-      id: '2',
-      name: 'string2',
-      description: 'string',
-      startDate: Date.now().toString(),
-      endDate: Date.now().toString(),
-      image: 'string',
-      dbType: 'blockchain',
-      step: 'step 3',
-    },
-  ]);
-
-  // Ekran her odaklandığında seçimleri yenile
-  useFocusEffect(
-    React.useCallback(() => {
-      fetchElections();
-    }, []),
-  );
   // Her 30 saniyede bir seçimleri güncelle
   useEffect(() => {
     const interval = setInterval(() => {
-      fetchElections();
+      console.log('Sehir ismi,' + search.city);
+
+      fetchElections({city: search.city});
     }, 30000);
+    navigation.setOptions({title: title});
     return () => clearInterval(interval);
   }, []);
 
@@ -78,7 +51,7 @@ const ListElectionsScreen: React.FC<ListElectionsScreenProps> = ({
     );
   }
 
-  if (electionss.length === 0) {
+  if (elections?.length === 0) {
     return (
       <View style={CommonStyles.viewStyles.centerContainer}>
         <Text style={CommonStyles.textStyles.title}>{errorTitle}</Text>
@@ -90,7 +63,7 @@ const ListElectionsScreen: React.FC<ListElectionsScreenProps> = ({
     <View style={styles.container}>
       <ElectionCardComponent
         title={`${search.city ?? ''} ${title}`}
-        items={electionss}
+        items={elections as BaseElectionViewModel[]}
       />
     </View>
   );

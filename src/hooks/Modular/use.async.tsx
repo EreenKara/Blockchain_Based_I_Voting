@@ -15,9 +15,13 @@ export function useAsync<T>(
   asyncFunction: AsyncFunction<T>,
   options?: UseAsyncOptions<T>,
 ) {
+  if (typeof asyncFunction !== 'function') {
+    throw new Error('Passed asyncFunction is not a function');
+  }
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<T | null>(null);
+  const [success, setSuccess] = useState<boolean>(false);
   const lastArgsRef = useRef<any[]>([]);
 
   const {showNotification} = useNotification();
@@ -27,11 +31,11 @@ export function useAsync<T>(
       setLoading(true);
       setError(null);
       lastArgsRef.current = args;
-
       try {
         const result = await asyncFunction(...args);
         setData(result);
         options?.onSuccess?.(result);
+        setSuccess(true);
 
         if (options?.successMessage) {
           showNotification({
@@ -46,7 +50,7 @@ export function useAsync<T>(
         console.log('Error:', err);
         const message = parseApiError(err);
         setError(message);
-
+        setSuccess(false);
         if (options?.showNotificationOnError !== false) {
           showNotification({
             message,
@@ -74,6 +78,7 @@ export function useAsync<T>(
     setData(null);
     setLoading(false);
     setError(null);
+    setSuccess(false);
     lastArgsRef.current = [];
   }, []);
 
@@ -84,5 +89,6 @@ export function useAsync<T>(
     loading,
     error,
     data,
+    success,
   };
 }

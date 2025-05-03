@@ -12,7 +12,7 @@ type Props = NativeStackScreenProps<HomeStackParamList, 'BlockchainOrDb'>;
 
 const BlockchainOrDbScreen: React.FC<Props> = ({navigation}) => {
   const styles = useStyles(createStyles);
-  const {setDbType} = useElectionCreationContext();
+  const {setElectionType} = useElectionCreationContext();
   return (
     <View style={styles.container}>
       <View style={styles.transparentContainer}>
@@ -21,8 +21,8 @@ const BlockchainOrDbScreen: React.FC<Props> = ({navigation}) => {
           description="Veri tabanında tutulan seçimler"
           image={require('@assets/images/db_image.png')}
           onPress={() => {
-            setDbType('database');
-            navigation.navigate('ElectionInfo', {dbType: 'database'});
+            setElectionType('database');
+            navigation.navigate('ElectionInfo', {electionType: 'database'});
           }}
         />
         <ChoiceCardComponent
@@ -30,8 +30,8 @@ const BlockchainOrDbScreen: React.FC<Props> = ({navigation}) => {
           description="Blockchain üzerinde tutulan seçimler"
           image={require('@assets/images/blockchain_image.png')}
           onPress={() => {
-            setDbType('blockchain');
-            navigation.navigate('ElectionInfo', {dbType: 'blockchain'});
+            setElectionType('blockchain');
+            navigation.navigate('ElectionInfo', {electionType: 'blockchain'});
           }}
         />
       </View>

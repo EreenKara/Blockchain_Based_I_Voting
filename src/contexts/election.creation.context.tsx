@@ -1,6 +1,5 @@
 import {FormValues} from '@screens/home/ElectionInfo';
-import {ElectionViewModel} from '@viewmodels/election.viewmodel';
-import React, {createContext, useContext, useState} from 'react';
+import React, {createContext, useContext, useEffect, useState} from 'react';
 import useElectionInfoStep from '@hooks/ElectionCreation/use.election.info.step';
 import {ElectionAccessViewModel} from '@viewmodels/election.access.viewmodel';
 import useElectionAccess from '@hooks/ElectionCreation/use.election.access';
@@ -8,16 +7,23 @@ import useElectionCandidate from '@hooks/ElectionCreation/use.election.candidate
 import {CandidateViewModel} from '@viewmodels/candidate.viewmodel';
 import useElectionChoices from '@hooks/ElectionCreation/use.election.choices';
 import {ElectionChoiceViewModel} from '@viewmodels/election.choice.viewmodel';
+import {ElectionCreationViewModel} from '@viewmodels/election.creation.viewmodel';
 
 interface ElectionCreationContextType {
-  election: ElectionViewModel | null;
+  election: ElectionCreationViewModel | null;
   electionAccess: ElectionAccessViewModel | null;
   candidates: CandidateViewModel[];
   choices: ElectionChoiceViewModel[];
-  dbType: 'database' | 'blockchain' | null;
-  setDbType: (dbType: 'database' | 'blockchain' | null) => void;
+  electionType: 'database' | 'blockchain' | null;
+  setElectionType: (electionType: 'database' | 'blockchain' | null) => void;
   electionId: string | null;
-  step: number;
+  step:
+    | 'Info completed'
+    | 'Access completed'
+    | 'Candidate completed'
+    | 'Choices completed'
+    | 'Election completed'
+    | null;
   submitting: {
     info: boolean;
     access: boolean;
@@ -63,15 +69,22 @@ export const ElectionCreationProvider: React.FC<{
 }> = ({children}) => {
   // Tek bir electionId
   const [electionId, setElectionId] = useState<string | null>(null);
-  const [step, setStep] = useState<number>(0);
+  const [step, setStep] = useState<
+    | 'Info completed'
+    | 'Access completed'
+    | 'Candidate completed'
+    | 'Choices completed'
+    | 'Election completed'
+    | null
+  >(null);
 
   // 1) Info adımı
   const {
     election,
     submitting: infoSubmitting,
     handleElectionInfoStep: originalHandleElectionInfoStep,
-    setDbType,
-    dbType,
+    setElectionType,
+    electionType,
     reset: resetInfo,
     error: infoError,
   } = useElectionInfoStep();
@@ -106,6 +119,12 @@ export const ElectionCreationProvider: React.FC<{
     error: choiceError,
   } = useElectionChoices(electionId);
 
+  useEffect(() => {
+    console.log('ElectionCreationContext:', election);
+    if (election && election.id) {
+      setElectionId(election.id);
+    }
+  }, [election]);
   // --------------------------------------
   // Adımları saran fonksiyonlar
   // --------------------------------------
@@ -114,23 +133,21 @@ export const ElectionCreationProvider: React.FC<{
     if (success) {
       // Info step tamamlanınca bir ID döndüğünü varsayalım
       // Hook'unuz election'ı create edip ID'sini döndürüyor olabilir
-      if (election && election.id) {
-        setElectionId(election.id);
-      }
-      setStep(1);
+      setStep('Info completed');
+      console.log('Info Completed');
     }
     return success;
   };
 
   const handleElectionAccessStep = async (values: ElectionAccessViewModel) => {
     const success = await originalHandleElectionAccessStep(values);
-    if (success) setStep(2);
+    if (success) setStep('Access completed');
     return success;
   };
 
   const handleElectionCandidateStep = async (values: CandidateViewModel[]) => {
     const success = await originalHandleElectionCandidateStep(values);
-    if (success) setStep(3);
+    if (success) setStep('Candidate completed');
     return success;
   };
 
@@ -138,7 +155,7 @@ export const ElectionCreationProvider: React.FC<{
     values: ElectionChoiceViewModel[],
   ) => {
     const success = await originalHandleElectionChoiceStep(values);
-    if (success) setStep(4);
+    if (success) setStep('Choices completed');
     return success;
   };
 
@@ -147,7 +164,7 @@ export const ElectionCreationProvider: React.FC<{
     resetAccess();
     resetCandidate();
     resetChoice();
-    setStep(0);
+    setStep(null);
     setElectionId(null);
   };
 
@@ -177,8 +194,8 @@ export const ElectionCreationProvider: React.FC<{
         electionAccess,
         candidates,
         choices,
-        dbType,
-        setDbType,
+        electionType,
+        setElectionType,
         electionId,
         step,
         submitting,

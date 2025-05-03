@@ -8,6 +8,7 @@ import {groupService} from '@services/backend/concrete/service.container.instanc
 import {useAsync} from '@hooks/Modular/use.async';
 import {useNotification} from '@contexts/notification.context';
 import LightGroupViewModel from '@viewmodels/light.group.viewmodel';
+import {useUserAddress} from '@hooks/use.user.address';
 
 interface UserProfileContextType {
   user: UserViewModel | null;
@@ -18,10 +19,10 @@ interface UserProfileContextType {
   groupsError: string | null;
   groupsLoading: boolean;
   fetchGroups: () => Promise<LightGroupViewModel[] | null>;
-  addresses: AddressViewModel[];
-  addressesError: string | null;
-  addressesLoading: boolean;
-  fetchAddresses: (userId: string) => Promise<void>;
+  address: AddressViewModel | null;
+  addressError: string | null;
+  addressLoading: boolean | null;
+  fetchAddress: (userId: string) => Promise<AddressViewModel | null>;
 }
 
 const UserProfileContext = createContext<UserProfileContextType | undefined>(
@@ -44,11 +45,11 @@ const UserProfileProvider: React.FC<{children: React.ReactNode}> = ({
   );
 
   const {
-    addresses,
-    error: addressesError,
-    loading: addressesLoading,
-    fetchAddresses,
-  } = useAddresses();
+    address,
+    fetchAddress,
+    error: addressError,
+    loading: addressLoading,
+  } = useUserAddress();
 
   const {
     execute: fetchUser,
@@ -70,10 +71,10 @@ const UserProfileProvider: React.FC<{children: React.ReactNode}> = ({
         groupsError,
         groupsLoading,
         fetchGroups,
-        addresses,
-        addressesError,
-        addressesLoading,
-        fetchAddresses,
+        address: address,
+        addressError,
+        addressLoading,
+        fetchAddress,
       }}>
       {children}
     </UserProfileContext.Provider>

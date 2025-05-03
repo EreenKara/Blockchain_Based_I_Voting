@@ -3,8 +3,8 @@ import LightUserViewModel from './light.user.viewmodel';
 
 export interface PublicElectionAccessViewModel {
   accessType?: 'public';
-  city?: string;
-  district?: string;
+  cityId?: string;
+  districtId?: string;
 }
 
 export interface PrivateElectionAccessViewModel {

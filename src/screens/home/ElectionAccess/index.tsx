@@ -24,6 +24,8 @@ import createStyles from './index.style';
 import {useNotification} from '@contexts/notification.context';
 import {SharedStackParamList} from '@navigation/types';
 import {useNavigation} from '@react-navigation/native';
+import ErrorScreenComponent from '@screens/shared/error.screen';
+import useElectionAccess from '@hooks/ElectionCreation/use.election.access';
 
 type Props = NativeStackScreenProps<SharedStackParamList, 'ElectionAccess'>;
 
@@ -32,12 +34,20 @@ const ElectionAccessScreen: React.FC<Props> = ({navigation, route}) => {
     useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
   const {showNotification} = useNotification();
   const styles = useStyles(createStyles);
-  const {accessType} = route.params;
+  const {accessType, electionId} = route.params;
   const {user} = useUserProfileContext();
 
-  const {handleElectionAccessStep, submitting, errors} =
-    useElectionCreationContext();
   const formikRef = useRef<FormikProps<any>>(null);
+  if (electionId === null) {
+    return (
+      <ErrorScreenComponent
+        error="Seçim ID'si bulunamadı."
+        fromScreen="Access"
+      />
+    );
+  }
+  const {electionAccess, submitting, error, handleElectionAccessStep} =
+    useElectionAccess(electionId);
 
   let form;
   if (accessType === 'public') {
@@ -57,17 +67,18 @@ const ElectionAccessScreen: React.FC<Props> = ({navigation, route}) => {
         onSubmit={async (values: FormValues) => {
           const result = await handleElectionAccessStep({
             accessType: 'public',
-            city: values.city,
-            district: values.district,
+            cityId: values.city,
+            districtId: values.district,
           });
-          console.log('result', result);
           showNotification({
-            message: errors.access || 'Seçim başarıyla oluşturuldu.',
+            message: error || 'Seçim başarıyla oluşturuldu.',
             type: 'success',
             modalType: 'snackbar',
           });
           if (result) {
-            navigation.navigate('ElectionCandidates');
+            navigation.navigate('ElectionCandidates', {
+              electionId,
+            });
           }
         }}>
         {({values, handleChange, setFieldValue}) => {
@@ -176,15 +187,14 @@ const ElectionAccessScreen: React.FC<Props> = ({navigation, route}) => {
             groups: values.groups,
             users: values.users,
           });
-          console.log('result', result);
 
           showNotification({
-            message: errors.access || 'Seçim başarıyla oluşturuldu.',
+            message: error || 'Seçim başarıyla oluşturuldu.',
             type: 'success',
             modalType: 'snackbar',
           });
           if (result) {
-            navigation.navigate('ElectionCandidates');
+            navigation.navigate('ElectionCandidates', {electionId});
           }
         }}>
         {({values, handleChange, setFieldValue}) => {
@@ -301,16 +311,16 @@ useEffect(() => {
               formikRef.current.handleSubmit();
             }
           }}
-          disabled={submitting.access}
+          disabled={submitting}
         />
 
         <ButtonComponent
           style={styles.button}
           title="To candidates page"
           onPress={() => {
-            navigation.navigate('ElectionCandidates');
+            navigation.navigate('ElectionCandidates', {electionId});
           }}
-          disabled={submitting.access}
+          disabled={submitting}
         />
       </View>
     </ScrollView>

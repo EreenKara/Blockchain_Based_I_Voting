@@ -8,6 +8,7 @@ import {AddressViewModel} from '@viewmodels/address.viewmodel';
 import GroupViewModel from '@viewmodels/group.viewmodel';
 import {BackendError} from './backend.error';
 import LightUserViewModel from '@viewmodels/light.user.viewmodel';
+import {AddressChangeViewModel} from '@viewmodels/address.change.viewmodel';
 
 export class UserAddressService extends BaseBackendService {
   constructor() {
@@ -19,7 +20,7 @@ export class UserAddressService extends BaseBackendService {
     );
     return response.data;
   }
-  // Bu suan uygulamada da yok backend'de de yok.
+  // * Bu suan uygulamada da yok.
   public async getAddressById(addressId: string): Promise<AddressViewModel> {
     const response = await this.api.get<AddressViewModel>(
       `${this.endpoint}/address/${addressId}`,
@@ -31,6 +32,15 @@ export class UserAddressService extends BaseBackendService {
       `${this.endpoint}/auth/getAddressOfAuthUser`,
     );
     return response.data;
+  }
+  public async changeAddress(
+    address: AddressChangeViewModel,
+  ): Promise<AddressViewModel> {
+    const response = await this.api.put<{
+      message: string;
+      address: AddressViewModel;
+    }>(`${this.endpoint}/auth/update`, address);
+    return response.data.address;
   }
 }
 

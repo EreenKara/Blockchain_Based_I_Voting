@@ -3,14 +3,13 @@ import GroupViewModel from './group.viewmodel';
 import {ImageViewModel} from './image.viewmodel';
 import LightUserViewModel from './light.user.viewmodel';
 
-export interface ElectionViewModel extends BaseElectionViewModel {
-  //id: string;
-  //name: string;
-  //description: string;
-  //image: string;
-  //startDate: string;
-  //endDate: string;
-  //image: string;
+export interface ElectionCreationViewModel {
+  id: string;
+  name: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  image: ImageViewModel | null;
   electionType: 'database' | 'blockchain';
   step:
     | 'Info completed'
@@ -18,6 +17,4 @@ export interface ElectionViewModel extends BaseElectionViewModel {
     | 'Candidate completed'
     | 'Choices completed'
     | 'Election completed';
-  status: 'past' | 'current' | 'upcoming';
-  accessType: 'public' | 'private';
 }

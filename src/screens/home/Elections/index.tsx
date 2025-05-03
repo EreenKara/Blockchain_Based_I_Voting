@@ -13,6 +13,9 @@ import {ElectionType} from '@enums/election.type';
 import {useStyles} from '@hooks/Modular/use.styles';
 import createStyles from './index.style';
 import {BaseElectionViewModel} from '@viewmodels/base.election.viewmodel';
+import ActivityIndicatorComponent from '@screens/shared/activity.indicator';
+import {Button} from 'react-native-paper';
+import ButtonComponent from '@components/Button/Button';
 
 type ElectionsScreenProps = NativeStackScreenProps<
   HomeStackParamList,
@@ -47,17 +50,23 @@ const ElectionsScreen: React.FC<ElectionsScreenProps> = () => {
             <View style={styles.header}>
               <Text style={styles.headerTitle}>Popüler Seçimler</Text>
             </View>
-            <ElectionCardComponent
-              title="Popüler Seçimler"
-              items={elections as BaseElectionViewModel[]}
-            />
+            {loading ? (
+              <ActivityIndicatorComponent />
+            ) : (
+              <ElectionCardComponent
+                title="Popüler Seçimler"
+                items={elections as BaseElectionViewModel[]}
+              />
+            )}
           </View>
         </View>
-        <View style={styles.bottomContainer}>
-          <BottomSheetComponent index={index} setIndex={setIndex}>
-            <HistoryCardComponent />
-          </BottomSheetComponent>
-        </View>
+        {search.city && index !== -1 && (
+          <View style={styles.bottomContainer}>
+            <BottomSheetComponent index={index} setIndex={setIndex}>
+              <HistoryCardComponent />
+            </BottomSheetComponent>
+          </View>
+        )}
       </View>
     </>
   );

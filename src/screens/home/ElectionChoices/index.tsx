@@ -17,6 +17,7 @@ import {useNavigation} from '@react-navigation/native';
 import {useStyles} from '@hooks/Modular/use.styles';
 import createStyles from './index.style';
 import {useNotification} from '@contexts/notification.context';
+import useElectionChoices from '@hooks/ElectionCreation/use.election.choices';
 
 type Props = NativeStackScreenProps<SharedStackParamList, 'ElectionChoices'>;
 
@@ -72,12 +73,13 @@ const initialGroups: Group[] = [
   },
 ];
 
-const ElectionChoicesScreen: React.FC<Props> = ({navigation}) => {
+const ElectionChoicesScreen: React.FC<Props> = ({navigation, route}) => {
+  const {electionId} = route.params;
   const rootNavigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const styles = useStyles(createStyles);
-  const {handleElectionChoiceStep, submitting, errors} =
-    useElectionCreationContext();
+  const {handleElectionChoiceStep, submitting, error} =
+    useElectionChoices(electionId);
   const {showNotification} = useNotification();
   const [groups] = useState<Group[]>(initialGroups);
   const [choices, setChoices] = useState<SelectedGroup[]>([]);
@@ -119,7 +121,7 @@ const ElectionChoicesScreen: React.FC<Props> = ({navigation}) => {
       choices.map(group => group.option),
     );
     showNotification({
-      message: errors.choice ?? 'Başarıyla seçim oluşturuldu.',
+      message: error ?? 'Başarıyla seçim oluşturuldu.',
       type: 'info',
       modalType: 'snackbar',
     });
@@ -148,7 +150,7 @@ const ElectionChoicesScreen: React.FC<Props> = ({navigation}) => {
         style={styles.button}
         title="Submit"
         onPress={handleSubmit}
-        disabled={choices.length < groups.length || submitting.choice}
+        disabled={choices.length < groups.length || submitting}
       />
     </View>
   );

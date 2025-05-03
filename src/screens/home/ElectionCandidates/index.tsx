@@ -11,17 +11,19 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useStyles} from '@hooks/Modular/use.styles';
 import createStyles from './index.style';
 import {useElectionCreationContext} from '@contexts/election.creation.context';
+import useElectionCandidate from '@hooks/ElectionCreation/use.election.candidate';
 type Props = NativeStackScreenProps<SharedStackParamList, 'ElectionCandidates'>;
 
-const ElectionCandidatesScreen: React.FC<Props> = ({navigation}) => {
+const ElectionCandidatesScreen: React.FC<Props> = ({navigation, route}) => {
   const styles = useStyles(createStyles);
   const [pickers, setPickers] = useState<number>(2);
+  const {electionId} = route.params;
   const pickerRefs = useRef<React.RefObject<ChildRef>[]>([]);
   const {candidates, updateCandidateAt, addCandidate} =
-    useElectionCreationContext();
+    useElectionCandidate(electionId);
 
   const handleSubmit = useCallback(() => {
-    navigation.navigate('ElectionChoices');
+    navigation.navigate('ElectionChoices', {electionId});
   }, []);
 
   const addCandidateView = useCallback(() => {

@@ -3,7 +3,7 @@ import {useState} from 'react';
 import {userAddressService} from '@services/backend/concrete/service.container.instances';
 import {useAsync} from './Modular/use.async';
 
-export const useAddress = () => {
+export const useUserAddress = () => {
   const {
     execute: fetchAddress,
     data: address,

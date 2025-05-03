@@ -1,38 +1,51 @@
 import {ElectionType} from '@enums/election.type';
 import {electionService} from '@services/backend/concrete/service.container.instances';
+import LightElectionViewModel from '@viewmodels/light.election.viewmodel';
+import {ElectionSearchObject} from '@services/backend/concrete/election.service';
 
 const useGetElectionsFunction = (
   electionType: ElectionType,
-): ((city: string) => Promise<any[]>) => {
-  let getElectionFunc = null;
+): ((
+  searchObject: ElectionSearchObject,
+) => Promise<LightElectionViewModel[]>) => {
+  let getElectionFunc;
   switch (electionType) {
     case ElectionType.Past:
-      getElectionFunc = electionService.getPastElections;
+      getElectionFunc = electionService.getPastElections.bind(electionService);
       break;
     case ElectionType.Current:
-      getElectionFunc = electionService.getCurrentElections;
+      getElectionFunc =
+        electionService.getCurrentElections.bind(electionService);
       break;
     case ElectionType.Upcoming:
-      getElectionFunc = electionService.getUpcomingElections;
+      getElectionFunc =
+        electionService.getUpcomingElections.bind(electionService);
       break;
     case ElectionType.Popular:
-      getElectionFunc = electionService.getPopularElections;
+      getElectionFunc =
+        electionService.getPopularElections.bind(electionService);
       break;
     case ElectionType.Search:
-      getElectionFunc = electionService.getElectionsByUserId;
+      getElectionFunc =
+        electionService.getElectionsByUserId.bind(electionService);
       break;
     case ElectionType.BeingCandidate:
-      getElectionFunc = electionService.getElectionsByUserId;
+      getElectionFunc =
+        electionService.getElectionsByUserId.bind(electionService);
       break;
     case ElectionType.Casted:
-      getElectionFunc = electionService.getElectionsByUserId;
+      getElectionFunc =
+        electionService.getElectionsByUserId.bind(electionService);
       break;
     case ElectionType.Created:
-      getElectionFunc = electionService.getElectionsByUserId;
+      getElectionFunc = electionService.getMyElections.bind(electionService);
       break;
     default:
-      getElectionFunc = electionService.getPastElections;
+      throw new Error(`Invalid electionType: ${electionType}`);
       break;
+  }
+  if (!getElectionFunc) {
+    throw new Error('getElectionFunc is undefined!');
   }
   return getElectionFunc;
 };

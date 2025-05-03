@@ -23,8 +23,8 @@ const useElectionAccess = (electionId: string | null) => {
       if (values.accessType === 'public') {
         accessData = {
           accessType: 'public',
-          city: values.city,
-          district: values.district,
+          cityId: values.cityId,
+          districtId: values.districtId,
         };
       } else if (values.accessType === 'private') {
         accessData = {

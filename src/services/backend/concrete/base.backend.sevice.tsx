@@ -10,27 +10,33 @@ export abstract class BaseBackendService implements IBaseBackendService {
   public static token: string | null = null;
 
   constructor(endpoint: string) {
-    this.api = axios.create({
-      baseURL: 'https://z904h9sz52.execute-api.eu-north-1.amazonaws.com/api/', // API'nin base URL'i
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    this.endpoint = endpoint;
+    try {
+      this.api = axios.create({
+        baseURL: 'https://z904h9sz52.execute-api.eu-north-1.amazonaws.com/api', // API'nin base URL'i
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      this.endpoint = endpoint;
 
-    // Token interceptor'ı
-    this.api.interceptors.request.use(
-      async (config: any) => {
-        const currentToken = BaseBackendService.token;
-        if (currentToken && currentToken !== '') {
-          config.headers.Authorization = `Bearer ${currentToken}`;
-        }
-        return config;
-      },
-      (error: any) => {
-        return Promise.reject(error);
-      },
-    );
+      // Token interceptor'ı
+      this.api.interceptors.request.use(
+        async (config: any) => {
+          const currentToken = BaseBackendService.token;
+          if (currentToken && currentToken !== '') {
+            config.headers.Authorization = `Bearer ${currentToken}`;
+          }
+          return config;
+        },
+        (error: any) => {
+          console.log('api creation error:', error);
+          return Promise.reject(error);
+        },
+      );
+    } catch (error) {
+      console.error('Error creating axios instance:', error);
+      throw error; // Hata fırlat
+    }
   }
 
   // Token'ı güncellemek için statik method

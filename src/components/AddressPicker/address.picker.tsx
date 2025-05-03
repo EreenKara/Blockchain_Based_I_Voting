@@ -5,6 +5,7 @@ import styleNumbers from '@styles/common/style.numbers';
 import Colors, {ColorsSchema} from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import {useStyles} from '@hooks/Modular/use.styles';
+import {useAddresses} from '@hooks/use.addresses';
 
 interface AddressPickerComponentProps {
   values: {city: string; district: string};
@@ -12,37 +13,52 @@ interface AddressPickerComponentProps {
 }
 
 // Türkiye'nin illeri (örnek veri)
-const cities = [
-  'İstanbul',
-  'Ankara',
-  'İzmir',
-  // Diğer iller eklenebilir
-];
+// const cities = [
+//   'İstanbul',
+//   'Ankara',
+//   'İzmir',
+//   // Diğer iller eklenebilir
+// ];
 
 // İlçeler için örnek veri (gerçek uygulamada API'den alınabilir)
-const districts: {[key: string]: string[]} = {
-  İstanbul: ['Kadıköy', 'Beşiktaş', 'Üsküdar', 'Şişli', 'Bakırköy'],
-  Ankara: ['Çankaya', 'Keçiören', 'Yenimahalle', 'Mamak', 'Etimesgut'],
-  İzmir: ['Konak', 'Karşıyaka', 'Bornova', 'Buca', 'Çiğli'],
-  // Diğer şehirlerin ilçeleri eklenebilir
-};
+// const districts: {[key: string]: string[]} = {
+//   İstanbul: ['Kadıköy', 'Beşiktaş', 'Üsküdar', 'Şişli', 'Bakırköy'],
+//   Ankara: ['Çankaya', 'Keçiören', 'Yenimahalle', 'Mamak', 'Etimesgut'],
+//   İzmir: ['Konak', 'Karşıyaka', 'Bornova', 'Buca', 'Çiğli'],
+//   // Diğer şehirlerin ilçeleri eklenebilir
+// };
 
 const AddressPickerComponent = ({
   values,
   setFieldValue,
 }: AddressPickerComponentProps) => {
   const styles = useStyles(createStyles);
-  const [availableDistricts, setAvailableDistricts] = useState<string[]>([]);
+
+  const {
+    fetchCities,
+    fetchDistricts,
+    fetchNeighborhoods,
+    cities,
+    districts,
+    neighborhoods,
+  } = useAddresses();
 
   useEffect(() => {
-    if (values.city && districts[values.city]) {
-      setAvailableDistricts(districts[values.city]);
+    const getCities = async () => {
+      await fetchCities();
+    };
+    getCities();
+  }, []);
+
+  useEffect(() => {
+    if (values.city) {
+      const getDistricts = async () => {
+        await fetchDistricts(values.city);
+      };
+      getDistricts();
+      setFieldValue('district', '');
       // Eğer seçili ilçe, yeni şehrin ilçeleri arasında yoksa ilçe seçimini sıfırla
-      if (!districts[values.city].includes(values.district)) {
-        setFieldValue('district', '');
-      }
     } else {
-      setAvailableDistricts([]);
       setFieldValue('district', '');
     }
   }, [values.city]);
@@ -65,11 +81,11 @@ const AddressPickerComponent = ({
               value=""
               color={Colors.getTheme().placeholder}
             />
-            {cities.map(city => (
+            {cities?.map(city => (
               <Picker.Item
-                key={city}
-                label={city}
-                value={city}
+                key={city.id}
+                label={city.name}
+                value={city.id}
                 color={Colors.getTheme().text}
               />
             ))}
@@ -94,11 +110,11 @@ const AddressPickerComponent = ({
               value=""
               color={Colors.getTheme().placeholder}
             />
-            {availableDistricts.map(district => (
+            {districts?.map(district => (
               <Picker.Item
-                key={district}
-                label={district}
-                value={district}
+                key={district.id}
+                label={district.name}
+                value={district.id}
                 color={Colors.getTheme().text}
               />
             ))}

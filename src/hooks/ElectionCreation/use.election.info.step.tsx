@@ -1,13 +1,15 @@
 // hooks/election/useElectionInfoStep.ts
 import {useState} from 'react';
 import {FormValues} from '@screens/home/ElectionInfo';
-import {ElectionViewModel} from '@viewmodels/election.viewmodel';
 import {useAsync} from '@hooks/Modular/use.async';
 import {electionService} from '@services/backend/concrete/service.container.instances';
 import {useNotification} from '@contexts/notification.context';
+import {ElectionCreationViewModel} from '@viewmodels/election.creation.viewmodel';
 
 const useElectionInfoStep = () => {
-  const [dbType, setDbType] = useState<'database' | 'blockchain' | null>(null);
+  const [electionType, setElectionType] = useState<
+    'database' | 'blockchain' | null
+  >(null);
   const {showNotification} = useNotification();
   const {
     execute: createElection,
@@ -15,8 +17,8 @@ const useElectionInfoStep = () => {
     error,
     reset: resetElection,
     data: election,
-  } = useAsync<ElectionViewModel>(
-    (electionData: ElectionViewModel) =>
+  } = useAsync<ElectionCreationViewModel>(
+    (electionData: ElectionCreationViewModel) =>
       electionService.postElectionInfo(electionData),
     {
       showNotificationOnError: true,
@@ -30,7 +32,7 @@ const useElectionInfoStep = () => {
     success: boolean;
     error: string | null;
   }> => {
-    if (!dbType) {
+    if (!electionType) {
       showNotification({
         message: 'Veri saklama tipi seçilmelidir.',
         type: 'error',
@@ -42,7 +44,7 @@ const useElectionInfoStep = () => {
       };
     }
 
-    const electionPayload: ElectionViewModel = {
+    const electionPayload: ElectionCreationViewModel = {
       id: '',
       name: values.title,
       description: values.description,
@@ -53,9 +55,10 @@ const useElectionInfoStep = () => {
         type: values.image?.type || null,
         name: values.image?.fileName || null,
       } as {uri: string; type: string; name: string} | null,
-      dbType,
-      step: 'step 1',
+      electionType,
+      step: 'Info completed',
     };
+    console.log('Election Payload:', electionPayload);
 
     const created = await createElection(electionPayload);
 
@@ -67,14 +70,14 @@ const useElectionInfoStep = () => {
 
   const reset = () => {
     resetElection();
-    setDbType(null);
+    setElectionType(null);
   };
 
   return {
     election,
     handleElectionInfoStep,
-    dbType,
-    setDbType,
+    electionType,
+    setElectionType,
     submitting,
     error,
     reset,

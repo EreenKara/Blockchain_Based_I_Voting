@@ -1,23 +1,33 @@
 import {AddressViewModel} from '@viewmodels/address.viewmodel';
 import {useState} from 'react';
 import {userAddressService} from '@services/backend/concrete/service.container.instances';
+import {useAsync} from './Modular/use.async';
+import {addressService} from '@services/backend/concrete/service.container.instances';
+import LocationViewModel from '@viewmodels/location.viewmodel';
 
 export const useAddresses = () => {
-  const [addresses, setAddresses] = useState<AddressViewModel[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const {execute: fetchCities, data: cities} = useAsync<LocationViewModel[]>(
+    () => {
+      return addressService.getCities();
+    },
+  );
+  const {execute: fetchDistricts, data: districts} = useAsync<
+    LocationViewModel[]
+  >(() => {
+    return addressService.getDistricts();
+  });
+  const {execute: fetchNeighborhoods, data: neighborhoods} = useAsync<
+    LocationViewModel[]
+  >(() => {
+    return addressService.getNeighborhoods();
+  });
 
-  const fetchAddresses = async (userId: string) => {
-    try {
-      setLoading(true);
-      const addresses = await userAddressService.getAddressesById(userId);
-      setAddresses(addresses);
-    } catch (error) {
-      setError('Adres yüklenirken bir hata oluştu. API HATASI.');
-    } finally {
-      setLoading(false);
-    }
+  return {
+    fetchCities,
+    fetchDistricts,
+    fetchNeighborhoods,
+    cities,
+    districts,
+    neighborhoods,
   };
-
-  return {addresses, loading, error, fetchAddresses};
 };

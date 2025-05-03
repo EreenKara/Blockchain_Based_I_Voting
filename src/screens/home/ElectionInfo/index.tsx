@@ -14,6 +14,7 @@ import StartToEndDateComponent from '@icomponents/StartToEndDate/start.to.end.da
 import ImagePickerComponent from '@icomponents/ImagePicker/image.picker';
 import {ExtendedAsset} from '@hooks/useCamera';
 import {useElectionCreationContext} from '@contexts/election.creation.context';
+import {boolean} from 'yup';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'ElectionInfo'>;
 
@@ -27,17 +28,22 @@ export interface FormValues {
 
 const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
   const styles = useStyles(createStyles);
-  const {handleElectionInfoStep, submitting} = useElectionCreationContext();
+  const {handleElectionInfoStep, electionId, submitting} =
+    useElectionCreationContext();
 
+  const [success, setSuccess] = useState(false);
   const handleSubmit = async (values: FormValues) => {
     console.log('Form Values:', values);
-    const result = await handleElectionInfoStep(values);
-    if (result.success) {
+    await handleElectionInfoStep(values);
+  };
+  useEffect(() => {
+    if (electionId) {
       navigation.navigate('Shared', {
         screen: 'PublicOrPrivate',
+        params: {electionId: electionId},
       });
     }
-  };
+  }, [electionId]);
 
   const initialValues: FormValues = {
     title: '',
@@ -96,6 +102,7 @@ const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
                 onPress={() =>
                   navigation.navigate('Shared', {
                     screen: 'PublicOrPrivate',
+                    params: {electionId: electionId},
                   })
                 }
               />

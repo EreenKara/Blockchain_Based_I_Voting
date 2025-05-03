@@ -9,8 +9,9 @@ import styleNumbers from '@styles/common/style.numbers';
 import {useStyles} from '@hooks/Modular/use.styles';
 type Props = NativeStackScreenProps<SharedStackParamList, 'DefaultCustom'>;
 
-const DefaultCustomScreen: React.FC<Props> = ({navigation}) => {
+const DefaultCustomScreen: React.FC<Props> = ({navigation, route}) => {
   const styles = useStyles(createStyles);
+  const {electionId} = route.params;
   return (
     <View style={styles.container}>
       <View style={styles.transparentContainer}>
@@ -18,14 +19,18 @@ const DefaultCustomScreen: React.FC<Props> = ({navigation}) => {
           title="Default"
           description="Herkesin kullandığı otomatik ayarlar"
           image={require('@assets/images/default-settings.png')}
-          onPress={() => navigation.navigate('ElectionChoices')}
+          onPress={() =>
+            navigation.navigate('ElectionChoices', {electionId: electionId})
+          }
           tintColor={Colors.getTheme().icon}
         />
         <ChoiceCardComponent
           title="Custom"
           description="Teknik ayarları yönetin"
           image={require('@assets/images/custom_settings.png')}
-          onPress={() => navigation.navigate('ElectionChoices')}
+          onPress={() =>
+            navigation.navigate('ElectionChoices', {electionId: electionId})
+          }
           tintColor={Colors.getTheme().icon}
         />
       </View>

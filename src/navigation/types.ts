@@ -1,7 +1,6 @@
 import {ElectionType} from '@enums/election.type';
 import {NavigatorScreenParams} from '@react-navigation/native';
 import {AddressViewModel} from '@viewmodels/address.viewmodel';
-import {ElectionViewModel} from '@viewmodels/election.viewmodel';
 import GroupViewModel from '@viewmodels/group.viewmodel';
 import LightElectionViewModel from '@viewmodels/light.election.viewmodel';
 import LightGroupViewModel from '@viewmodels/light.group.viewmodel';
@@ -38,7 +37,7 @@ export type MainTabParamList = {
 export type HomeStackParamList = {
   HomeMain: undefined;
   BlockchainOrDb: undefined;
-  ElectionInfo: {dbType: 'database' | 'blockchain'};
+  ElectionInfo: {electionType: 'database' | 'blockchain'};
   BeCandidate: undefined;
   Elections: undefined;
   SpecificElection: {election: LightElectionViewModel};
@@ -63,11 +62,11 @@ export type ProfileStackParamList = {
 };
 
 export type SharedStackParamList = {
-  ElectionAccess: {accessType: 'public' | 'private'};
-  ElectionCandidates: undefined;
-  ElectionChoices: undefined;
-  PublicOrPrivate: undefined;
-  DefaultCustom: undefined;
+  ElectionAccess: {accessType: 'public' | 'private'; electionId: string | null};
+  ElectionCandidates: {electionId: string | null};
+  ElectionChoices: {electionId: string | null};
+  PublicOrPrivate: {electionId: string | null};
+  DefaultCustom: {electionId: string | null};
   SpecificElection: {election: LightElectionViewModel};
   ElectionResult: {election: LightElectionViewModel};
   ListElections: {type: ElectionType};

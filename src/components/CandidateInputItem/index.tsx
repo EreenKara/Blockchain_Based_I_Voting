@@ -68,7 +68,6 @@ const CandidateInputItemComponent: React.FC<
             label="Adı Soyadı"
             value={candidate.name}
             onChangeText={(text: string) => {
-              console.log('selam', text);
               setCandidate({...candidate, name: text});
             }}
           />

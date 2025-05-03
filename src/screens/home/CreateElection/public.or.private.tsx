@@ -14,9 +14,9 @@ import {useStyles} from '@hooks/Modular/use.styles';
 import {useNavigation} from '@react-navigation/native';
 type Props = NativeStackScreenProps<SharedStackParamList, 'PublicOrPrivate'>;
 
-const PublicOrPrivateScreen: React.FC<Props> = ({navigation}) => {
+const PublicOrPrivateScreen: React.FC<Props> = ({navigation, route}) => {
   const styles = useStyles(createStyles);
-  const {election} = useElectionCreationContext();
+  const {electionId} = route.params;
   const homeNavigation =
     useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
 
@@ -28,7 +28,10 @@ const PublicOrPrivateScreen: React.FC<Props> = ({navigation}) => {
           description="Seçim, seçtiğiniz şehir ve ilçedeki herkese açık hale gelir."
           image={require('@assets/images/un_lock.png')}
           onPress={() =>
-            navigation.navigate('ElectionAccess', {accessType: 'public'})
+            navigation.navigate('ElectionAccess', {
+              accessType: 'public',
+              electionId,
+            })
           }
           tintColor={Colors.getTheme().icon}
         />
@@ -37,7 +40,10 @@ const PublicOrPrivateScreen: React.FC<Props> = ({navigation}) => {
           description="Seçim, sadece seçtiğiniz kişilerin erişebileceği şekilde oluşturulur."
           image={require('@assets/images/lock.png')}
           onPress={() =>
-            navigation.navigate('ElectionAccess', {accessType: 'private'})
+            navigation.navigate('ElectionAccess', {
+              accessType: 'private',
+              electionId,
+            })
           }
           tintColor={Colors.getTheme().icon}
         />

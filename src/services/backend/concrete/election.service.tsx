@@ -5,6 +5,7 @@ import {ElectionViewModel} from '@viewmodels/election.viewmodel';
 import {ElectionAccessViewModel} from '@viewmodels/election.access.viewmodel';
 import {CandidateViewModel} from '@viewmodels/candidate.viewmodel';
 import {ElectionChoiceViewModel} from '@viewmodels/election.choice.viewmodel';
+import {ElectionCreationViewModel} from '@viewmodels/election.creation.viewmodel';
 
 export class ElectionService
   extends BaseBackendService
@@ -13,59 +14,102 @@ export class ElectionService
   constructor() {
     super('/election');
   }
-  public async getPopularElections(): Promise<LightElectionViewModel[]> {
+  public async getPopularElections(
+    searchObject: ElectionSearchObject,
+  ): Promise<LightElectionViewModel[]> {
     const response = await this.api.get<LightElectionViewModel[]>(
       `${this.endpoint}/getElections/all`,
     );
+    console.log('getPopularElections response:', response.data);
+    console.log('getPopularElections response.data::', response.data);
     return response.data;
   }
+  // ! PUBLIC
   public async getPastElections(
-    city: string,
+    searchObject: ElectionSearchObject,
   ): Promise<LightElectionViewModel[]> {
     const response = await this.api.get<LightElectionViewModel[]>(
-      `${this.endpoint}/timeframe/past`,
+      `${this.endpoint}/public/past/${searchObject.city ?? ''}`,
     );
     return response.data;
   }
+  // ! PRIVATE
+  public async getPastElectionsAuthUser(
+    searchObject: ElectionSearchObject,
+  ): Promise<LightElectionViewModel[]> {
+    const response = await this.api.get<LightElectionViewModel[]>(
+      `${this.endpoint}/auth/private/past`,
+    );
+    return response.data;
+  }
+  // ! PUBLIC
   public async getCurrentElections(
-    city: string,
+    searchObject: ElectionSearchObject,
   ): Promise<LightElectionViewModel[]> {
     const response = await this.api.get<LightElectionViewModel[]>(
-      `${this.endpoint}/timeframe/current`,
+      `${this.endpoint}/public/current/${searchObject.city ?? ''}`,
     );
     return response.data;
   }
-  public async getUpcomingElections(
-    city: string,
+  // ! PRIVATE
+  public async getCurrentElectionsAuthUser(
+    searchObject: ElectionSearchObject,
   ): Promise<LightElectionViewModel[]> {
     const response = await this.api.get<LightElectionViewModel[]>(
-      `${this.endpoint}/timeframe/upcoming`,
+      `${this.endpoint}/auth/private/current`,
+    );
+    return response.data;
+  }
+  // ! PUBLIC
+  public async getUpcomingElections(
+    searchObject: ElectionSearchObject,
+  ): Promise<LightElectionViewModel[]> {
+    const response = await this.api.get<LightElectionViewModel[]>(
+      `${this.endpoint}/public/upcoming/${searchObject.city ?? ''}`,
+    );
+    return response.data;
+  }
+  // ! PRIVATE
+  public async getUpcomingElectionsAuthUser(
+    searchObject: ElectionSearchObject,
+  ): Promise<LightElectionViewModel[]> {
+    const response = await this.api.get<LightElectionViewModel[]>(
+      `${this.endpoint}/auth/private/upcoming`,
+    );
+    return response.data;
+  }
+  public async getMyElections(
+    searchObject: ElectionSearchObject,
+  ): Promise<LightElectionViewModel[]> {
+    const response = await this.api.get<LightElectionViewModel[]>(
+      `${this.endpoint}/auth/mine`,
     );
     return response.data;
   }
   public async getElectionsByUserId(
-    userId: string,
+    searchObject: ElectionSearchObject,
   ): Promise<LightElectionViewModel[]> {
     const response = await this.api.get<LightElectionViewModel[]>(
-      `${this.endpoint}/user/${userId}`,
+      `${this.endpoint}/user`,
     );
     return response.data;
   }
   public async postElectionInfo(
-    election: ElectionViewModel,
-  ): Promise<ElectionViewModel> {
+    election: ElectionCreationViewModel,
+  ): Promise<ElectionCreationViewModel> {
     const formData = new FormData();
     formData.append('name', election.name);
     formData.append('description', election.description);
     formData.append('startDate', election.startDate.toString());
     formData.append('endDate', election.endDate.toString());
-    formData.append('electionType', election.dbType);
-
-    formData.append('image', {
-      uri: election.image?.uri,
-      name: election.image?.name, // İstersen dosya adını dinamik de alabilirsin
-      type: election.image?.type, // veya 'image/png' vs.
-    });
+    formData.append('electionType', election.electionType);
+    if (election.image?.uri && election.image?.name && election.image?.type) {
+      formData.append('image', {
+        uri: election.image?.uri,
+        name: election.image?.name, // İstersen dosya adını dinamik de alabilirsin
+        type: election.image?.type, // veya 'image/png' vs.
+      });
+    }
     const response = await this.api.post(
       `${this.endpoint}/auth/create-election`,
       formData,
@@ -83,10 +127,21 @@ export class ElectionService
     electionId: string,
     electionAccess: ElectionAccessViewModel,
   ): Promise<void> {
-    await this.api.put<ElectionViewModel>(
-      `${this.endpoint}/${electionId}`,
-      electionAccess,
-    );
+    const data = {
+      electionId: electionId,
+      ...electionAccess,
+    };
+    if (electionAccess.accessType === 'public') {
+      await this.api.put<void>(
+        `${this.endpoint}/auth/setElectionAccess/public/${electionId}`,
+        electionAccess,
+      );
+    } else if (electionAccess.accessType === 'private') {
+      await this.api.put<void>(
+        `${this.endpoint}/auth/setElectionAccess/private/${electionId}`,
+        electionAccess,
+      );
+    }
   }
   public async putElectionCandidates(
     electionId: string,
@@ -115,3 +170,7 @@ export class ElectionService
 }
 
 export default ElectionService;
+
+export interface ElectionSearchObject {
+  city: string | undefined;
+}

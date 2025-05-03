@@ -6,9 +6,10 @@ import MenuItemComponent from '@icomponents/MenuItem/menu.item';
 import {useStyles} from '@hooks/Modular/use.styles';
 import ButtonComponent from '@components/Button/Button';
 import CommonStyles from '@styles/common/commonStyles';
-import {useAddress} from '@hooks/use.address';
+import {useUserAddress} from '@hooks/use.user.address';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {ProfileStackParamList} from '@navigation/types';
+import ActivityIndicatorComponent from '@screens/shared/activity.indicator';
 interface AddressInformationScreenProps {
   navigation: NativeStackNavigationProp<
     ProfileStackParamList,
@@ -20,7 +21,7 @@ const AddressInformationScreen: React.FC<AddressInformationScreenProps> = ({
   navigation,
 }) => {
   const styles = useStyles(createStyles);
-  const {address, loading, error, fetchAddress} = useAddress();
+  const {address, loading, error, fetchAddress} = useUserAddress();
 
   useEffect(() => {
     fetchAddress();
@@ -35,16 +36,30 @@ const AddressInformationScreen: React.FC<AddressInformationScreenProps> = ({
         />
         <View style={styles.textDiv}>
           <Text style={styles.text}>Şehir:</Text>
-          <Text style={styles.text}>{address?.city ?? 'Bilgi yok.'}</Text>
+          {loading ? (
+            <ActivityIndicatorComponent size="large" />
+          ) : (
+            <Text style={styles.text}>{address?.city ?? 'Bilgi yok.'}</Text>
+          )}
         </View>
         <View style={styles.textDiv}>
           <Text style={styles.text}>İlçe:</Text>
-          <Text style={styles.text}>{address?.district ?? 'Bilgi yok.'}</Text>
+          {loading ? (
+            <ActivityIndicatorComponent size="large" />
+          ) : (
+            <Text style={styles.text}>{address?.district ?? 'Bilgi yok.'}</Text>
+          )}
         </View>
 
         <View style={styles.textDiv}>
           <Text style={styles.text}>Bina numarası:</Text>
-          <Text style={styles.text}>{address?.buildingNo ?? 'Bilgi yok.'}</Text>
+          {loading ? (
+            <ActivityIndicatorComponent size="small" />
+          ) : (
+            <Text style={styles.text}>
+              {address?.buildingNo ?? 'Bilgi yok.'}
+            </Text>
+          )}
         </View>
       </View>
 
@@ -52,7 +67,9 @@ const AddressInformationScreen: React.FC<AddressInformationScreenProps> = ({
         style={styles.button}
         title="Adres Bilgilerini Değiştir"
         onPress={() => {
-          navigation.navigate('AddressChange');
+          navigation.navigate('AddressChange', {
+            address: address,
+          });
         }}
       />
     </View>
@@ -65,7 +82,6 @@ const createStyles = (colors: ColorsSchema) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      alignItems: 'center',
       backgroundColor: colors.background,
       paddingHorizontal: styleNumbers.space * 2,
       paddingVertical: styleNumbers.space * 3,
@@ -74,6 +90,7 @@ const createStyles = (colors: ColorsSchema) =>
       flex: 1,
     },
     image: {
+      alignSelf: 'center',
       tintColor: colors.icon,
       width: 100,
       height: 100,
