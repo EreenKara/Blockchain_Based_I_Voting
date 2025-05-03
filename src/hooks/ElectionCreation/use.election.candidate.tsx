@@ -3,22 +3,25 @@ import {useState} from 'react';
 import {CandidateViewModel} from '@viewmodels/candidate.viewmodel';
 import {electionService} from '@services/backend/concrete/service.container.instances';
 import {useAsync} from '@hooks/Modular/use.async';
+import CandidateCreateViewModel from '@viewmodels/candidate.create.viewmodel';
 
 const useElectionCandidate = (electionId: string | null) => {
-  const [candidates, setCandidates] = useState<CandidateViewModel[]>([
+  const [candidates, setCandidates] = useState<CandidateCreateViewModel[]>([
     {
       id: '',
       name: '',
       color: '#000000',
       votes: 0,
-      image: '',
+      image: null,
+      userId: null,
     },
     {
       id: '',
       name: '',
       color: '#000000',
       votes: 0,
-      image: '',
+      image: null,
+      userId: null,
     },
   ]);
 
@@ -39,7 +42,7 @@ const useElectionCandidate = (electionId: string | null) => {
   );
   const updateCandidateAt = (
     index: number,
-    updatedCandidate: CandidateViewModel,
+    updatedCandidate: CandidateCreateViewModel,
   ) => {
     setCandidates(prev => {
       const updated = [...prev];
@@ -56,13 +59,14 @@ const useElectionCandidate = (electionId: string | null) => {
         name: '',
         color: '#000000',
         votes: 0,
-        image: '',
+        image: null,
+        userId: null,
       },
     ]);
   };
 
   const handleElectionCandidateStep = async (
-    newCandidates: CandidateViewModel[],
+    newCandidates: CandidateCreateViewModel[],
   ): Promise<{success: boolean; error: string | null}> => {
     const result = await saveCandidates(newCandidates);
 

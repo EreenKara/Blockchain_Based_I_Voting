@@ -9,13 +9,26 @@ import LottieView from 'lottie-react-native';
 import {useNavigation} from '@react-navigation/native';
 import {SharedStackParamList} from '@navigation/types';
 import {RootStackParamList} from '@navigation/types';
+import CandidateVoteItemComponent from '@icomponents/CandidateVoteItem/candidate.vote.item';
+import CandidateViewModel from '@viewmodels/candidate.viewmodel';
 type VoteScreenProps = NativeStackScreenProps<SharedStackParamList, 'Vote'>;
+
+const candidates: CandidateViewModel[] = [
+  {
+    id: '',
+    color: '#000000',
+    votes: 2,
+    name: 'ERENN',
+    image: '',
+    userId: null,
+  },
+];
 
 const VoteScreen: React.FC<VoteScreenProps> = ({navigation}) => {
   const rootNavigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const styles = useStyles(createStyles);
-  const [done, setDone] = useState(true);
+  const [done, setDone] = useState(false);
   let {giveVote, loading, error} = useVote();
   if (loading) {
     return (
@@ -53,7 +66,7 @@ const VoteScreen: React.FC<VoteScreenProps> = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <Text>VoteScreen</Text>
+      <CandidateVoteItemComponent candidate={candidates[0]} />
     </View>
   );
 };

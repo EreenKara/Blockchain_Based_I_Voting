@@ -9,7 +9,7 @@ import {
   TextStyle,
   ViewStyle,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {ColorsSchema} from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
 import SearchBarComponent from '@components/SearchBar/search.bar';
@@ -23,7 +23,9 @@ interface SearchBarModalComponentProps {
   searchBarTitle?: string;
   style?: StyleProp<ViewStyle>;
   iconTitleStyle?: StyleProp<TextStyle>;
-  content?: React.ReactNode;
+  children?: React.ReactNode;
+  isOpened?: boolean;
+  setIsOpened?: (opened: boolean) => void;
 }
 
 const SearchBarModalComponent: React.FC<SearchBarModalComponentProps> = ({
@@ -33,14 +35,32 @@ const SearchBarModalComponent: React.FC<SearchBarModalComponentProps> = ({
   modalTitle = 'Search',
   searchBarTitle = '',
   handleSearch,
-  content,
+  children,
+  isOpened,
+  setIsOpened,
 }) => {
   const styles = useStyles(createStyles);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const Open = useCallback(() => {
+    if (isOpened !== undefined) {
+      // Eğer dışarıdan bir setIsOpened fonksiyonu geldiyse:
+      setIsOpened?.(true); // Optional chaining ile çağrılıyor
+    } else {
+      // Yoksa kendi internal state'ini kullan
+      setIsOpen(true);
+    }
+  }, [isOpened, setIsOpened]);
 
+  const Close = useCallback(() => {
+    if (isOpened !== undefined) {
+      setIsOpened?.(false);
+    } else {
+      setIsOpen(false);
+    }
+  }, [isOpened, setIsOpened]);
   return (
     <View style={[styles.container, style]}>
-      <TouchableOpacity style={styles.iconView} onPress={() => setIsOpen(true)}>
+      <TouchableOpacity style={styles.iconView} onPress={Open}>
         <Text
           style={[
             CommonStyles.textStyles.paragraph,
@@ -59,14 +79,12 @@ const SearchBarModalComponent: React.FC<SearchBarModalComponentProps> = ({
       <Modal
         animationType="slide"
         transparent={false}
-        visible={isOpen}
-        onRequestClose={() => setIsOpen(false)}>
+        visible={isOpened ?? isOpen}
+        onRequestClose={Close}>
         <View style={styles.fullScreenModal}>
           {/* Üst Kısım: Geri Tuşu ve Başlık */}
           <View style={styles.header}>
-            <TouchableOpacity
-              onPress={() => setIsOpen(false)}
-              style={styles.closeButton}>
+            <TouchableOpacity onPress={Close} style={styles.closeButton}>
               <Text style={styles.closeButtonText}>Kapat</Text>
             </TouchableOpacity>
             <Text style={styles.modalTitle}>{modalTitle}</Text>
@@ -74,16 +92,13 @@ const SearchBarModalComponent: React.FC<SearchBarModalComponentProps> = ({
           </View>
 
           {/* Arama Çubuğu */}
-          <SearchBarComponent
-            modalTitle={searchBarTitle}
-            titleStyle={styles.modalTitle}
-            handleSearch={handleSearch}
-          />
-
-          {/* İçerik */}
-          <View style={styles.contentContainer}>
-            {typeof content === 'string' ? <Text>{content}</Text> : content}
-          </View>
+          {children ?? (
+            <SearchBarComponent
+              modalTitle={searchBarTitle}
+              titleStyle={styles.modalTitle}
+              handleSearch={handleSearch}
+            />
+          )}
         </View>
       </Modal>
     </View>
@@ -103,6 +118,7 @@ const createStyles = (colors: ColorsSchema) =>
     iconView: {
       flexDirection: 'row',
       alignItems: 'center',
+      alignSelf: 'center',
       padding: styleNumbers.space,
       backgroundColor: colors.background,
       borderRadius: styleNumbers.borderRadius,

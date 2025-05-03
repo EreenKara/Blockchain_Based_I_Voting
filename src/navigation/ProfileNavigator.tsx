@@ -42,8 +42,7 @@ const ProfileNavigator: React.FC = () => {
         name="AddressChange"
         component={AddressChangeScreen}
         options={{
-          title: 'Profil',
-          headerShown: false,
+          title: 'Addresi Değiştir',
         }}
       />
       <Stack.Screen

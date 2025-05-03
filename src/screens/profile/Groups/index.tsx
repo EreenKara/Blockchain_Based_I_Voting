@@ -25,7 +25,9 @@ const GroupsScreen: React.FC<GroupsProps> = ({navigation}) => {
     groupsError: error,
     fetchGroups,
   } = useUserProfileContext();
-
+  useEffect(() => {
+    fetchGroups();
+  }, []);
   useEffect(() => {
     fetchGroups();
   }, [user]);

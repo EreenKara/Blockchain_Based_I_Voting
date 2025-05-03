@@ -28,8 +28,11 @@ export class ElectionService
   public async getPastElections(
     searchObject: ElectionSearchObject,
   ): Promise<LightElectionViewModel[]> {
+    console.log('getPastElections searchObject:', searchObject);
+    console.log('getPastElections searchObject.city:', searchObject.city);
     const response = await this.api.get<LightElectionViewModel[]>(
-      `${this.endpoint}/public/past/${searchObject.city ?? ''}`,
+      `${this.endpoint}/public/past`,
+      {params: {city: searchObject.city}},
     );
     return response.data;
   }
@@ -47,7 +50,8 @@ export class ElectionService
     searchObject: ElectionSearchObject,
   ): Promise<LightElectionViewModel[]> {
     const response = await this.api.get<LightElectionViewModel[]>(
-      `${this.endpoint}/public/current/${searchObject.city ?? ''}`,
+      `${this.endpoint}/public/current`,
+      {params: {city: searchObject.city}},
     );
     return response.data;
   }
@@ -65,7 +69,8 @@ export class ElectionService
     searchObject: ElectionSearchObject,
   ): Promise<LightElectionViewModel[]> {
     const response = await this.api.get<LightElectionViewModel[]>(
-      `${this.endpoint}/public/upcoming/${searchObject.city ?? ''}`,
+      `${this.endpoint}/public/upcoming`,
+      {params: {city: searchObject.city}},
     );
     return response.data;
   }
@@ -127,19 +132,25 @@ export class ElectionService
     electionId: string,
     electionAccess: ElectionAccessViewModel,
   ): Promise<void> {
-    const data = {
-      electionId: electionId,
-      ...electionAccess,
-    };
     if (electionAccess.accessType === 'public') {
-      await this.api.put<void>(
-        `${this.endpoint}/auth/setElectionAccess/public/${electionId}`,
-        electionAccess,
+      const data = {
+        electionId: electionId,
+        cityId: electionAccess.cityId,
+        districtId: electionAccess.districtId,
+      };
+      await this.api.post<void>(
+        `${this.endpoint}/auth/setElectionAccess/public`,
+        data,
       );
     } else if (electionAccess.accessType === 'private') {
-      await this.api.put<void>(
+      const data = {
+        electionId: electionId,
+        groups: electionAccess.groups,
+        users: electionAccess.users,
+      };
+      await this.api.post<void>(
         `${this.endpoint}/auth/setElectionAccess/private/${electionId}`,
-        electionAccess,
+        data,
       );
     }
   }

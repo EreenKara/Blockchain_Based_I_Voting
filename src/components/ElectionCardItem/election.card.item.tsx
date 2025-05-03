@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, Text, Image} from 'react-native';
 import createStyles from './election.card.item.style';
 import ButtonComponent from '@components/Button/Button';
@@ -6,7 +6,7 @@ import {useStyles} from '@hooks/Modular/use.styles';
 import {BaseElectionViewModel} from '@viewmodels/base.election.viewmodel';
 import {ElectionViewModel} from '@viewmodels/election.viewmodel';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {HomeStackParamList} from '@navigation/types';
+import {HomeStackParamList, ProfileStackParamList} from '@navigation/types';
 import {useNavigation} from '@react-navigation/native';
 
 const isElectionViewModel = (
@@ -22,7 +22,9 @@ interface ElectionCardItemProps {
   navigatePress: () => void;
   buttonTitle?: string;
 }
-type ElectionNavigationProp = NativeStackNavigationProp<HomeStackParamList>;
+type ElectionNavigationProp = NativeStackNavigationProp<
+  HomeStackParamList | ProfileStackParamList
+>;
 
 const ElectionCardItemComponent: React.FC<ElectionCardItemProps> = ({
   election,
@@ -52,36 +54,44 @@ const ElectionCardItemComponent: React.FC<ElectionCardItemProps> = ({
     }
     return buttonTitle;
   }, [election, buttonTitle]);
-  const getNavigation = useCallback(() => {
+  const toNavigate = useCallback(() => {
     if (isElectionViewModel(election)) {
       switch (election.step) {
         case 'Info completed':
-          return navigation.navigate('Shared', {
+          navigation.navigate('Shared', {
             screen: 'PublicOrPrivate',
             params: {electionId: election.id},
           });
+          break;
         case 'Access completed':
-          return navigation.navigate('Shared', {
+          navigation.navigate('Shared', {
+            screen: 'ElectionCandidates',
+            params: {electionId: election.id},
+          });
+          break;
+        case 'Candidate completed':
+          navigation.navigate('Shared', {
             screen: 'DefaultCustom',
             params: {electionId: election.id},
           });
-        case 'Candidate completed':
-          return navigation.navigate('Shared', {
-            screen: 'ElectionChoices',
-            params: {electionId: election.id},
-          });
+          break;
         case 'Choices completed':
-          return 'Give Approval';
-        case 'Election completed':
-          return navigation.navigate('SpecificElection', {
-            election: election as BaseElectionViewModel,
+          navigation.navigate('Shared', {
+            screen: 'SpecificElection',
+            params: {election: election as BaseElectionViewModel},
           });
+          break;
+        case 'Election completed':
+          navigation.navigate('Shared', {
+            screen: 'SpecificElection',
+            params: {election: election as BaseElectionViewModel},
+          });
+          break;
       }
     }
     return 'ToElection';
   }, [election]);
-  const title = getTitle();
-
+  const [title, setTitle] = useState(getTitle());
   return (
     <View style={styles.container}>
       <Image
@@ -111,7 +121,7 @@ const ElectionCardItemComponent: React.FC<ElectionCardItemProps> = ({
       </View>
 
       <View style={styles.rightContainer}>
-        <ButtonComponent title={title} onPress={navigatePress} />
+        <ButtonComponent title={title} onPress={toNavigate} />
       </View>
     </View>
   );

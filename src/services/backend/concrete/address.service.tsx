@@ -34,6 +34,15 @@ export class AddressService extends BaseBackendService {
     );
     return response.data.districts;
   }
+  public async getDistrictsByCityId(
+    cityId: string,
+  ): Promise<LocationViewModel[]> {
+    const response = await this.api.get<Districts>(
+      `${this.endpoint}/district/getDistrictsByCityId`,
+      {params: {cityId}},
+    );
+    return response.data.districts;
+  }
   public async getNeighborhoods(): Promise<LocationViewModel[]> {
     const response = await this.api.get<Neighborhoods>(
       `${this.endpoint}/neighborhood/list`,

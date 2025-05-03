@@ -4,6 +4,7 @@ export interface CandidateViewModel {
   color: string;
   votes: number;
   image?: string;
+  userId: string | null;
 }
 
 export default CandidateViewModel;

@@ -16,115 +16,32 @@ import useUsers from '@hooks/use.users';
 import useCreateGroup from '@hooks/use.create.group';
 import LightUserViewModel from '@viewmodels/light.user.viewmodel';
 import GroupViewModel from '@viewmodels/group.viewmodel';
-const initialUsers: UserViewModel[] = [
-  {
-    id: '1',
-    username: 'dalehouston',
-    name: 'Dale',
-    surname: 'Houston',
-    identityNumber: '1234567890',
-    email: 'dale@example.com',
-    phoneNumber: '1234567890',
-    image: require('@assets/images/no-avatar.png'),
-  },
-  {
-    id: '2',
-    username: 'madgemurphy',
-    name: 'Madge',
-    surname: 'Murphy',
-    identityNumber: '1234567890',
-    email: 'madge@example.com',
-    phoneNumber: '1234567890',
-    image: require('@assets/images/no-avatar.png'),
-  },
-  {
-    id: '3',
-    username: 'dalehouston',
-    name: 'Dale',
-    surname: 'Houston',
-    identityNumber: '1234567890',
-    email: 'dale@example.com',
-    phoneNumber: '1234567890',
-    image: require('@assets/images/no-avatar.png'),
-  },
-  {
-    id: '4',
-    username: 'madgemurphy',
-    name: 'Madge',
-    surname: 'Murphy',
-    identityNumber: '1234567890',
-    email: 'madge@example.com',
-    phoneNumber: '1234567890',
-    image: require('@assets/images/no-avatar.png'),
-  },
-];
+import SelectUsersComponent from '@icomponents/SelectUsers/select.users';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {ProfileStackParamList} from '@navigation/types';
+
+interface AddressInformationScreenProps {
+  navigation: NativeStackNavigationProp<
+    ProfileStackParamList,
+    'AddressInformation'
+  >;
+}
 
 /* Item id 'si bu screen de zorunlu olarak verilmeli. */
-const CreateGroupScreen = () => {
+const CreateGroupScreen: React.FC<AddressInformationScreenProps> = ({
+  navigation,
+}) => {
   const styles = useStyles(createStyles);
-  const {fetchUsers, users} = useUsers();
-  const {createGroup} = useCreateGroup();
+  const {createGroup, loading, success} = useCreateGroup();
   const [selectedUsers, setSelectedUsers] = useState<LightUserViewModel[]>([]);
-  const [searchQuery, setSearchQuery] = useState<string>('');
 
   const [groupName, setGroupName] = useState<string>('');
 
-  const handleSearch = useCallback((text: string) => {
-    console.log('text', text);
-    setSearchQuery(text);
-    /*const filteredUsers = initialUsers.filter(user =>
-      user.name?.toLowerCase().includes(text.toLowerCase()),
-    );
-    setUsers(filteredUsers);*/
-  }, []);
-
   useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  const handleUserSelect = useCallback(
-    (userId: string) => {
-      setSelectedUsers(prev => {
-        const isSelected = prev.some(user => user.id === userId);
-        return isSelected
-          ? prev.filter(user => user.id !== userId) // Kullanıcı seçiliyse, çıkar
-          : [...prev, users?.find(user => user.id === userId)!]; // Kullanıcı seçili değilse, ekle
-      });
-    },
-    [users], // 🔥 `users` bağımlılık olarak eklendi
-  );
-
-  const renderUserItem = ({item}: {item: UserViewModel}) => {
-    const isSelected = selectedUsers.some(user => user.id === item.id);
-
-    return (
-      <View style={styles.userItem}>
-        <Image
-          source={
-            item.image
-              ? {uri: item.image}
-              : require('@assets/images/no-avatar.png')
-          }
-          style={styles.avatar}
-        />
-        <View style={styles.userInfo}>
-          <Text style={styles.userName}>
-            {item?.name} {item?.surname}
-          </Text>
-          <Text style={styles.userTitle}>{item?.username}</Text>
-        </View>
-        <TouchableOpacity
-          style={[styles.groupButton, isSelected && styles.selectedGroupButton]}
-          onPress={() => handleUserSelect(item.id || '')}>
-          <Text
-            style={[styles.plusIcon, isSelected && styles.selectedPlusIcon]}>
-            {isSelected ? '✓' : '+'}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
+    if (success === true) {
+      navigation.replace('Groups');
+    }
+  }, [success]);
   return (
     <>
       <View style={styles.container}>
@@ -135,28 +52,10 @@ const CreateGroupScreen = () => {
             style={{marginBottom: styleNumbers.space}}
             placeholder="Grup Adı"></TextInputComponent>
         </View>
-        <SearchBarComponent
-          debounceTime={300}
-          modalTitle="Kişi Arayın"
-          handleSearch={handleSearch}
-          debounce={true}
+        <SelectUsersComponent
+          selectedUsers={selectedUsers}
+          setSelectedUsers={setSelectedUsers}
         />
-        <View style={styles.listContainer}>
-          <FlatListComponent
-            data={searchQuery ? users ?? [] : selectedUsers}
-            ListEmptyComponent={
-              <Text
-                style={[
-                  {...CommonStyles.textStyles.subtitle},
-                  {textAlign: 'center'},
-                ]}>
-                {searchQuery ? 'Kişi bulunamadı' : 'Seçilen kişiler yok'}
-              </Text>
-            }
-            renderItem={renderUserItem}
-            showsVerticalScrollIndicator={false}
-          />
-        </View>
         <View style={styles.createGroupButton}>
           <ButtonComponent
             title="Seçilen Kişilerden Grup Oluştur"

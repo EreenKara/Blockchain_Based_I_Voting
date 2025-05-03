@@ -13,8 +13,8 @@ export const useAddresses = () => {
   );
   const {execute: fetchDistricts, data: districts} = useAsync<
     LocationViewModel[]
-  >(() => {
-    return addressService.getDistricts();
+  >((cityId: string) => {
+    return addressService.getDistrictsByCityId(cityId);
   });
   const {execute: fetchNeighborhoods, data: neighborhoods} = useAsync<
     LocationViewModel[]

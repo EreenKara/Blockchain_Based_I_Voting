@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View, Image, Animated, Easing} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import CandidateViewModel from '@viewmodels/candidate.viewmodel';
 import Colors, {ColorsSchema} from '@styles/common/colors';
 import CommonStyles from '@styles/common/commonStyles';
@@ -11,9 +11,12 @@ import SearchBarModalComponent from '@components/SearchBarModal/search.bar.modal
 import ColorWheelPicker from '@components/ColorWheelPicker/color.wheel.picker';
 import ColorPicker from '@components/ColorPicker/color.picker';
 import {useStyles} from '@hooks/Modular/use.styles';
+import CandidateCreateViewModel from '@viewmodels/candidate.create.viewmodel';
+import LightUserViewModel from '@viewmodels/light.user.viewmodel';
+import SelectUserComponent from '@icomponents/SelectUser/select.user';
 interface CandidateInputItemComponentProps {
-  candidate: CandidateViewModel;
-  setCandidate: (candidate: CandidateViewModel) => void;
+  candidate: CandidateCreateViewModel;
+  setCandidate: (candidate: CandidateCreateViewModel) => void;
 }
 // TODO: IMAGE'i candidate'in icerisindeki image'e atamak gerek.
 const CandidateInputItemComponent: React.FC<
@@ -23,7 +26,13 @@ const CandidateInputItemComponent: React.FC<
   const [image, setImage] = useState<ExtendedAsset | null>(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(-100)).current;
-
+  const [user, setUser] = useState<LightUserViewModel | null>(null);
+  const setUserWrapper = useCallback((user: LightUserViewModel | null) => {
+    setUser(user);
+    candidate.userId = user?.id ?? null;
+    setIsOpen(false);
+  }, []);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   useEffect(() => {
     Animated.parallel([
       Animated.timing(fadeAnim, {
@@ -57,7 +66,14 @@ const CandidateInputItemComponent: React.FC<
           fieldName="image"
           setFieldValue={(string, value) => {
             setImage(value);
-            setCandidate({...candidate, image: value.uri});
+            if (value.uri && value.fileName && value.type) {
+              setCandidate({
+                ...candidate,
+                image: {uri: value.uri, name: value.fileName, type: value.type},
+              });
+            } else {
+              setCandidate({...candidate, image: null});
+            }
           }}
           responsive={false}
         />
@@ -65,7 +81,7 @@ const CandidateInputItemComponent: React.FC<
       <Animated.View style={styles.infoContainer}>
         <View style={styles.infoItem}>
           <TextInputComponent
-            label="Adı Soyadı"
+            label="Adayın veya Seçeneğin İsmi"
             value={candidate.name}
             onChangeText={(text: string) => {
               setCandidate({...candidate, name: text});
@@ -89,12 +105,21 @@ const CandidateInputItemComponent: React.FC<
           />
         </View>
         <View style={styles.infoItem}>
-          <SearchBarModalComponent
-            style={styles.searchBar}
-            handleSearch={() => {}}
-            title="Bir kullanıcı ile eslestirmek isterseniz arama yapınız"
-            modalTitle="Kullanıcı Ara"
-          />
+          <View style={styles.searchInfoItem}>
+            <SearchBarModalComponent
+              style={styles.searchBar}
+              handleSearch={() => {}}
+              title={
+                user
+                  ? user.name + ' ' + user.surname
+                  : 'Bir Kullanıcı ile eşleştirmek isterseniz arama yapınız'
+              }
+              isOpened={isOpen}
+              setIsOpened={setIsOpen}
+              modalTitle="Kullanıcı Ara">
+              <SelectUserComponent user={user} setUser={setUserWrapper} />
+            </SearchBarModalComponent>
+          </View>
         </View>
       </Animated.View>
     </Animated.View>
@@ -148,9 +173,12 @@ const createStyles = (colors: ColorsSchema) =>
     searchBar: {
       width: '100%',
       borderWidth: 1,
-      backgroundColor: colors.transition,
+      backgroundColor: colors.background,
       borderColor: colors.borderColor,
       borderRadius: styleNumbers.borderRadius,
       padding: styleNumbers.space,
+    },
+    searchInfoItem: {
+      flex: 1,
     },
   });

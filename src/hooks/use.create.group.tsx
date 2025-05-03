@@ -14,11 +14,12 @@ export default function useCreateGroup() {
     loading,
     error,
     data,
+    success,
   } = useAsync<void>(
     (group: GroupViewModel) => groupService.createGroup(group),
     {
       showNotificationOnError: true,
-      successMessage: 'Group fetched successfully',
+      successMessage: 'Grup Başarıyla Oluşturuldu.',
     },
   );
 
@@ -27,5 +28,6 @@ export default function useCreateGroup() {
     data,
     loading,
     error,
+    success,
   };
 }
