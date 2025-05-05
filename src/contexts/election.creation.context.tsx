@@ -8,11 +8,12 @@ import {CandidateViewModel} from '@viewmodels/candidate.viewmodel';
 import useElectionChoices from '@hooks/ElectionCreation/use.election.choices';
 import {ElectionChoiceViewModel} from '@viewmodels/election.choice.viewmodel';
 import {ElectionCreationViewModel} from '@viewmodels/election.creation.viewmodel';
+import CandidateCreateViewModel from '@viewmodels/candidate.create.viewmodel';
 
 interface ElectionCreationContextType {
   election: ElectionCreationViewModel | null;
   electionAccess: ElectionAccessViewModel | null;
-  candidates: CandidateViewModel[];
+  candidates: CandidateCreateViewModel[];
   choices: ElectionChoiceViewModel[];
   electionType: 'database' | 'blockchain' | null;
   setElectionType: (electionType: 'database' | 'blockchain' | null) => void;
@@ -47,7 +48,7 @@ interface ElectionCreationContextType {
     values: ElectionAccessViewModel,
   ) => Promise<{success: boolean; error: string | null}>;
   handleElectionCandidateStep: (
-    values: CandidateViewModel[],
+    values: CandidateCreateViewModel[],
   ) => Promise<{success: boolean; error: string | null}>;
   handleElectionChoiceStep: (
     values: ElectionChoiceViewModel[],
@@ -55,7 +56,7 @@ interface ElectionCreationContextType {
   resetElectionCreation: () => void;
   updateCandidateAt: (
     index: number,
-    updatedCandidate: CandidateViewModel,
+    updatedCandidate: CandidateCreateViewModel,
   ) => void;
   addCandidate: () => void;
 }
@@ -145,7 +146,9 @@ export const ElectionCreationProvider: React.FC<{
     return success;
   };
 
-  const handleElectionCandidateStep = async (values: CandidateViewModel[]) => {
+  const handleElectionCandidateStep = async (
+    values: CandidateCreateViewModel[],
+  ) => {
     const success = await originalHandleElectionCandidateStep(values);
     if (success) setStep('Candidate completed');
     return success;

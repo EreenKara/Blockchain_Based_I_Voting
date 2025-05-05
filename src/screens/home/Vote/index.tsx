@@ -1,5 +1,5 @@
-import {View, Text} from 'react-native';
-import React, {useState} from 'react';
+import {View, Text, ScrollView} from 'react-native';
+import React, {useCallback, useState} from 'react';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useStyles} from '@hooks/Modular/use.styles';
@@ -11,14 +11,25 @@ import {SharedStackParamList} from '@navigation/types';
 import {RootStackParamList} from '@navigation/types';
 import CandidateVoteItemComponent from '@icomponents/CandidateVoteItem/candidate.vote.item';
 import CandidateViewModel from '@viewmodels/candidate.viewmodel';
+import {FlatList} from 'react-native-gesture-handler';
+import FlatListComponent from '@components/List/flat.list';
+import ButtonComponent from '@components/Button/Button';
 type VoteScreenProps = NativeStackScreenProps<SharedStackParamList, 'Vote'>;
 
 const candidates: CandidateViewModel[] = [
   {
-    id: '',
+    id: '1',
     color: '#000000',
     votes: 2,
-    name: 'ERENN',
+    name: 'EREN',
+    image: '',
+    userId: null,
+  },
+  {
+    id: '2',
+    color: '#123123',
+    votes: 2,
+    name: 'Esma',
     image: '',
     userId: null,
   },
@@ -29,6 +40,10 @@ const VoteScreen: React.FC<VoteScreenProps> = ({navigation}) => {
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const styles = useStyles(createStyles);
   const [done, setDone] = useState(false);
+  const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(
+    null,
+  );
+
   let {giveVote, loading, error} = useVote();
   if (loading) {
     return (
@@ -66,7 +81,28 @@ const VoteScreen: React.FC<VoteScreenProps> = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <CandidateVoteItemComponent candidate={candidates[0]} />
+      <View style={styles.header}>
+        <Text style={styles.title}>Seçeneklerden Birine Oy Ver</Text>
+      </View>
+      <ScrollView contentContainerStyle={{padding: 8}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+          }}>
+          {candidates.map(candidate => (
+            <View key={candidate.id} style={{width: '48%', marginVertical: 8}}>
+              <CandidateVoteItemComponent
+                candidate={candidate}
+                selected={candidate.id === selectedCandidateId}
+                onSelect={setSelectedCandidateId}
+              />
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+      <ButtonComponent title="Oyunu Gonder" onPress={() => {}} />
     </View>
   );
 };

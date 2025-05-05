@@ -1,5 +1,5 @@
 import {Text, View, FlatList, ScrollView} from 'react-native';
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {HomeStackParamList, SharedStackParamList} from '@navigation/types';
 import ExtendedPickerComponent, {ChildRef} from '@icomponents/ExtendedPicker';
@@ -12,6 +12,7 @@ import {useStyles} from '@hooks/Modular/use.styles';
 import createStyles from './index.style';
 import {useElectionCreationContext} from '@contexts/election.creation.context';
 import useElectionCandidate from '@hooks/ElectionCreation/use.election.candidate';
+import LightUserViewModel from '@viewmodels/light.user.viewmodel';
 type Props = NativeStackScreenProps<SharedStackParamList, 'ElectionCandidates'>;
 
 const ElectionCandidatesScreen: React.FC<Props> = ({navigation, route}) => {
@@ -19,12 +20,22 @@ const ElectionCandidatesScreen: React.FC<Props> = ({navigation, route}) => {
   const [pickers, setPickers] = useState<number>(2);
   const {electionId} = route.params;
   const pickerRefs = useRef<React.RefObject<ChildRef>[]>([]);
-  const {candidates, updateCandidateAt, addCandidate} =
-    useElectionCandidate(electionId);
+  const {
+    candidates,
+    users,
+    success,
+    handleElectionCandidateStep,
+    setUserWrapper,
+    updateCandidateAt,
+    addCandidate,
+  } = useElectionCandidate(electionId);
 
   const handleSubmit = useCallback(() => {
-    navigation.navigate('ElectionChoices', {electionId});
+    handleElectionCandidateStep(candidates);
   }, []);
+  useEffect(() => {
+    if (success) navigation.navigate('ElectionChoices', {electionId});
+  }, [success]);
 
   const addCandidateView = useCallback(() => {
     setPickers(prev => prev + 1);
@@ -54,6 +65,10 @@ const ElectionCandidatesScreen: React.FC<Props> = ({navigation, route}) => {
                 candidate={candidates[index]}
                 setCandidate={candidate => {
                   updateCandidateAt(index, candidate);
+                }}
+                user={users[index]}
+                setUser={user => {
+                  setUserWrapper(index, user);
                 }}
               />
             }

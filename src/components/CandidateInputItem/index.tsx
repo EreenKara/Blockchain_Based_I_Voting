@@ -17,22 +17,26 @@ import SelectUserComponent from '@icomponents/SelectUser/select.user';
 interface CandidateInputItemComponentProps {
   candidate: CandidateCreateViewModel;
   setCandidate: (candidate: CandidateCreateViewModel) => void;
+  user: LightUserViewModel | null;
+  setUser: (user: LightUserViewModel | null) => void;
 }
 // TODO: IMAGE'i candidate'in icerisindeki image'e atamak gerek.
 const CandidateInputItemComponent: React.FC<
   CandidateInputItemComponentProps
-> = ({candidate, setCandidate}) => {
+> = ({candidate, setCandidate, user, setUser}) => {
   const styles = useStyles(createStyles);
-  const [image, setImage] = useState<ExtendedAsset | null>(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(-100)).current;
-  const [user, setUser] = useState<LightUserViewModel | null>(null);
+
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  useEffect(() => {
+    console.log('candidate', candidate);
+  }, []);
   const setUserWrapper = useCallback((user: LightUserViewModel | null) => {
     setUser(user);
     candidate.userId = user?.id ?? null;
     setIsOpen(false);
   }, []);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
   useEffect(() => {
     Animated.parallel([
       Animated.timing(fadeAnim, {
@@ -62,18 +66,13 @@ const CandidateInputItemComponent: React.FC<
       <Animated.View style={styles.imageContainer}>
         <ImagePickerComponent
           outStyle={styles.image}
-          image={image}
+          image={candidate.image}
           fieldName="image"
           setFieldValue={(string, value) => {
-            setImage(value);
-            if (value.uri && value.fileName && value.type) {
-              setCandidate({
-                ...candidate,
-                image: {uri: value.uri, name: value.fileName, type: value.type},
-              });
-            } else {
-              setCandidate({...candidate, image: null});
-            }
+            setCandidate({
+              ...candidate,
+              image: value,
+            });
           }}
           responsive={false}
         />

@@ -1,17 +1,19 @@
 // hooks/election/useElectionCandidate.ts
-import {useState} from 'react';
+import {useCallback, useState} from 'react';
 import {CandidateViewModel} from '@viewmodels/candidate.viewmodel';
 import {electionService} from '@services/backend/concrete/service.container.instances';
 import {useAsync} from '@hooks/Modular/use.async';
 import CandidateCreateViewModel from '@viewmodels/candidate.create.viewmodel';
+import LightUserViewModel from '@viewmodels/light.user.viewmodel';
 
 const useElectionCandidate = (electionId: string | null) => {
+  const [users, setUsers] = useState<Array<LightUserViewModel | null>>([]);
+
   const [candidates, setCandidates] = useState<CandidateCreateViewModel[]>([
     {
       id: '',
       name: '',
       color: '#000000',
-      votes: 0,
       image: null,
       userId: null,
     },
@@ -19,7 +21,6 @@ const useElectionCandidate = (electionId: string | null) => {
       id: '',
       name: '',
       color: '#000000',
-      votes: 0,
       image: null,
       userId: null,
     },
@@ -29,9 +30,10 @@ const useElectionCandidate = (electionId: string | null) => {
     execute: saveCandidates,
     loading: submitting,
     error,
+    success,
     reset: resetSubmission,
   } = useAsync<void>(
-    async (newCandidates: CandidateViewModel[]) => {
+    async (newCandidates: CandidateCreateViewModel[]) => {
       if (!electionId) throw new Error('Election ID is not set.');
       await electionService.putElectionCandidates(electionId, newCandidates);
     },
@@ -58,13 +60,22 @@ const useElectionCandidate = (electionId: string | null) => {
         id: '',
         name: '',
         color: '#000000',
-        votes: 0,
         image: null,
         userId: null,
       },
     ]);
+    setUsers(prev => [...prev, null]);
   };
-
+  const setUserWrapper = useCallback(
+    (index: number, updatedUser: LightUserViewModel | null) => {
+      setUsers(prev => {
+        const updated = [...prev];
+        updated[index] = updatedUser;
+        return updated;
+      });
+    },
+    [],
+  );
   const handleElectionCandidateStep = async (
     newCandidates: CandidateCreateViewModel[],
   ): Promise<{success: boolean; error: string | null}> => {
@@ -91,6 +102,9 @@ const useElectionCandidate = (electionId: string | null) => {
     addCandidate,
     handleElectionCandidateStep,
     reset,
+    users,
+    setUserWrapper,
+    success,
   };
 };
 

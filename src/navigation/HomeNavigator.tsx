@@ -16,6 +16,7 @@ import {useElectionCreationContext, useThemeColors} from '@contexts/index';
 import ElectionResultScreen from '@screens/shared/ElectionResult';
 import VoteScreen from '@screens/home/Vote';
 import SharedNavigator from './shared.navigator';
+import PrivateElectionsScreen from '@screens/home/PrivateElections';
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 
 const HomeNavigator: React.FC = () => {
@@ -83,7 +84,12 @@ const HomeNavigator: React.FC = () => {
       <Stack.Screen
         name="Elections"
         component={ElectionsScreen}
-        options={{title: 'Seçimler'}}
+        options={{title: 'Public Seçimler'}}
+      />
+      <Stack.Screen
+        name="PrivateElections"
+        component={PrivateElectionsScreen}
+        options={{title: 'Private Seçimler'}}
       />
       <Stack.Screen
         name="SpecificElection"

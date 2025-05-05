@@ -9,6 +9,7 @@ const createStyles = (colors: ColorsSchema) =>
   StyleSheet.create({
     container: {
       flex: 1,
+      padding: styleNumbers.space,
       backgroundColor: colors.background,
     },
     loadingContainer: {
@@ -33,6 +34,19 @@ const createStyles = (colors: ColorsSchema) =>
     lottie: {
       width: width,
       height: width,
+    },
+    header: {
+      margin: styleNumbers.space,
+      width: '100%',
+      alignItems: 'center',
+      marginHorizontal: 'auto',
+    },
+    title: {
+      ...CommonStyles.textStyles.title,
+    },
+    text: {
+      ...CommonStyles.textStyles.subtitle,
+      margin: styleNumbers.space,
     },
   });
 

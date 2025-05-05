@@ -6,6 +6,8 @@ import {ElectionAccessViewModel} from '@viewmodels/election.access.viewmodel';
 import {CandidateViewModel} from '@viewmodels/candidate.viewmodel';
 import {ElectionChoiceViewModel} from '@viewmodels/election.choice.viewmodel';
 import {ElectionCreationViewModel} from '@viewmodels/election.creation.viewmodel';
+import CandidateCreateViewModel from '@viewmodels/candidate.create.viewmodel';
+import {ImageViewModel} from '@viewmodels/image.viewmodel';
 
 export class ElectionService
   extends BaseBackendService
@@ -156,22 +158,47 @@ export class ElectionService
   }
   public async putElectionCandidates(
     electionId: string,
-    candidates: CandidateViewModel[],
+    candidates: CandidateCreateViewModel[],
   ): Promise<void> {
-    await this.api.put<CandidateViewModel[]>(
-      `${this.endpoint}/${electionId}/candidates`,
-      candidates,
+    const formData = new FormData();
+    formData.append('candidates', JSON.stringify(candidates));
+
+    // Step 2: Append image files in the same order
+    candidates.forEach(candidate => {
+      if (candidate.image) {
+        formData.append('images', {
+          uri: candidate.image.uri,
+          name: candidate.image.fileName,
+          type: candidate.image.type,
+        } as ImageViewModel); // React Native workaround
+      } else {
+        formData.append('images', {
+          uri: null,
+          name: null,
+          type: null,
+        }); // React Native workaround
+      }
+    });
+    await this.api.post<void>(
+      `${this.endpoint}/auth/add-candidates`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      },
     );
   }
   public async putElectionChoices(
     electionId: string,
     choices: ElectionChoiceViewModel[],
   ): Promise<void> {
-    await this.api.put<ElectionChoiceViewModel[]>(
+    await this.api.post<ElectionChoiceViewModel[]>(
       `${this.endpoint}/${electionId}/choices`,
       choices,
     );
   }
+
   public async giveVote(
     electionId: string,
     candidateId: string,

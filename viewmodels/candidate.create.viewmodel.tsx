@@ -1,11 +1,11 @@
+import {ExtendedAsset} from '@hooks/useCamera';
 import {ImageViewModel} from './image.viewmodel';
 
 export interface CandidateCreateViewModel {
   id: string;
   name: string;
   color: string;
-  votes: number;
-  image?: ImageViewModel | null;
+  image: ExtendedAsset | null;
   userId: string | null;
 }
 

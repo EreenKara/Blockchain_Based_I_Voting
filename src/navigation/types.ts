@@ -40,6 +40,7 @@ export type HomeStackParamList = {
   ElectionInfo: {electionType: 'database' | 'blockchain'};
   BeCandidate: undefined;
   Elections: undefined;
+  PrivateElections: undefined;
   SpecificElection: {election: LightElectionViewModel};
   Success: undefined;
   ElectionResult: {election: LightElectionViewModel};
