@@ -1,8 +1,17 @@
-export function hexToRgba(hex: string, alpha: number = 1): string {
-  // # işaretini temizle
-  hex = hex.replace(/^#/, '');
+export function hexToRgba(color: string, alpha: number = 1): string {
+  // Eğer color zaten rgba formatındaysa: rgba(255, 255, 255, 0.5)
+  if (color.startsWith('rgba')) {
+    return color.replace(/rgba\(([^)]+),\s*[\d.]+\)/, `rgba($1, ${alpha})`);
+  }
 
-  // 3 karakterli ise 6 karaktere dönüştür (#abc => #aabbcc)
+  // Eğer color rgb formatındaysa: rgb(255, 255, 255)
+  if (color.startsWith('rgb')) {
+    return color.replace(/rgb\(([^)]+)\)/, `rgba($1, ${alpha})`);
+  }
+
+  // HEX ise: #fff veya #ffffff
+  let hex = color.replace(/^#/, '');
+
   if (hex.length === 3) {
     hex = hex
       .split('')

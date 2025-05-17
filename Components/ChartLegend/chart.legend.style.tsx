@@ -61,7 +61,9 @@ const ChartLegendComponent: React.FC<ChartLegendComponentProps> = ({
               },
             ]}
           />
-          <Text style={CommonStyles.textStyles.title}>{candidate.name}</Text>
+          <Text style={CommonStyles.textStyles.title}>
+            {candidate.name} : {candidate.votes}
+          </Text>
         </Animated.View>
       ))}
     </View>

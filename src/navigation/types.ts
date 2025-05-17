@@ -40,11 +40,12 @@ export type HomeStackParamList = {
   ElectionInfo: {electionType: 'database' | 'blockchain'};
   BeCandidate: undefined;
   Elections: undefined;
-  PrivateElections: undefined;
+  PrivateElections: {timeframe: 'past' | 'current' | 'upcoming'};
   SpecificElection: {election: LightElectionViewModel};
   Success: undefined;
   ElectionResult: {election: LightElectionViewModel};
   Shared: NavigatorScreenParams<SharedStackParamList>;
+  PastCurrentUpcoming: undefined;
 };
 
 export type ProfileStackParamList = {
@@ -71,5 +72,6 @@ export type SharedStackParamList = {
   SpecificElection: {election: LightElectionViewModel};
   ElectionResult: {election: LightElectionViewModel};
   ListElections: {type: ElectionType};
-  Vote: undefined;
+  Vote: {electionId: string | null};
+  ElectionConfirm: {electionId: string | null};
 };

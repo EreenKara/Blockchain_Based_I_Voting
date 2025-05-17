@@ -44,6 +44,7 @@ export class UserService extends BaseBackendService implements IUserService {
       return response.data.jwtToken;
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
+        error.response?.status;
         let message = error.response?.data?.message || 'Giriş başarısız.';
         if (Array.isArray(error.response?.data?.errors)) {
           message += `\n${error.response.data.errors.join('\n')}`;

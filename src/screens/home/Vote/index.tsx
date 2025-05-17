@@ -1,5 +1,5 @@
 import {View, Text, ScrollView} from 'react-native';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useStyles} from '@hooks/Modular/use.styles';
@@ -14,37 +14,40 @@ import CandidateViewModel from '@viewmodels/candidate.viewmodel';
 import {FlatList} from 'react-native-gesture-handler';
 import FlatListComponent from '@components/List/flat.list';
 import ButtonComponent from '@components/Button/Button';
+import ActivityIndicatorComponent from '@screens/shared/activity.indicator';
 type VoteScreenProps = NativeStackScreenProps<SharedStackParamList, 'Vote'>;
 
-const candidates: CandidateViewModel[] = [
-  {
-    id: '1',
-    color: '#000000',
-    votes: 2,
-    name: 'EREN',
-    image: '',
-    userId: null,
-  },
-  {
-    id: '2',
-    color: '#123123',
-    votes: 2,
-    name: 'Esma',
-    image: '',
-    userId: null,
-  },
-];
-
-const VoteScreen: React.FC<VoteScreenProps> = ({navigation}) => {
+const VoteScreen: React.FC<VoteScreenProps> = ({navigation, route}) => {
   const rootNavigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const styles = useStyles(createStyles);
-  const [done, setDone] = useState(false);
   const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(
     null,
   );
+  const {electionId} = route.params;
 
-  let {giveVote, loading, error} = useVote();
+  let {
+    giveVote,
+    loading,
+    error,
+    success,
+    fetchCandidates,
+    candidates,
+    fetchCandidatesLoading,
+    fetchCandidatesError,
+    fetchCandidatesSuccess,
+    getElection,
+    election,
+    accessLoading,
+    accessSuccess,
+    accessError,
+  } = useVote();
+
+  useEffect(() => {
+    fetchCandidates(electionId);
+    getElection(electionId);
+  }, []);
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -59,7 +62,7 @@ const VoteScreen: React.FC<VoteScreenProps> = ({navigation}) => {
       </View>
     );
   }
-  if (done) {
+  if (success) {
     return (
       <View style={styles.loadingContainer}>
         <LottieView
@@ -78,7 +81,9 @@ const VoteScreen: React.FC<VoteScreenProps> = ({navigation}) => {
       </View>
     );
   }
-
+  if (!candidates) {
+    <ActivityIndicatorComponent />;
+  }
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -91,7 +96,7 @@ const VoteScreen: React.FC<VoteScreenProps> = ({navigation}) => {
             flexWrap: 'wrap',
             justifyContent: 'space-between',
           }}>
-          {candidates.map(candidate => (
+          {candidates?.map(candidate => (
             <View key={candidate.id} style={{width: '48%', marginVertical: 8}}>
               <CandidateVoteItemComponent
                 candidate={candidate}
@@ -102,7 +107,12 @@ const VoteScreen: React.FC<VoteScreenProps> = ({navigation}) => {
           ))}
         </View>
       </ScrollView>
-      <ButtonComponent title="Oyunu Gonder" onPress={() => {}} />
+      <ButtonComponent
+        title="Oyunu Gonder"
+        onPress={() => {
+          giveVote(electionId, selectedCandidateId, election?.accessType);
+        }}
+      />
     </View>
   );
 };

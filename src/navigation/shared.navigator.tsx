@@ -18,6 +18,7 @@ import ElectionResultScreen from '@screens/shared/ElectionResult';
 import SpecificElectionScreen from '@screens/shared/SpecificElection';
 import ListElectionsScreen from '@screens/shared/ListElections';
 import VoteScreen from '@screens/home/Vote';
+import ElectionConfirmScreen from '@screens/home/ElectionConfirm';
 
 const Stack = createNativeStackNavigator<SharedStackParamList>();
 
@@ -142,6 +143,11 @@ const SharedNavigator: React.FC = () => {
         name="Vote"
         component={VoteScreen}
         options={{title: 'Oy Ver'}}
+      />
+      <Stack.Screen
+        name="ElectionConfirm"
+        component={ElectionConfirmScreen}
+        options={{title: 'Seçim Onaylama'}}
       />
     </Stack.Navigator>
   );

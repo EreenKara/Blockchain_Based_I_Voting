@@ -66,31 +66,28 @@ export default CandidateItemComponent;
 const createStyles = (colors: ColorsSchema) =>
   StyleSheet.create({
     container: {
+      paddingVertical: styleNumbers.space,
       width: '100%',
-      backgroundColor: colors.background,
-      flexDirection: 'row',
       flexWrap: 'wrap',
-      ...CommonStyles.shadowStyle,
-      borderRadius: styleNumbers.borderRadius,
-      marginVertical: styleNumbers.space,
-    },
-    imageContainer: {
-      width: '65%',
-      marginRight: styleNumbers.space * 2,
+      alignItems: 'center',
       backgroundColor: colors.transition,
       ...CommonStyles.shadowStyle,
       borderRadius: styleNumbers.borderRadius,
+    },
+    imageContainer: {
+      width: '70%',
+      marginRight: styleNumbers.space * 2,
+
       overflow: 'hidden',
     },
     image: {
-      height: 300,
+      height: 350,
     },
     infoContainer: {
+      justifyContent: 'center',
+      alignItems: 'center',
       padding: styleNumbers.space,
-      width: '30%',
-      backgroundColor: colors.transition,
+      width: '100%',
       gap: styleNumbers.space * 2,
-      ...CommonStyles.shadowStyle,
-      borderRadius: styleNumbers.borderRadius,
     },
   });

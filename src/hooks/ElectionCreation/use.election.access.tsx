@@ -13,6 +13,7 @@ const useElectionAccess = (electionId: string | null) => {
     execute: saveAccess,
     loading: submitting,
     error,
+    success,
     reset: resetSubmission,
   } = useAsync<void>(
     async (values: ElectionAccessViewModel) => {
@@ -67,6 +68,7 @@ const useElectionAccess = (electionId: string | null) => {
     electionAccess,
     submitting,
     error,
+    success,
     handleElectionAccessStep,
     reset,
   };

@@ -97,15 +97,6 @@ const ElectionInfoScreen: React.FC<Props> = ({navigation}) => {
                 setFieldValue={setFieldValue}
                 responsive={false}
               />
-              <Button
-                title="Go to Election Info"
-                onPress={() =>
-                  navigation.navigate('Shared', {
-                    screen: 'PublicOrPrivate',
-                    params: {electionId: electionId},
-                  })
-                }
-              />
               <ButtonComponent
                 title="Kaydet ve Erişilebilirlik Sayfasına Git"
                 onPress={() => handleSubmit(values)}

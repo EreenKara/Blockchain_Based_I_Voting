@@ -47,7 +47,7 @@ const ElectionCardItemComponent: React.FC<ElectionCardItemProps> = ({
         case 'Candidate completed':
           return 'To Choices';
         case 'Choices completed':
-          return 'Give Approval';
+          return 'Approve Election';
         case 'Election completed':
           return 'To Election';
       }
@@ -77,8 +77,8 @@ const ElectionCardItemComponent: React.FC<ElectionCardItemProps> = ({
           break;
         case 'Choices completed':
           navigation.navigate('Shared', {
-            screen: 'SpecificElection',
-            params: {election: election as BaseElectionViewModel},
+            screen: 'ElectionConfirm',
+            params: {electionId: election.id},
           });
           break;
         case 'Election completed':
@@ -87,9 +87,19 @@ const ElectionCardItemComponent: React.FC<ElectionCardItemProps> = ({
             params: {election: election as BaseElectionViewModel},
           });
           break;
+        default:
+          navigation.navigate('Shared', {
+            screen: 'SpecificElection',
+            params: {election: election as BaseElectionViewModel},
+          });
+          break;
       }
+    } else {
+      navigation.navigate('Shared', {
+        screen: 'SpecificElection',
+        params: {election: election as BaseElectionViewModel},
+      });
     }
-    return 'ToElection';
   }, [election]);
   const [title, setTitle] = useState(getTitle());
   return (
@@ -113,11 +123,7 @@ const ElectionCardItemComponent: React.FC<ElectionCardItemProps> = ({
           {new Date(election.endDate).toLocaleDateString('tr-TR')}
         </Text>
 
-        {isElectionViewModel(election) && (
-          <>
-            <Text style={styles.text}>Veri tipi: {election.electionType}</Text>
-          </>
-        )}
+        {isElectionViewModel(election) && <></>}
       </View>
 
       <View style={styles.rightContainer}>

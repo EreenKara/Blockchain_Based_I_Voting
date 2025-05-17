@@ -1,5 +1,5 @@
 // hooks/election/useElectionCandidate.ts
-import {useCallback, useState} from 'react';
+import {SetStateAction, useCallback, useState} from 'react';
 import {CandidateViewModel} from '@viewmodels/candidate.viewmodel';
 import {electionService} from '@services/backend/concrete/service.container.instances';
 import {useAsync} from '@hooks/Modular/use.async';
@@ -44,11 +44,21 @@ const useElectionCandidate = (electionId: string | null) => {
   );
   const updateCandidateAt = (
     index: number,
-    updatedCandidate: CandidateCreateViewModel,
+    updater: SetStateAction<CandidateCreateViewModel>,
   ) => {
     setCandidates(prev => {
       const updated = [...prev];
-      updated[index] = updatedCandidate;
+      const prevCandidate = prev[index];
+
+      updated[index] =
+        typeof updater === 'function'
+          ? (
+              updater as (
+                prev: CandidateCreateViewModel,
+              ) => CandidateCreateViewModel
+            )(prevCandidate)
+          : updater;
+
       return updated;
     });
   };
@@ -71,6 +81,19 @@ const useElectionCandidate = (electionId: string | null) => {
       setUsers(prev => {
         const updated = [...prev];
         updated[index] = updatedUser;
+        return updated;
+      });
+
+      setCandidates(prev => {
+        const updated = [...prev];
+        const prevCandidate = prev[index];
+
+        // 🔧 Yeni bir obje oluştur
+        updated[index] = {
+          ...prevCandidate,
+          userId: updatedUser?.id ?? null,
+        };
+
         return updated;
       });
     },

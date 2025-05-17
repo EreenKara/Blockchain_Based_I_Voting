@@ -2,6 +2,7 @@
 import {useAsync} from '@hooks/Modular/use.async';
 import {groupService} from '@services/backend/concrete/service.container.instances';
 import GroupViewModel from '@viewmodels/group.viewmodel';
+import LightGroupViewModel from '@viewmodels/light.group.viewmodel';
 
 export default function useGroups() {
   const {
@@ -11,9 +12,12 @@ export default function useGroups() {
     error,
     retry,
     reset,
-  } = useAsync<GroupViewModel[]>(() => groupService.getGroupsCurrentUser(), {
-    showNotificationOnError: true,
-  });
+  } = useAsync<LightGroupViewModel[]>(
+    () => groupService.getGroupsCurrentUser(),
+    {
+      showNotificationOnError: true,
+    },
+  );
 
   return {
     groups,

@@ -24,17 +24,18 @@ const ElectionCandidatesScreen: React.FC<Props> = ({navigation, route}) => {
     candidates,
     users,
     success,
+    submitting,
     handleElectionCandidateStep,
     setUserWrapper,
     updateCandidateAt,
     addCandidate,
   } = useElectionCandidate(electionId);
 
-  const handleSubmit = useCallback(() => {
-    handleElectionCandidateStep(candidates);
-  }, []);
+  const handleSubmit = () => {
+    handleElectionCandidateStep([...candidates]);
+  };
   useEffect(() => {
-    if (success) navigation.navigate('ElectionChoices', {electionId});
+    if (success) navigation.navigate('DefaultCustom', {electionId});
   }, [success]);
 
   const addCandidateView = useCallback(() => {
@@ -63,8 +64,8 @@ const ElectionCandidatesScreen: React.FC<Props> = ({navigation, route}) => {
             content={
               <CandidateInputItemComponent
                 candidate={candidates[index]}
-                setCandidate={candidate => {
-                  updateCandidateAt(index, candidate);
+                setCandidate={updater => {
+                  updateCandidateAt(index, updater);
                 }}
                 user={users[index]}
                 setUser={user => {
@@ -82,11 +83,13 @@ const ElectionCandidatesScreen: React.FC<Props> = ({navigation, route}) => {
           style={styles.addCandidateButton}
           title="Aday Ekle"
           onPress={addCandidateView}
+          disabled={submitting}
         />
         <ButtonComponent
           style={styles.button}
           title="To Choices"
           onPress={handleSubmit}
+          disabled={submitting}
         />
       </View>
     </KeyboardAwareScrollView>

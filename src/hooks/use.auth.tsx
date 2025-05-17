@@ -3,6 +3,7 @@ import {useAuthContext} from '@contexts/index';
 import {userService} from '@services/backend/concrete/service.container.instances';
 import {RegisterViewModel} from '@viewmodels/register.viewmodel';
 import {useNotification} from '@contexts/notification.context';
+import {BackendError} from '@services/backend/concrete/backend.error';
 const codeLength = 6;
 
 //login page or not gibi düşün.
@@ -41,10 +42,10 @@ export const useAuth = (login: boolean = true) => {
       }
       authLogin(token);
 
-      return true;
+      return {ok: true};
     } catch (error: any) {
       setSubmitError(error.message);
-      return false;
+      return {ok: false, status: error.response?.status};
     }
   };
 

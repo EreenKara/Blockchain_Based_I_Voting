@@ -30,10 +30,14 @@ const LoginScreen: React.FC<Props> = ({navigation}) => {
       rememberMe: boolean;
     }) => {
       const result = await submitLogin(values);
-      if (result === true) {
+      if (result.ok === true) {
         homeNavigation.reset({
           index: 0,
           routes: [{name: 'Main'}],
+        });
+      } else if (result.status === 403) {
+        navigation.navigate('EmailConfirm', {
+          emailOrIdentity: values.emailOrIdentity,
         });
       }
     },
@@ -43,7 +47,7 @@ const LoginScreen: React.FC<Props> = ({navigation}) => {
   const initialValues = {
     emailOrIdentity: emailOrIdentity,
     password: '',
-    rememberMe: false,
+    rememberMe: emailOrIdentity ? true : false,
   };
 
   if (loading) {
@@ -126,21 +130,6 @@ const LoginScreen: React.FC<Props> = ({navigation}) => {
               style={styles.button}>
               Hesabın yok mu? Kayıt Ol
             </Button>
-            <Button
-              labelStyle={styles.buttonLabel}
-              onPress={() =>
-                navigation.navigate('EmailConfirm', {
-                  emailOrIdentity: values.emailOrIdentity,
-                })
-              }
-              style={styles.button}>
-              Dogrulama sayfasina git
-            </Button>
-            <ButtonComponent
-              title="Deneme sayfasina git"
-              onPress={() => navigation.navigate('Deneme')}
-              style={styles.button}
-            />
           </>
         )}
       </Formik>

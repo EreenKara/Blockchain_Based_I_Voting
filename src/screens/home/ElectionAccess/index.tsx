@@ -26,6 +26,8 @@ import {SharedStackParamList} from '@navigation/types';
 import {useNavigation} from '@react-navigation/native';
 import ErrorScreenComponent from '@screens/shared/error.screen';
 import useElectionAccess from '@hooks/ElectionCreation/use.election.access';
+import LightGroupViewModel from '@viewmodels/light.group.viewmodel';
+import SelectUsersComponent from '@icomponents/SelectUsers/select.users';
 
 type Props = NativeStackScreenProps<SharedStackParamList, 'ElectionAccess'>;
 
@@ -46,9 +48,14 @@ const ElectionAccessScreen: React.FC<Props> = ({navigation, route}) => {
       />
     );
   }
-  const {electionAccess, submitting, error, handleElectionAccessStep} =
+  const {electionAccess, submitting, error, handleElectionAccessStep, success} =
     useElectionAccess(electionId);
 
+  useEffect(() => {
+    if (success) {
+      navigation.navigate('ElectionCandidates', {electionId});
+    }
+  }, [success]);
   let form;
   if (accessType === 'public') {
     interface FormValues {
@@ -113,47 +120,21 @@ const ElectionAccessScreen: React.FC<Props> = ({navigation, route}) => {
     const [searchQuery, setSearchQuery] = useState('');
     const {users, fetchUsers} = useUsers();
     const {groups, fetchGroups} = useGroups();
-    const [handledGroups, setHandledGroups] = useState<GroupViewModel[]>([]);
-    const [pickerNumber, setPickerNumber] = useState(1); // Başlangıçta bir picker olacak
+    const [handledGroups, setHandledGroups] = useState<LightGroupViewModel[]>(
+      [],
+    );
+    const [selectedUsers, setSelectedUsers] = useState<LightUserViewModel[]>(
+      [],
+    );
 
+    const [pickerNumber, setPickerNumber] = useState(1); // Başlangıçta bir picker olacak
+    useEffect(() => {
+      if (groups) setHandledGroups(Array.from(groups || []));
+    }, [groups]);
     useEffect(() => {
       if (user !== null) {
         fetchGroups(user.id);
-        setHandledGroups(Array.from(groups || []));
         fetchUsers();
-      } else {
-        setHandledGroups([
-          {
-            id: '1',
-            name: 'test',
-            users: [],
-          },
-          {
-            id: '2',
-            name: 'test2',
-            users: [],
-          },
-          {
-            id: '3',
-            name: 'test3',
-            users: [],
-          },
-          {
-            id: '4',
-            name: 'test4',
-            users: [],
-          },
-          {
-            id: '5',
-            name: 'test5',
-            users: [],
-          },
-          {
-            id: '6',
-            name: 'test6',
-            users: [],
-          },
-        ]);
       }
     }, [user?.id]);
 
@@ -185,17 +166,8 @@ const ElectionAccessScreen: React.FC<Props> = ({navigation, route}) => {
           const result = await handleElectionAccessStep({
             accessType: 'private',
             groups: values.groups,
-            users: values.users,
+            users: selectedUsers,
           });
-
-          showNotification({
-            message: error || 'Seçim başarıyla oluşturuldu.',
-            type: 'success',
-            modalType: 'snackbar',
-          });
-          if (result) {
-            navigation.navigate('ElectionCandidates', {electionId});
-          }
         }}>
         {({values, handleChange, setFieldValue}) => {
           /*
@@ -259,20 +231,24 @@ useEffect(() => {
                   title="Kullanıcı Aramak İçin Tıkla"
                   handleSearch={() => {}}
                   modalTitle="Electiona Eklemek İçin Kullanıcı Ara"
-                  searchBarTitle="Kullanıcı Ara"
-                />
+                  searchBarTitle="Kullanıcı Ara">
+                  <SelectUsersComponent
+                    selectedUsers={selectedUsers}
+                    setSelectedUsers={setSelectedUsers}
+                  />
+                </SearchBarModalComponent>
               </View>
               <View style={styles.users}>
                 <View style={styles.headerContainer}>
                   <Text style={styles.subtitle}>Kullanıcılar</Text>
                 </View>
                 <View style={styles.userListContainer}>
-                  {users && users.length <= 0 ? (
+                  {selectedUsers && selectedUsers.length <= 0 ? (
                     <Text style={styles.subtitle}>
                       Hiçbir kullanıcı seçilmedi
                     </Text>
                   ) : (
-                    users
+                    selectedUsers
                       ?.filter(user =>
                         user.name
                           .toLowerCase()
@@ -310,15 +286,6 @@ useEffect(() => {
             if (formikRef.current) {
               formikRef.current.handleSubmit();
             }
-          }}
-          disabled={submitting}
-        />
-
-        <ButtonComponent
-          style={styles.button}
-          title="To candidates page"
-          onPress={() => {
-            navigation.navigate('ElectionCandidates', {electionId});
           }}
           disabled={submitting}
         />

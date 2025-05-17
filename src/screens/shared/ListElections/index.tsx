@@ -33,15 +33,15 @@ const ListElectionsScreen: React.FC<ListElectionsScreenProps> = ({
   const {elections, loading, fetchElections} = useElection(type);
   const {search} = useSearchContext();
   // Her 30 saniyede bir seçimleri güncelle
-  useEffect(() => {
-    const interval = setInterval(() => {
-      console.log('Sehir ismi,' + search.city);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     console.log('Sehir ismi,' + search.city);
 
-      fetchElections({city: search.city});
-    }, 30000);
-    navigation.setOptions({title: title});
-    return () => clearInterval(interval);
-  }, []);
+  //     fetchElections({city: search.city});
+  //   }, 30000);
+  //   navigation.setOptions({title: title});
+  //   return () => clearInterval(interval);
+  // }, []);
 
   if (loading) {
     return (

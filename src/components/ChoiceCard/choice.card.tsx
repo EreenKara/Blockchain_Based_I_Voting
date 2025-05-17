@@ -19,6 +19,7 @@ interface ChoiceCardComponentProps {
   height?: number;
   description?: string;
   tintColor?: string;
+  disabled?: boolean;
 }
 
 const ChoiceCardComponent = ({
@@ -28,6 +29,7 @@ const ChoiceCardComponent = ({
   onPress,
   tintColor,
   height = windowWidth * 0.8,
+  disabled = false,
 }: ChoiceCardComponentProps) => {
   const styles = useStyles(createStyles);
   const scaleValue = useRef(new Animated.Value(1)).current;
@@ -58,7 +60,8 @@ const ChoiceCardComponent = ({
         style={[styles.container]}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
-        onPress={onPress}>
+        onPress={onPress}
+        disabled={disabled}>
         <Text
           style={[
             CommonStyles.textStyles.title,

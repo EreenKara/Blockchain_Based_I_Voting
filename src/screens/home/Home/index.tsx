@@ -127,39 +127,20 @@ const HomeScreen: React.FC<Props> = ({navigation}) => {
                       default:
                         navigation.navigate('BlockchainOrDb');
                     }
-                  } else navigation.navigate(item?.screen ?? 'BlockchainOrDb');
+                  } else
+                    navigation.navigate(
+                      item?.screen
+                        ? item?.screen === 'PrivateElections'
+                          ? 'PastCurrentUpcoming'
+                          : item?.screen
+                        : 'BlockchainOrDb',
+                    );
                 }}
               />
             </Card.Actions>
           </Card>
         );
       })}
-      <ButtonComponent
-        title="secim sonuclari"
-        onPress={() =>
-          navigation.navigate('Shared', {
-            screen: 'ElectionResult',
-            params: {
-              election: {
-                id: '',
-                name: '',
-                description: '',
-                endDate: Date.now().toString(),
-                startDate: Date.now().toString(),
-                image: '',
-              },
-            },
-          })
-        }
-      />
-      <ButtonComponent
-        title="Vote"
-        onPress={() =>
-          navigation.navigate('Shared', {
-            screen: 'Vote',
-          })
-        }
-      />
     </View>
   );
 };

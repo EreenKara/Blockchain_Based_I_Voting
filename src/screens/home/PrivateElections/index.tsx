@@ -20,19 +20,19 @@ type PrivateElectionsScreenProps = NativeStackScreenProps<
   'PrivateElections'
 >;
 
-const PrivateElectionsScreen: React.FC<PrivateElectionsScreenProps> = () => {
+const PrivateElectionsScreen: React.FC<PrivateElectionsScreenProps> = ({
+  navigation,
+  route,
+}) => {
   const styles = useStyles(createStyles);
-  const [index, setIndex] = useState<number>(-1);
+  const {timeframe} = route.params;
   // asagidaki baglanir baglanmaz otomatik fetch ediyor electionslari.
   const {elections, loading, fetchElections} = useElection(
-    ElectionType.Popular,
+    ElectionType.Private,
   );
 
-  const {search, updateSearch, clearSearch} = useSearchContext();
-
-  const onSehirPressed = useCallback((sehir: string) => {
-    updateSearch({city: sehir});
-    setIndex(0);
+  useEffect(() => {
+    fetchElections({timeframe: timeframe});
   }, []);
 
   return (

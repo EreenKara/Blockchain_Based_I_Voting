@@ -17,6 +17,7 @@ import ElectionResultScreen from '@screens/shared/ElectionResult';
 import VoteScreen from '@screens/home/Vote';
 import SharedNavigator from './shared.navigator';
 import PrivateElectionsScreen from '@screens/home/PrivateElections';
+import PastCurrentUpcomingScreen from '@screens/shared/past.current.upcoming';
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 
 const HomeNavigator: React.FC = () => {
@@ -90,6 +91,11 @@ const HomeNavigator: React.FC = () => {
         name="PrivateElections"
         component={PrivateElectionsScreen}
         options={{title: 'Private Seçimler'}}
+      />
+      <Stack.Screen
+        name="PastCurrentUpcoming"
+        component={PastCurrentUpcomingScreen}
+        options={{title: 'Secim Tarihi'}}
       />
       <Stack.Screen
         name="SpecificElection"

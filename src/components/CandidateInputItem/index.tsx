@@ -16,7 +16,7 @@ import LightUserViewModel from '@viewmodels/light.user.viewmodel';
 import SelectUserComponent from '@icomponents/SelectUser/select.user';
 interface CandidateInputItemComponentProps {
   candidate: CandidateCreateViewModel;
-  setCandidate: (candidate: CandidateCreateViewModel) => void;
+  setCandidate: React.Dispatch<React.SetStateAction<CandidateCreateViewModel>>;
   user: LightUserViewModel | null;
   setUser: (user: LightUserViewModel | null) => void;
 }
@@ -34,7 +34,6 @@ const CandidateInputItemComponent: React.FC<
   }, []);
   const setUserWrapper = useCallback((user: LightUserViewModel | null) => {
     setUser(user);
-    candidate.userId = user?.id ?? null;
     setIsOpen(false);
   }, []);
   useEffect(() => {
@@ -69,10 +68,10 @@ const CandidateInputItemComponent: React.FC<
           image={candidate.image}
           fieldName="image"
           setFieldValue={(string, value) => {
-            setCandidate({
-              ...candidate,
+            setCandidate(prev => ({
+              ...prev,
               image: value,
-            });
+            }));
           }}
           responsive={false}
         />
@@ -83,7 +82,7 @@ const CandidateInputItemComponent: React.FC<
             label="Adayın veya Seçeneğin İsmi"
             value={candidate.name}
             onChangeText={(text: string) => {
-              setCandidate({...candidate, name: text});
+              setCandidate(prev => ({...prev, name: text}));
             }}
           />
         </View>
@@ -91,7 +90,7 @@ const CandidateInputItemComponent: React.FC<
           <ColorWheelPicker
             size={300}
             onColorChange={(color: string) =>
-              setCandidate({...candidate, color: color})
+              setCandidate(prev => ({...prev, color: color}))
             }
           />
         </View>

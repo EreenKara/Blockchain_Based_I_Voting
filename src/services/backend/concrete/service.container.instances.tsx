@@ -3,16 +3,18 @@ import {UserService} from './user.service';
 import GroupService from './group.service';
 import UserAddressService from './user.address.service';
 import AddressService from './address.service';
-import exp from 'constants';
+import CandidateService from './candidate.service';
 export enum ServiceType {
   UserService = 'UserService',
   GroupService = 'GroupService',
   ElectionService = 'ElectionService',
   UserAddressService = 'UserAddressService',
   AddressService = 'AddressService',
+  CandidateService = 'CandidateService',
 }
 export const electionService = new ElectionService();
 export const userService = new UserService();
+export const candidateService = new CandidateService();
 export const groupService = new GroupService();
 export const userAddressService = new UserAddressService();
 export const addressService = new AddressService(); // Assuming AddressService is similar to UserAddressService

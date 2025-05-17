@@ -16,11 +16,15 @@ export const useElection = (type: ElectionType) => {
   } = useAsync<LightElectionViewModel[]>(getElectionsFunction);
 
   useEffect(() => {
-    fetchElections({city: search.city});
+    if (type !== ElectionType.Private) {
+      fetchElections({city: search.city});
+    }
   }, []);
   useEffect(() => {
     if (type !== ElectionType.Popular) {
-      fetchElections({city: search.city});
+      if (type !== ElectionType.Private) {
+        fetchElections({city: search.city});
+      }
     }
   }, [search.city]);
 

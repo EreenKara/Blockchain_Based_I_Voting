@@ -40,6 +40,10 @@ const useGetElectionsFunction = (
     case ElectionType.Created:
       getElectionFunc = electionService.getMyElections.bind(electionService);
       break;
+    case ElectionType.Private:
+      getElectionFunc =
+        electionService.getPrivateElections.bind(electionService);
+      break;
     default:
       throw new Error(`Invalid electionType: ${electionType}`);
       break;

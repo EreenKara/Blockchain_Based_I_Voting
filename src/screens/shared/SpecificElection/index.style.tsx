@@ -40,6 +40,15 @@ const createStyles = (colors: ColorsSchema) =>
     progressView: {
       width: '100%',
     },
+    voteButton: {
+      width: 'auto',
+      backgroundColor: colors.errorButton,
+    },
+    iconss: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      padding: styleNumbers.space * 2,
+    },
   });
 
 export default createStyles;

@@ -7,4 +7,5 @@ export enum ElectionType {
   Casted = 'casted',
   BeingCandidate = 'beingCandidate',
   Created = 'created',
+  Private = 'private',
 }

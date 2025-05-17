@@ -16,6 +16,11 @@ import {useStyles} from '@hooks/Modular/use.styles';
 import createStyles from './index.style';
 import {SharedStackParamList} from '@navigation/types';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import useElectionResult from '@hooks/use.election.result';
+import calculateRemainingPercentage from '@utility/date.percantage';
+import formatDate from '@utility/format.date';
+import ButtonComponent from '@components/Button/Button';
+import AnimatedBallotBoxComponent from '@icomponents/AnimatedBallotBox/animated.ballot.box';
 
 const windowHeight = Dimensions.get('window').height;
 
@@ -24,32 +29,37 @@ type SpecificElectionScreenProps = NativeStackScreenProps<
   'SpecificElection'
 >;
 const SpecificElectionScreen: React.FC<SpecificElectionScreenProps> = ({
+  navigation,
   route,
 }) => {
   const {election} = route.params;
-  const [loading, setLoading] = useState(true);
-  const [electionData, setElectionData] = useState<any>(null);
+  const {
+    fetchCandidates,
+    candidates,
+    fetchCandidatesLoading,
+    fetchCandidatesError,
+    fetchCandidatesSuccess,
+    fetchElection,
+    fetchElectionLoading,
+    fetchElectionError,
+    fetchElectionSuccess,
+  } = useElectionResult();
   const {search} = useSearchContext();
-  const [candidates, setCandidates] = useState<CandidateViewModel[]>([]);
   const styles = useStyles(createStyles);
-  const loadElectionData = async () => {
-    setLoading(true);
-    const mockData = [
-      {id: '1', name: 'A', color: '#FF6B6B', votes: 35},
-      {id: '2', name: 'B', color: '#4ECDC4', votes: 25},
-      {id: '3', name: 'C', color: '#45B7D1', votes: 20},
-      {id: '4', name: 'D', color: '#96CEB4', votes: 10},
-      {id: '5', name: 'F', color: '#ffffff', votes: 10},
-    ];
-    setCandidates(mockData);
-
-    setLoading(false);
-  };
+  const [percantage, setPercentage] = useState('');
   useEffect(() => {
-    loadElectionData();
+    fetchCandidates(election.id);
+    const value = calculateRemainingPercentage(
+      election.startDate,
+      election.endDate,
+    ).elapsedPercentage.toString();
+    setPercentage(value);
   }, []);
+  useEffect(() => {
+    console.log('candidates:', candidates);
+  }, [candidates]);
 
-  if (loading) {
+  if (!fetchCandidatesSuccess) {
     return <ActivityIndicatorComponent />;
   } else {
     return (
@@ -59,10 +69,64 @@ const SpecificElectionScreen: React.FC<SpecificElectionScreenProps> = ({
           <Text style={CommonStyles.textStyles.subtitle}>{search.city}</Text>
         </View>
         <View style={styles.progressView}>
-          <Text
-            style={[CommonStyles.textStyles.subtitle, {textAlign: 'center'}]}>
-            Seçimin Bitmesine: Tarih - Tarih
-          </Text>
+          <View style={{}}>
+            {new Date() > new Date(election.endDate) ? (
+              <>
+                <Text
+                  style={[
+                    CommonStyles.textStyles.title,
+                    {textAlign: 'center'},
+                  ]}>
+                  Seçim sona erdi
+                </Text>
+                <View style={{paddingTop: 20}}>
+                  <AnimatedBallotBoxComponent
+                    source={require('@assets/images/trophy.png')}
+                    label="Kazananı Gör"
+                    onPress={() => {
+                      navigation.navigate('ElectionResult', {
+                        election: election,
+                      });
+                    }}
+                  />
+                </View>
+              </>
+            ) : (
+              <>
+                <Text
+                  style={[
+                    CommonStyles.textStyles.title,
+                    {textAlign: 'center'},
+                  ]}>
+                  Seçimin Bitmesine:
+                </Text>
+                <Text
+                  style={[
+                    CommonStyles.textStyles.subtitle,
+                    {textAlign: 'center'},
+                  ]}>
+                  {formatDate(election.startDate)} -{' '}
+                  {formatDate(election.endDate)}
+                </Text>
+                <View style={styles.iconss}>
+                  <AnimatedBallotBoxComponent
+                    onPress={() => {
+                      navigation.navigate('Vote', {electionId: election.id});
+                    }}
+                  />
+                  <AnimatedBallotBoxComponent
+                    source={require('@assets/images/trophy.png')}
+                    label="En Yüksek Oyları"
+                    onPress={() => {
+                      navigation.navigate('ElectionResult', {
+                        election: election,
+                      });
+                    }}
+                  />
+                </View>
+              </>
+            )}
+          </View>
           <View
             style={{
               marginTop: styleNumbers.space * 2,
@@ -79,31 +143,45 @@ const SpecificElectionScreen: React.FC<SpecificElectionScreenProps> = ({
               }}
               progressTintColor="red"
               trackTintColor={Colors.getTheme().indicator}
-              progress={0.7}
+              progress={Number(percantage) / 100}
             />
             <Text
               style={[
                 CommonStyles.textStyles.subtitle,
                 {color: Colors.getTheme().text},
               ]}>
-              ....%
+              {percantage}%
             </Text>
           </View>
         </View>
         <View style={styles.pieChartContainer}>
           <View style={{height: windowHeight * 0.3}}>
-            <PieChartComponent
-              chartSize={windowHeight * 0.3}
-              data={candidates}
-            />
+            {candidates?.some(candidate => candidate.votes > 0) ? (
+              <PieChartComponent
+                chartSize={windowHeight * 0.3}
+                data={candidates ?? []}
+              />
+            ) : (
+              <Text
+                style={[
+                  CommonStyles.textStyles.title,
+                  {
+                    textAlignVertical: 'center',
+                    textAlign: 'center',
+                    paddingTop: 85,
+                  },
+                ]}>
+                Bu Seçimde Hiç Bir Aday İçin Oy kullanılmadı
+              </Text>
+            )}
           </View>
           <View>
-            <ChartLegendComponent candidates={candidates} />
+            <ChartLegendComponent candidates={candidates ?? []} />
           </View>
         </View>
 
         <View style={styles.candidateContainer}>
-          {candidates.map((candidate, index) => (
+          {candidates?.map((candidate, index) => (
             <View key={index} style={styles.candidateItem}>
               <CandidateItemComponent candidate={candidate} />
             </View>
