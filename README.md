@@ -1,5 +1,7 @@
 # Blockchain_Based_I_Voting
 
-# DEV BRANCH'INDE CALISICAZ. EGERKI CIDDEN MASTER'A PUSHLANMAYA KARAR VERILDIYSE PUSHLAYACAZ.
+### Eren Kara, EreenKara
 
-# ŞU ANDA DEV BRANCHİNDESİNİZ
+### Vedat Ozturk, OzturkVedat
+
+### Ali Eren Yiğit, AliErenYigit
