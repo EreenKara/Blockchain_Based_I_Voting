@@ -116,7 +116,7 @@ const SpecificElectionScreen: React.FC<SpecificElectionScreenProps> = ({
                   />
                   <AnimatedBallotBoxComponent
                     source={require('@assets/images/trophy.png')}
-                    label="En Yüksek Oyları"
+                    label="En Yüksek Oylar"
                     onPress={() => {
                       navigation.navigate('ElectionResult', {
                         election: election,

@@ -12,7 +12,7 @@ export abstract class BaseBackendService implements IBaseBackendService {
   constructor(endpoint: string) {
     try {
       this.api = axios.create({
-        baseURL: 'https://z904h9sz52.execute-api.eu-north-1.amazonaws.com/api', // API'nin base URL'i
+        baseURL: '', // API'nin base URL'i
         headers: {
           'Content-Type': 'application/json',
         },
