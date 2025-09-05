@@ -7,7 +7,7 @@
 ### Ali Eren Yiğit, AliErenYigit
 
 
-![1](https://github.com/user-attachments/assets/b3bfacfa-33c7-455c-91cc-d75442c12a05)  ![2](https://github.com/user-attachments/assets/a5e85615-a755-4fad-b40b-7693d51f3058)
+![1](https://github.com/user-attachments/assets/b3bfacfa-33c7-455c-91cc-d75442c12a05) ![2](https://github.com/user-attachments/assets/a5e85615-a755-4fad-b40b-7693d51f3058)
 
 ![3](https://github.com/user-attachments/assets/b980446e-de9a-4430-bea3-fe0ba17e80fb)
 
